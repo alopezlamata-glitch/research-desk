@@ -9,3 +9,10 @@ Estado: candidata
 - **Datos de shocks cambian de versión:** la serie FRBSF de sorpresas se actualizó (ago-2025); los borradores citaban la anterior. Guardar siempre fecha y hash (ver reglas de `data/raw`).
 - **Pedir al lanzar la sesión permiso para scripts:** extraer v22 requería ejecutar un script Python (aprobación); el lector de PDF no estaba (`pdftoppm`). Dejar la extracción del PDF preparada por la Coordinación.
 - **Presupuesto:** ~60 citas clásicas se dejaron sin verificar para priorizar las 2025–26; conviene un segundo pase corto.
+
+## 2026-11-04 · p01 · L1 (citas del diseño F; ver `exploration/CITAS_DISENO_F_2026-11-04.md`)
+Estado: candidata
+- **Las páginas citadas son las del WP, no las de la revista.** Verificar con la versión que hay en `kb/library` y decirlo en la cita; si se publica la de revista, rehacer páginas.
+- **Comprobar qué contiene realmente un fichero de la biblioteca:** `OttonelloWinberry2020` es un juego de diapositivas aunque el INDEX diga "paper SED 2017". Mirar la primera página antes de fiarse de la descripción.
+- **"Ambiguo" en un paper puede referirse a otra cosa:** Perez-Orive p. 8 llama ambiguo a OW sobre la asimetría, no sobre el signo restringido×choque. Leer la frase completa antes de usarla como apoyo.
+- **PDFs de NBER descargados con WebFetch no se leen** sin `pdftoppm`/Python: dejar la conversión (`tools/pdf2md.py`) preparada o pedir aprobación.
