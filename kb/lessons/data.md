@@ -27,3 +27,16 @@ Estado: candidata
 5. **Un `series_id` duplicado delata dimensiones mal elegidas** (WDI: agregados sin ISO3). Validar unicidad al guardar.
 6. **OneDrive bloquea el borrado de carpetas**: no regenerar borrando `raw/`; los fetch sobrescriben y el MANIFEST se reinicia aparte.
 7. FRED `GDPPOT` llega a 2036 (proyección CBO): no estimar sobre ella.
+
+## 2026-11-04 · p01 · Etapa 1 (EE. UU.)
+Estado: candidata
+1. **Dos vintages con el mismo nombre pueden ser series distintas.** El zip de Bauer-Swanson "ago-2025" no trae `MPS_ORTH`: es PC1 de MP1/MP2/ED2–ED4
+   normalizado a la TIR a 1 año, sin ortogonalizar (ρ trimestral ≈ 0,66 con `MPS_ORTH`). Regla: antes de llamar "vintage" a un archivo, leer su script/README y
+   correlacionar con el anterior en el solape; nombrar la variable por su construcción (`mps_bs23_orth`, `mps_bs25_me`), no por la fecha.
+2. **Un NA de la fuente puede ser exclusión deliberada o hueco real.** 2001-09-17 (excluido por los autores) no debe anular el trimestre; mar–dic 2020 sí (los eventos
+   existen pero `MPS_ORTH` no). Regla: leer la hoja `Description` y tratarlos por separado, con un test para cada caso.
+3. **Agregar por trimestre con `sum()` convierte NaN en 0 sin avisar.** Regla: exigir que no haya NaN en el trimestre (o `min_count`) y llevar el nº de eventos (`n_ev_*`).
+4. **Comprobar la cobertura de cada serie del datalake antes de prometerla**: `PNFIC1` (inversión no residencial real) tiene 79 observaciones desde 2007, no desde 1947. Regla: tabla de
+   cobertura (`coverage.csv`) y test de primer/último dato; si la serie es corta, decirlo en el diccionario y ofrecer alternativas con otro nombre, no sustituirla en silencio.
+5. **Z.1 no tiene vencimiento ni tipo de interés de la deuda**; las partes de deuda a tipo variable/corto plazo hay que buscarlas en E.2 o en micro-datos. Los CSV de Z.1 usan `ND` y fechas `1945:Q4`.
+6. **FRED (`fredgraph.csv`) puede dar timeout**: construir desde el datalake con sha256 comprobado, no redescargar en el build.

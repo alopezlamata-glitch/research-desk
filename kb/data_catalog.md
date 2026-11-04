@@ -27,7 +27,7 @@ OCDE SDMX directo, JK 2020 (AEA/openICPSR), Aruoba-Drechsel (sin URL).
 | Fuente | Qué | Estado | Notas |
 |---|---|---|---|
 | Romer-Romer (extendidos, p. ej., Wieland-Yang) | Shocks monetarios narrativos, EE. UU. | sin probar | Verificar URL y cobertura |
-| Bauer-Swanson (2023) | Shocks monetarios de alta frecuencia, EE. UU. | sin probar | Web de los autores |
+| Bauer-Swanson (2023) | Shocks monetarios de alta frecuencia, EE. UU. | **probada** (p01, 2026-11-04) | Dos vintages **distintas**, no una actualización de la otra: ver sección «Etapa 1 de p01» |
 | Ramey (2011), Ramey-Zubairy (2018) | Shocks fiscales: noticias de gasto militar, EE. UU. 1889– | sin probar | Web de Valerie Ramey |
 | Romer-Romer (2010) | Shocks narrativos de impuestos, EE. UU. | sin probar | |
 | Guajardo-Leigh-Pescatori (2014) | Consolidaciones fiscales narrativas, 17 países OCDE | sin probar | Panel: fiscal |
@@ -79,6 +79,19 @@ Todos **sin probar**. Licencia: "no consultada" = no se abrió la página del re
 | Jeenas (BSE WP 1409) | No localizado paquete de replicación | — | no encontrado | Pedir al autor |
 | Perez-Orive et al. (FEDS 2026-021) | No localizado | — | no encontrado | No se abrió el PDF; mirar apéndice de datos |
 | Lakdawala-Moreland | No localizado (ni para su paper de Economics Letters 2023) | — | no encontrado | Mirar sitio de los autores |
+
+## Etapa 1 de p01 (EE. UU.), probadas el 2026-11-04
+Panel `papers/p01-liquidity/data/clean/stage1_us.parquet`; definiciones en su `DICTIONARY.md`. Todo sale del datalake.
+
+| Fuente | Qué | Estado | Notas |
+|---|---|---|---|
+| Bauer-Swanson xlsx (dic-2023) | `MPS_ORTH` y `MPS` por evento FOMC, hoja `FOMC (update 2023)`, 1988-02 – 2023-12 | **probada** | `MPS_ORTH` es NA mar–dic 2020 y 2001-09-17 está excluido por los autores; el xlsx de la web **no** se actualizó en 2025 (mismo sha256) |
+| Bauer-Swanson zip (ago-2025) | `mps.csv` STMT/PC/ME, 1994-02 – 2026-10 | **probada** | Metodología Acosta et al. (2025) sobre USMPD, PC1 normalizado a la TIR a 1 año; **sin ortogonalizar**. La fecha del `.R` (dic-2025) y la etiqueta web (ago-2025) no coinciden. Correlación trimestral con `MPS_ORTH` ≈ 0,66 |
+| BIS DSR | `Q\|US\|P` (privado no financiero), `Q\|US\|N` (empresas), `Q\|US\|H` (hogares) | **probada** | 1999Q1–2026Q1 sin huecos; valores en % de la renta |
+| Fed Z.1 (S.11.1.b y S.11.1.t) | Balance de sociedades no financieras (niveles, códigos `FL…`) y flujo de inversión fija (`FA105019005`) | **probada** | CSV con `ND` como NA y fechas `1945:Q4`; **no hay desglose por vencimiento ni por tipo variable/fijo**. Para tipo variable: E.2 (STBL) o Call Reports, sin probar |
+| FRED `PNFIC1` | Inversión fija privada no residencial real | **probada, cobertura corta** | La copia del lago empieza en **2007Q1** (79 obs.); no se pudo contrastar con FRED (timeout el 2026-11-04). Alternativas largas: `GPDIC1` (otro concepto) o Z.1 `FA105019005` / deflactor |
+| FRED SLOOS `DRTSCILM`, `DRTSCIS`, `DRSDCILM` | Estándares y demanda de C&I, trimestral | **probada** | `DRTSCI*` desde 1990Q2, `DRSDCILM` desde 1991Q4; 'DRTSCILM' = grandes y medianas |
+| Fed Board EBP | `ebp`, `gz_spread` mensuales 1973-01 – 2026-09 | **probada** | Se agrega a trimestre solo con 3 meses |
 
 ## Repositorios de replicación
 openICPSR (AEA), Zenodo, Harvard Dataverse: buscar ahí el paquete de replicación del paper de
