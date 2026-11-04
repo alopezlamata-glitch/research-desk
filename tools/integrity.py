@@ -1,0 +1,326 @@
+"""Comprobaciones deterministas de integridad de la Research Desk.
+
+Cada regla comprobable de CLAUDE.md es una función `check_<id>(root, files) -> list[Violation]`.
+El pre-commit de git, pytest y las desks llaman a estas mismas funciones (spec: specs/guardrails/SPEC.md).
+
+Uso: uv run python tools/integrity.py [--only id1,id2]   (sale con 1 si hay violaciones)
+"""
+
+from __future__ import annotations
+
+import csv
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+TEXT_SUFFIXES = {".py", ".md", ".tex", ".bib", ".json", ".toml", ".yaml", ".yml", ".txt", ".csv",
+                 ".js", ".mjs", ".sh", ".ps1", ".R", ".r", ".ipynb", ".cfg", ".ini", ""}
+
+
+@dataclass(frozen=True)
+class Violation:
+    check: str
+    path: str
+    line: int
+    msg: str
+
+    def __str__(self) -> str:
+        return f"[{self.check}] {self.path}:{self.line}: {self.msg}"
+
+
+def repo_files(root: Path) -> list[str]:
+    """Archivos versionados o preparados (git); sin git, todos menos los ignorables obvios."""
+    try:
+        out = subprocess.run(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+                             cwd=root, capture_output=True, check=True).stdout
+        return [p for p in out.decode("utf-8").split("\0") if p and (root / p).is_file()]
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        skip = {".git", ".venv", "__pycache__", "node_modules"}
+        return [p.relative_to(root).as_posix() for p in root.rglob("*")
+                if p.is_file() and not skip & set(p.relative_to(root).parts)]
+
+
+def _read(root: Path, rel: str) -> str | None:
+    try:
+        return (root / rel).read_text(encoding="utf-8")
+    except (UnicodeDecodeError, OSError):
+        return None
+
+
+# ---------------------------------------------------------------- secrets
+SECRET_PATTERNS = [
+    re.compile(r"""(?i)\b(api[_-]?key|access[_-]?token|secret[_-]?key|password|passwd)\b\s*[:=]\s*['"][A-Za-z0-9_\-]{16,}['"]"""),
+    re.compile(r"\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{20,}"),
+    re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+    re.compile(r"\bsk-(?:ant-)?[A-Za-z0-9\-_]{24,}"),
+    re.compile(r"""['"][0-9a-f]{32}['"]"""),  # formato de clave FRED
+]
+SECRET_SKIP = {"uv.lock"}
+
+
+def check_secrets(root: Path, files: list[str]) -> list[Violation]:
+    real_key = os.environ.get("FRED_API_KEY", "")
+    out = []
+    for rel in files:
+        if Path(rel).name in SECRET_SKIP or Path(rel).suffix not in TEXT_SUFFIXES:
+            continue
+        text = _read(root, rel)
+        if text is None:
+            continue
+        for n, line in enumerate(text.splitlines(), 1):
+            if (len(real_key) >= 16 and real_key in line) or any(p.search(line) for p in SECRET_PATTERNS):
+                out.append(Violation("secrets", rel, n, "posible clave/token en un archivo versionado"))
+    return out
+
+
+# ---------------------------------------------------------------- hygiene
+HYGIENE_SCOPE = re.compile(r"^(papers/[^/]+/code/|datalake/fetch/).+\.py$")
+HYGIENE_RULES = [
+    (re.compile(r"\.bfill\(|\.backfill\(|method\s*=\s*['\"](?:bfill|backfill)['\"]"),
+     "relleno hacia atrás (usa información futura)"),
+    (re.compile(r"\.interpolate\("), "interpolación (inventa datos entre observaciones)"),
+]
+WAIVER = re.compile(r"#\s*hygiene-ok:\s*\S")
+
+
+def check_hygiene(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for rel in files:
+        if not HYGIENE_SCOPE.match(rel):
+            continue
+        for n, line in enumerate((_read(root, rel) or "").splitlines(), 1):
+            if "TODO_SERIE_REAL" in line:
+                out.append(Violation("hygiene", rel, n, "marcador TODO_SERIE_REAL sin sustituir"))
+            for pat, why in HYGIENE_RULES:
+                if pat.search(line) and not WAIVER.search(line):
+                    out.append(Violation("hygiene", rel, n, f"{why}; justifícalo con '# hygiene-ok: <motivo>'"))
+    return out
+
+
+# ---------------------------------------------------------------- bib / tex helpers
+def parse_bib(text: str) -> dict[str, dict[str, str]]:
+    """Entradas BibTeX -> {clave: {campo: valor}}; respeta llaves anidadas."""
+    entries: dict[str, dict[str, str]] = {}
+    for m in re.finditer(r"@(\w+)\s*\{\s*([^,\s]+)\s*,", text):
+        if m.group(1).lower() in {"comment", "string", "preamble"}:
+            continue
+        depth, i = 1, m.end()
+        while i < len(text) and depth:
+            depth += {"{": 1, "}": -1}.get(text[i], 0)
+            i += 1
+        body, fields = text[m.end():i - 1], {}
+        for f in re.finditer(r"(\w+)\s*=\s*\{", body):
+            d, j = 1, f.end()
+            while j < len(body) and d:
+                d += {"{": 1, "}": -1}.get(body[j], 0)
+                j += 1
+            fields[f.group(1).lower()] = body[f.end():j - 1].strip()
+        entries[m.group(2)] = fields
+    return entries
+
+
+def strip_tex_comments(line: str) -> str:
+    return re.sub(r"(?<!\\)%.*$", "", line)
+
+
+CITE = re.compile(r"\\(?:[Cc]ite[a-zA-Z]*|nocite)\*?(?:\[[^\]]*\]){0,2}\{([^}]*)\}")
+
+
+def _paper_tex(files: list[str]) -> list[str]:
+    return [f for f in files if re.match(r"^papers/[^/]+/paper/.+\.tex$", f)]
+
+
+def check_citations(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for rel in _paper_tex(files):
+        paper_dir = (root / rel).parent
+        bib = {}
+        for b in paper_dir.glob("*.bib"):
+            bib.update(parse_bib(b.read_text(encoding="utf-8")))
+        for n, raw in enumerate((_read(root, rel) or "").splitlines(), 1):
+            for m in CITE.finditer(strip_tex_comments(raw)):
+                for key in (k.strip() for k in m.group(1).split(",")):
+                    if not key or key == "*":
+                        continue
+                    if key not in bib:
+                        out.append(Violation("citations", rel, n, f"'{key}' no está en el .bib del paper"))
+                    elif not bib[key].get("note", "").upper().startswith("VERIFICADA"):
+                        estado = bib[key].get("note", "sin estado")[:40]
+                        out.append(Violation("citations", rel, n, f"'{key}' no está VERIFICADA ({estado})"))
+    return out
+
+
+# ---------------------------------------------------------------- numbers
+NUM_STRIP = re.compile(
+    r"\\(?:ref|eqref|label|cite[a-zA-Z]*|input|include|includegraphics|url|href|bibliography|"
+    r"bibliographystyle|vspace|hspace|setlength|addtolength|usepackage|documentclass|geometry)"
+    r"\*?(?:\[[^\]]*\])*\{[^}]*\}(?:\{[^}]*\})?"
+)
+DECIMAL = re.compile(r"(?<![\w.\\])\d+\.\d+(?![\w.])")
+PERCENT = re.compile(r"(?<![\w.\\])\d+(?:\.\d+)?\s*\\%")
+
+
+def check_numbers(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for rel in _paper_tex(files):
+        in_body = False
+        for n, raw in enumerate((_read(root, rel) or "").splitlines(), 1):
+            if "\\begin{document}" in raw:
+                in_body = True
+                continue
+            if not in_body or "% num-ok" in raw:
+                continue
+            line = NUM_STRIP.sub("", strip_tex_comments(raw))
+            for m in list(DECIMAL.finditer(line)) + list(PERCENT.finditer(line)):
+                out.append(Violation("numbers", rel, n,
+                                     f"cifra tecleada '{m.group(0)}': genérala como macro desde output/ "
+                                     "(o marca la línea con '% num-ok' si no es un resultado)"))
+    return out
+
+
+# ---------------------------------------------------------------- parity
+PARITY_RTOL = 1e-6
+
+
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def check_parity(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for py in sorted(root.glob("papers/*/output/estimates_py.csv")):
+        rel = py.relative_to(root).as_posix()
+        r = py.with_name("estimates_r.csv")
+        if not r.exists():
+            out.append(Violation("parity", rel, 0, "falta estimates_r.csv (replicación cruzada en R)"))
+            continue
+        key = lambda row: (row["spec_id"], row["term"])  # noqa: E731
+        a = {key(x): x for x in _read_csv(py)}
+        b = {key(x): x for x in _read_csv(r)}
+        for k in sorted(a.keys() ^ b.keys()):
+            out.append(Violation("parity", rel, 0, f"{k} solo existe en {'Python' if k in a else 'R'}"))
+        for k in sorted(a.keys() & b.keys()):
+            for col in ("estimate", "std_error"):
+                x, y = float(a[k][col]), float(b[k][col])
+                if abs(x - y) > PARITY_RTOL * max(1.0, abs(x)):
+                    out.append(Violation("parity", rel, 0, f"{k} {col}: Python {x!r} ≠ R {y!r}"))
+    return out
+
+
+# ---------------------------------------------------------------- speclog
+SPECLOG_COLUMNS = ["timestamp", "commit", "script", "spec_id", "preregistered", "exploratory", "description"]
+
+
+def prereg_ids(spec_text: str) -> set[str]:
+    """Ids del bloque ```prereg ... ``` del SPEC (una por línea; '#' comenta)."""
+    ids: set[str] = set()
+    for block in re.findall(r"```prereg\s*\n(.*?)```", spec_text, re.DOTALL):
+        ids |= {ln.split("#")[0].strip() for ln in block.splitlines()} - {""}
+    return ids
+
+
+def check_speclog(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for paper in sorted(p for p in root.glob("papers/*") if p.is_dir() and p.name != "_template"):
+        log = paper / "output" / "spec_log.csv"
+        est = paper / "output" / "estimates_py.csv"
+        spec = paper / "SPEC.md"
+        prereg = prereg_ids(spec.read_text(encoding="utf-8")) if spec.exists() else set()
+        rows = _read_csv(log) if log.exists() else []
+        rel = log.relative_to(root).as_posix()
+        logged = {r["spec_id"] for r in rows}
+        if est.exists():
+            for sid in sorted({r["spec_id"] for r in _read_csv(est)} - logged):
+                out.append(Violation("speclog", rel, 0, f"'{sid}' estimada pero no registrada (usa research.log_spec)"))
+        for n, r in enumerate(rows, 2):
+            is_prereg = r["spec_id"] in prereg
+            if r["preregistered"].lower() != str(is_prereg).lower():
+                out.append(Violation("speclog", rel, n, f"'{r['spec_id']}': preregistered={r['preregistered']} no coincide con el SPEC"))
+            if not is_prereg and r["exploratory"].lower() != "true":
+                out.append(Violation("speclog", rel, n, f"'{r['spec_id']}' no está prerregistrada y no va marcada como exploratoria"))
+    return out
+
+
+# ---------------------------------------------------------------- referee
+VERDICTS = {"APROBADO", "APROBADO CON CAMBIOS", "RECHAZADO"}
+REFEREE_SKIP = re.compile(r"^(README|_|holdout_opened)", re.I)
+
+
+def front_matter(text: str) -> dict[str, str] | None:
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+    if not m:
+        return None
+    return {k.strip(): v.strip().strip("'\"") for k, _, v in
+            (ln.partition(":") for ln in m.group(1).splitlines() if ":" in ln)}
+
+
+def check_referee(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for rel in files:
+        if not re.match(r"^papers/[^/]+/audits/[^/]+\.md$", rel) or REFEREE_SKIP.match(Path(rel).name):
+            continue
+        text = _read(root, rel) or ""
+        fm = front_matter(text)
+        if fm is None:
+            out.append(Violation("referee", rel, 1, "falta la cabecera YAML (ver skill referee-report)"))
+            continue
+        if fm.get("verdict") not in VERDICTS:
+            out.append(Violation("referee", rel, 1, f"verdict inválido: {fm.get('verdict')!r}"))
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", fm.get("date", "")):
+            out.append(Violation("referee", rel, 1, "date debe ser AAAA-MM-DD"))
+        if not re.fullmatch(r"[0-9a-f]{7,40}", fm.get("commit", "")):
+            out.append(Violation("referee", rel, 1, "commit auditado ausente o inválido"))
+        if fm.get("session") != "fresh" or fm.get("reviewer") != "referee" or not fm.get("object"):
+            out.append(Violation("referee", rel, 1, "requiere object, reviewer: referee y session: fresh"))
+        for f in re.finditer(r"^### (.+)$((?:\n(?!#{1,3} ).*)*)", text, re.MULTILINE):
+            if not re.search(r"^Evidencia:.*(`[^`]+`|\S+:\d+)", f.group(2), re.MULTILINE):
+                line = text[:f.start()].count("\n") + 1
+                out.append(Violation("referee", rel, line, f"hallazgo '{f.group(1)[:50]}' sin 'Evidencia:' (comando o archivo:línea)"))
+    return out
+
+
+# ---------------------------------------------------------------- lessons
+def check_lessons(root: Path, files: list[str]) -> list[Violation]:
+    out = []
+    for rel in files:
+        if not re.match(r"^kb/lessons/[^/]+\.md$", rel):
+            continue
+        text = _read(root, rel) or ""
+        for m in re.finditer(r"^## (\d{4}-\d{2}-\d{2}.*)$((?:\n(?!## ).*)*)", text, re.MULTILINE):
+            line = text[:m.start()].count("\n") + 1
+            estado = re.search(r"^Estado:\s*(candidata|validada|retirada)\b", m.group(2), re.MULTILINE)
+            if not estado:
+                out.append(Violation("lessons", rel, line, "falta 'Estado: candidata|validada|retirada'"))
+            elif estado.group(1) == "validada" and not re.search(r"^Validada por:\s*\S", m.group(2), re.MULTILINE):
+                out.append(Violation("lessons", rel, line, "lección validada sin 'Validada por:'"))
+    return out
+
+
+CHECKS = {
+    "secrets": check_secrets, "hygiene": check_hygiene, "citations": check_citations,
+    "numbers": check_numbers, "parity": check_parity, "speclog": check_speclog,
+    "referee": check_referee, "lessons": check_lessons,
+}
+
+
+def run(root: Path = ROOT, only: set[str] | None = None) -> list[Violation]:
+    files = repo_files(root)
+    return [v for name, fn in CHECKS.items() if not only or name in only for v in fn(root, files)]
+
+
+def main(argv: list[str]) -> int:
+    only = set(argv[argv.index("--only") + 1].split(",")) if "--only" in argv else None
+    violations = run(ROOT, only)
+    for v in violations:
+        print(v)
+    print(f"integridad: {len(violations)} violaciones" if violations else "integridad: OK")
+    return 1 if violations else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

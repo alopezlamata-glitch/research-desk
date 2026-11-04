@@ -1,6 +1,7 @@
 # Lecciones — Datos
 
 ## 2026-11-04 · p01 · Errores de datos en las iteraciones previas
+Estado: candidata
 1. **Extrapolar con AR(1) hasta el final de la muestra y luego estimar sobre esos trimestres** (LDC_UK) mete datos
    inventados en la estimación. Regla: la muestra de estimación termina en el último dato observado; si una
    serie se extiende, la extensión se marca y se excluye.
@@ -15,6 +16,7 @@
    lee de `FRED_API_KEY`.
 
 ## 2026-11-04 · datalake · Descarga masiva de fuentes públicas
+Estado: candidata
 1. **Comprobar la identidad del archivo, no solo el HTTP 200.** La URL "JSTdatasetR6.xlsx" servía un `.dta`; el xlsx de
    Bauer-Swanson de la web era byte a byte el de dic-2023 (la "actualización ago-2025" estaba en un zip con otro formato).
    Regla: hash + cabecera (PK/D0CF/`<stata_dta>`) + rango de fechas antes de etiquetar un vintage.

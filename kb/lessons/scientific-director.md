@@ -1,6 +1,7 @@
 # Lecciones — Dirección científica
 
 ## 2026-11-04 · T8 · Investigar mejoras de las desks
+Estado: candidata
 estado: candidata
 evidencia: specs/research-desk/IMPROVEMENT_PROPOSAL.md (§0 lista qué fuentes se leyeron y cuáles no)
 alcance: Dirección, encargos de investigación externa

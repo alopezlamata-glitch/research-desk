@@ -1,6 +1,7 @@
 # Lecciones — Referee
 
 ## 2026-11-03 · p01 · Diagnóstico de v22 (Transmission Capacity)
+Estado: candidata
 Patrones de error encontrados en la versión previa, que conviene buscar en cualquier paper:
 1. **Tests "model-free" calculados sobre objetos construidos con el modelo.** La varianza de
    interacción, el "excess collapse" y las cross-partials se calculan sobre $\widehat{TE}_t$, que se
