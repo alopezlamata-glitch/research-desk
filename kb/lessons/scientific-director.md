@@ -12,3 +12,32 @@ regla: Distinguir en cada fuente "leída", "solo resumen/snippet" y "no cargó";
 - Casi toda la evidencia sobre memoria y fallos de agentes son preprints 2025–26 vistos solo como resumen de buscador. Antes de implantar, Literatura debe leer los textos.
 - Las prácticas de Cunningham y Goldsmith-Pinkham llegaron vía resúmenes de terceros: tratarlas como práctica reportada, no como protocolo verificado.
 - Criterio: preferir convertir una lección en test/hook antes que en prosa de prompt.
+
+## 2026-11-04 · p01 · Contrastar una cifra citada con la tabla del borrador antes de convertirla en cota
+Estado: candidata
+estado: candidata
+evidencia: papers/p01-liquidity/exploration/DEVILS_ADVOCATE_2026-11-04.md §2.4 (la "cota ≈3 %" usaba parámetros que no son los de TFG2; con su tabla sale 10–65 %)
+alcance: Dirección y Coordinación, cualquier resultado "acotado" que cita una calibración
+regla: Una cota o magnitud que dependa de una calibración se calcula leyendo la tabla de parámetros del borrador, se da como función de los parámetros y se comprueba en `theory/check_*.py`; no se cita "la calibración de X" de memoria.
+
+- El valor salía de elegir ηv pequeño frente a b+ψ/N (unidades arbitrarias): con η=5 ya era 14 %.
+- La afirmación "se verificó con SymPy" sin script en el repo no cuenta como verificada.
+
+## 2026-11-04 · p01 · Buscar la "novedad" en el propio borrador y en el paper rival antes de darla por nueva
+Estado: candidata
+estado: candidata
+evidencia: DEVILS_ADVOCATE_2026-11-04.md §1 (la fórmula de §2 es la Prop. `fs-transmission` de TFG2; el caso rígido es IOPO 2018, p. 11; la "diferencia" con Perez-Orive et al. no existe, p. 12)
+alcance: Dirección, evaluación de candidatos y de "resultados formales" propuestos por la Coordinación
+regla: Antes de anotar un resultado como nuevo, localizar la proposición equivalente en (i) los borradores de los autores y (ii) el texto completo del paper rival más cercano, con página; un contraste con un rival se formula sobre lo que el rival afirma, no sobre lo que se supone.
+
+- Las diapositivas no son el paper (Ottonello-Winberry en la biblioteca): decirlo y no citar definiciones que solo estarían en el texto.
+- Si el signo del resultado central queda libre en la teoría, la literatura (que discrepa en el signo) lo encajará todo: fijar el signo ex ante.
+
+## 2026-11-04 · p01 · Una predicción prerregistrable tiene que salir de la forma funcional del modelo
+Estado: candidata
+estado: candidata
+evidencia: DEVILS_ADVOCATE_2026-11-04.md §1 (la "transición abrupta en N" contradice `T_I = N/(ψ+(b+ηv)N)`; "la coordinación solo actúa por v" contradice TFG2 Prop. `fs-coordination`)
+alcance: Dirección, redacción de hipótesis para SPEC.md
+regla: Cada predicción de la SPEC lleva la ecuación del modelo de la que sale; si requiere un ingrediente que el modelo no tiene (un umbral, un canal), se añade al modelo o se marca como exploratoria.
+
+- Además, en el diseño de panel con efectos fijos de tiempo, el choque común se absorbe: contar clústeres y colinealidad entre exposición y restricción por país antes de prometer una interacción triple.

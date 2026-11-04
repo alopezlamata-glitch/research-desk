@@ -161,12 +161,19 @@ indica qué se descarta y por qué.
   tendencia estocástica común de las posturas de política es una hipótesis frágil y depende de cómo se
   construyan esas posturas (lección de v22).
 
-**6.4 Magnitud de la coordinación → acotada, y es un resultado.**
+> **Corregido el 2026-11-04 (abogado del diablo, `DEVILS_ADVOCATE_2026-11-04.md` §2.4):** 6.3 y 6.4 eran
+> erróneos. La coordinación también actúa por $\sigma_F$ y la liberación de reservas (TFG2, Prop.
+> `fs-coordination`), no solo por $v$; y los parámetros de 6.4 no eran los de TFG2. Con la tabla real de TFG2
+> ($b=\eta=0.1$, $\psi=0.05$, $N=1$, $v=0.05+1.44\rho^2$), quitar la varianza de política sube la pendiente
+> entre un 10 % ($A_P=2$) y un 65 % ($A_P=0.2$). No hay cota "≈3 %": la magnitud es una función de
+> $(\eta, v_{pol}, b, \psi/N, \sigma_F)$ que derivará Teoría en `theory/check_*.py`. Texto original:
+
+**6.4 Magnitud de la coordinación → acotada, y es un resultado.** *(refutado; ver nota)*
 - Con la inversión deseada $q/a$ y $a=b+\eta v+\psi/N$, la elasticidad respecto a $v$ es $\eta v/a$. Eliminar
   **toda** la incertidumbre de política mueve la inversión deseada como mucho en una fracción
   $\eta v_{pol}/a$.
-- Con la calibración de TFG2 ($b=\eta=1$, $v=0.05$, $\psi=0.5$, $N=1$; $a=1.55$), la cota es ≈ 3 %
-  **aunque toda la varianza fuera de política**.
+- ~~Con la calibración de TFG2 ($b=\eta=1$, $v=0.05$, $\psi=0.5$, $N=1$; $a=1.55$), la cota es ≈ 3 %
+  aunque toda la varianza fuera de política.~~ (Parámetros equivocados.)
 - La coordinación es un efecto de segundo orden **acotado por la capacidad**. "Necesaria pero no
   suficiente" pasa a ser un resultado cuantitativo derivable. Se contrastará con la EPU.
 
@@ -208,3 +215,17 @@ indica qué se descarta y por qué.
 - 2026-11-04 · Agregación (sección 5): el régimen agregado es una proporción de agentes restringidos; los
   saltos requieren concentración o realimentación sistémica.
 - 2026-11-04 · Los autores piden que la Coordinación no pregunte pasos intermedios. Se resuelven las dudas (sección 6): transición suave estimada, dos escalas de tiempo, coordinación medida por incertidumbre de política (acotada ≈3 %% con la calibración de TFG2), panel de la zona euro con shock común del BCE y exposición medida por la transmisión al tipo del stock de deuda.
+- 2026-11-04 · **Abogado del diablo** (Director científico, `DEVILS_ADVOCATE_2026-11-04.md`). Comprobado por la
+  Coordinación contra TFG2 (tabla de calibración y Prop. `fs-coordination`): tiene razón.
+  - **Refutado:** la cota ≈3 % y "la coordinación solo por $v$" (6.3–6.4); la novedad de §2 (es la Prop.
+    `fs-transmission` de TFG2, y el caso rígido es IOPO 2018, p. 11); las diferencias de §3 con IOPO y con
+    Perez-Orive et al. (ya lo predicen); la "verificación SymPy" de §2 (no hay script en el repo).
+  - **Debilitado:** voluntad = nivel / capacidad = pendiente (1.3); STAR = CDF de la holgura (5.2); la
+    agregación (5) ignora que el banco es común; "transición abrupta en $N$" no se deriva ($N$ entra suave);
+    el panel euro (6.5): faltan datos por país, $\mathcal E_D$ es posterior al tratamiento, efecto información
+    del BCE, 10–12 clústeres, ZLB 2012–22.
+  - **Posición común de Dirección (no hay discrepancia):** diseño **F**. Contribución = margen interior de
+    reservas y cierre bancario común entre los extremos de IOPO y Perez-Orive; empírica en dos etapas
+    (EE. UU. con BS, un estado, subida/bajada separadas; panel euro solo si pasa una puerta de potencia
+    ≥0,8 por Monte Carlo); signo esperado fijado ex ante; 6.6(2, segunda mitad) y 6.6(4) fuera del
+    prerregistro hasta derivarse. **Pendiente de aprobación de los autores** (cambia la dirección del paper).
