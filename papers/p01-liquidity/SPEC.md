@@ -120,7 +120,7 @@ r_inv_nfc
 **Replicación cruzada:** `s1_lin` y `s1_liq` en R (`code/replication_r/`, `fixest`), con paridad `estimates_py.csv` = `estimates_r.csv`.
 
 **Requisito previo a estimar:**
-- Teoría añade los tests de `L_u > 0` con g ≥ 0 y de `∂I_u/∂g = 1−ω`;
+- ~~Teoría añade los tests de `L_u > 0` con g ≥ 0 y de `∂I_u/∂g = 1−ω`~~ (hecho 2026-11-04: `check_aggregation.py::test_L_u_positive_with_nonnegative_g_and_w_above_min`, `check_nesting.py::test_dI_dg_is_one_minus_w_and_its_sign`);
 - F4 valida con `mc-validate` esta especificación con N = 102 y da la potencia.
 
 ## Desviaciones

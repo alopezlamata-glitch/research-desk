@@ -113,6 +113,16 @@ def test_representative_agent_matches_tfg2():
         sc.check_identity(one, (gam**2 * p_f + B * g) / (B + gam**2 * a0), BOX)
 
 
+def test_L_u_positive_with_nonnegative_g_and_w_above_min():
+    """L_u > 0 si g_j >= 0 y w_j >= w_min > 0 (p_f, a_j, s_j, phi > 0): Theta > 0, Gbar >= 0."""
+    box = {**BOX2, w1: (0.05, 1), w2: (0.05, 1)}  # w_min = 0.05; g_j en [0, 8]
+    sc.check_sign(GENERAL, "+", box)
+    with pytest.raises(sc.ClaimFailed):  # negativo: con g_j < 0 suficientemente grande, falla
+        sc.check_sign(GENERAL, "+", {**box, g1: (-400, -200), g2: (-400, -200), w1: (0.05, 0.3), w2: (0.05, 0.3)})
+    with pytest.raises(sc.ClaimFailed):  # negativo: sin cota w_min (w->0, g=0) L_u se anula y el check es vacío
+        sc.check_sign(GENERAL.subs({g1: 0, g2: 0}), "+", {**box, w1: (0, 0), w2: (0, 0)})
+
+
 def test_response_is_smaller_than_without_common_bank():
     """Con banco común, el efecto agregado de p_f está amortiguado por el factor 1/(1+phi Theta) < 1."""
     sc.check_sign((GENERAL.subs({g1: 0, g2: 0}) - Th * p_f).subs({s1: 0.3, s2: 0.7}), "-", BOX2)

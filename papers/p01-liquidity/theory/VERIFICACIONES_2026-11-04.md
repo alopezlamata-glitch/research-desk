@@ -102,3 +102,10 @@ L_u = (Ḡ + Θ p_f) / (1 + φ Θ)              dI_j,u/du se obtiene sustituyend
 - Los números del equilibrio no lineal usan parámetros ilustrativos (no de TFG2); el test comprueba la fórmula, no un valor calibrado.
 - El mapa a IOPO usa las ecuaciones tal como las cita el informe (p. 10–11); conviene que Literatura confirme la página con el PDF antes de citar en el paper.
 - No he editado FIRST_PRINCIPLES, el informe del abogado del diablo ni los borradores.
+
+### Addendum 2026-11-04 (§4) — tests exigidos por PREREG_DRAFT §2
+
+| Afirmación | Test | Resultado |
+|---|---|---|
+| `L_u > 0` con g_j ≥ 0, ω_j ≥ ω_min > 0 (p_f, a_j, s_j, φ > 0) | `check_aggregation.py::test_L_u_positive_with_nonnegative_g_and_w_above_min` | confirmada; negativos: falla con g_j ≪ 0 y el check es vacío con ω→0 |
+| `∂I_u/∂g = 1−ω` (identidad); > 0 con B > 0, = 0 en B→0 | `check_nesting.py::test_dI_dg_is_one_minus_w_and_its_sign` | confirmada; negativos: `ω` en vez de `1−ω`, signo `−`, y B=0 exacto no da signo estricto |

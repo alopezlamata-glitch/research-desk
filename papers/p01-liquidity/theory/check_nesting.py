@@ -50,6 +50,20 @@ def test_buffer_and_multiplier_formulas():
     sc.check_identity(SOL[lam_u], B * (p_f - a * g) / (B + gam**2 * a), BOX)
 
 
+def test_dI_dg_is_one_minus_w_and_its_sign():
+    """∂I_u/∂g = 1 − ω (identidad); > 0 con B > 0 (restricción activa); = 0 en B -> 0 (sin restricción)."""
+    dI_dg = sp.diff(SOL[I_u], g)
+    sc.check_identity(dI_dg, 1 - W, BOX)
+    sc.check_sign(dI_dg, "+", BOX)  # B en (0.01, 3)
+    assert sp.limit(dI_dg, B, 0, "+") == 0
+    with pytest.raises(sc.ClaimFailed):  # negativos: ω en vez de 1−ω; signo contrario
+        sc.check_identity(dI_dg, W, BOX)
+    with pytest.raises(sc.ClaimFailed):
+        sc.check_sign(dI_dg, "-", BOX)
+    with pytest.raises(sc.ClaimFailed):  # con B = 0 exacto la derivada es 0: el signo estricto no se sostiene
+        sc.check_sign(dI_dg.subs(B, 0), "+", {gam: (0.5, 2), a: (0.1, 0.5)})
+
+
 def test_negative_wrong_weight_is_rejected():
     wrong = (gam * p_f + B * g) / (B + gam * a)  # sin el cuadrado de gamma
     with pytest.raises(sc.ClaimFailed):
