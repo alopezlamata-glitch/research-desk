@@ -46,3 +46,13 @@ Estado: candidata
 1. **Si una serie FRED sale corta, buscar el índice de cantidad del mismo concepto en NIPA** (`A008RA3Q086SBEA` frente a `PNFIC1`: 1947 frente a 2007). Regla: antes de declarar un hueco, probar la
    variante `A###RA3Q086SBEA` y validar con Δlog contra la serie corta en el solape (ρ ≈ 1); los niveles no son comparables (índice 2017=100 frente a USD encadenados).
 2. **Un fetch parcial no debe rehacer todo el lago**: `fred.py` reescribe y re-hashea todas las series; para añadir una, llamar a `one()`/`save()` solo con ella y añadirla también a `SERIES` para futuras regeneraciones.
+
+## 2026-11-04 · p01 · comprobaciones previas al prerregistro
+Estado: candidata
+1. **Antes de proponer una serie "mejor" (con discursos), leer la hoja `Description` y buscar la palabra "excludes"**: el xlsx de BS-2023 dice que las hojas FOMC y mensuales excluyen los discursos y que se publicarán más adelante. Regla: la comprobación de una variante de un dataset empieza por su documentación y por comparar sumas entre hojas (mensual = Σ evento), no por inferir del nombre de las columnas.
+2. **Una hoja "Monthly" no es la suma de la hoja por evento si el objeto está ortogonalizado**: `Monthly MPS_ORTH` se reortogonaliza al nivel mensual. Regla: verificar la identidad de agregación antes de usar una hoja como sustituto.
+3. **La encuesta E.2 no da el "% a tipo variable"** que se suponía en el diccionario: da volumen por intervalo de repreciación, cuota prime e intervalo medio, sobre préstamos *concedidos* (flujo). Regla: abrir la estructura de la fuente (`E2_struct.xml`, CodeLists) antes de prometer una variable con su nombre teórico.
+4. **Los tramos de una descomposición publicada pueden no sumar el total** (E.2: 92,8–99,96 %). Regla: medir el residuo, acotarlo en un test y calcular la cuota sobre el volumen clasificado; no relajar el assert en silencio ni repartir el resto.
+5. **El DDP de la Fed ofrece el paquete completo en un zip** (`Output.aspx?rel=<REL>&filetype=zip`, sin clave): evita construir URLs de series. Los TIME_PERIOD son fin de trimestre natural aunque la encuesta sea de mitad de trimestre.
+6. **`print` de texto con `−`/`ε` falla en consola cp1252 de Windows**: escribir el fichero y no imprimir el contenido (o `PYTHONUTF8=1`).
+7. **Los recuentos por celda se hacen con el código del estimador, no a mano**: el borrador estimaba ≈ 25 por celda estado×signo; el recuento exacto da 22–29 (liquidez) y 11–18 (DSR). Regla: reutilizar `sample_counts.py` para F4.

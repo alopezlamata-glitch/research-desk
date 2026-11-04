@@ -34,6 +34,9 @@ liq_narrow_debt,1985Q1,2026Q2,166
 liq_broad_debt,1985Q1,2026Q2,166
 ebp,1985Q1,2026Q3,167
 gz_spread,1985Q1,2026Q3,167
+stbl_short_share,1997Q2,2017Q2,81
+stbl_prime_pct,2003Q2,2017Q2,57
+stbl_interval_days,2003Q2,2017Q2,57
 gdp_real,1985Q1,2026Q3,167
 gdp_deflator,1985Q1,2026Q3,167
 inv_nonres_q,1985Q1,2026Q3,167

@@ -6,6 +6,7 @@ data/clean/DICTIONARY.md. Uso: uv run python papers/p01-liquidity/code/data/buil
 """
 
 import io
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -125,13 +126,48 @@ def ebp() -> pd.DataFrame:
     return pd.DataFrame({"ebp": complete_quarters(e["ebp"], 3), "gz_spread": complete_quarters(e["gz_spread"], 3)})
 
 
+# ---------------------------------------------------------------- E.2 (medida de g)
+E2_NS = "{http://www.federalreserve.gov/structure/compact/common}"
+E2_SERIES = {  # SERIES_NAME (todos los bancos comerciales, todos los riesgos) → columna
+    "BCABLCCEVA_N.Q": "vol_all", "BCABLCCEVZ_N.Q": "vol_zero", "BCABLCCEVO_N.Q": "vol_daily",
+    "BCABLCCEVS_N.Q": "vol_2_30", "BCABLCCEVM_N.Q": "vol_31_365", "BCABLCCEVL_N.Q": "vol_365p",
+    "BCABLCCEQA_N.Q": "stbl_prime_pct", "BCABLCCEIT_N.Q": "stbl_interval_days",
+}
+
+
+def stbl() -> pd.DataFrame:
+    """E.2 STBL (préstamos C&I concedidos en la semana de la encuesta; feb/may/ago/nov → trimestre natural).
+
+    `stbl_short_share` = % del volumen clasificado con intervalo de repreciación ≤ 30 días (cero + diario + 2–30 días).
+    """
+    with zipfile.ZipFile(RAW / "e2_stbl_ddp.zip") as z:
+        root = ET.fromstring(z.read("E2_data.xml"))
+    cols = {}
+    for s in root.iter(E2_NS + "DataSet"):
+        for ser in s:
+            name = ser.get("SERIES_NAME")
+            if name in E2_SERIES and E2_SERIES[name] not in cols:
+                obs = {o.get("TIME_PERIOD"): float(o.get("OBS_VALUE")) for o in ser.iter(E2_NS + "Obs")
+                       if o.get("OBS_STATUS") == "A" and o.get("OBS_VALUE")}
+                cols[E2_SERIES[name]] = pd.Series(obs).rename(lambda d: pd.Period(d, "Q"))
+    assert len(cols) == len(E2_SERIES), set(E2_SERIES.values()) - set(cols)
+    d = pd.DataFrame(cols)
+    parts = d[["vol_zero", "vol_daily", "vol_2_30", "vol_31_365", "vol_365p"]]
+    # los 5 tramos suman 92,8–99,96 % del total publicado (mediana 99,6 %; el resto no está clasificado en la
+    # tabla de origen): la cuota se calcula sobre el volumen clasificado, sin repartir el resto
+    classified = parts.sum(axis=1, min_count=5)
+    assert (classified / d["vol_all"]).between(0.92, 1.0005).all()
+    d["stbl_short_share"] = 100 * d[["vol_zero", "vol_daily", "vol_2_30"]].sum(axis=1, min_count=3) / classified
+    return d[["stbl_short_share", "stbl_prime_pct", "stbl_interval_days"]]
+
+
 # ---------------------------------------------------------------- ensamblaje
 def main() -> None:
     idx = pd.period_range(START, "2026Q4", freq="Q")
     gdp, defl = fred("GDPC1"), fred("GDPDEF")
     y2_mean, y2_last = daily_mean_and_last(fred("DGS2"))
     parts = [
-        bs23(), bs25(), bis_dsr(), z1(), ebp(),
+        bs23(), bs25(), bis_dsr(), z1(), ebp(), stbl(),
         pd.DataFrame({
             "gdp_real": gdp.set_axis(q(gdp.index)), "gdp_deflator": defl.set_axis(q(defl.index)),
             "inv_nonres_q": fred("A008RA3Q086SBEA").pipe(lambda s: s.set_axis(q(s.index))),

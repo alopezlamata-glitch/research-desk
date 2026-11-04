@@ -40,6 +40,18 @@ Correlación en el solape (255 eventos comunes): ME–MPS 0,88, ME–MPS_ORTH 0,
 **Implicación:** `mps_bs23_orth` y `mps_bs25_me` difieren bastante (ρ≈0,66): la elección no es neutra. Para cubrir 2020 con BS-2023 solo vale `mps_bs23_raw`.
 La decisión de vintage es de los autores; el panel contiene ambas con identificadores distintos.
 
+### ¿Hay una serie de BS con discursos del presidente de la Fed? (comprobado 2026-11-04) — **No; `mps_bs23_orth_sp` no se crea**
+Hojas del xlsx BS-2023: `Description`, `FOMC (update 2023)` (361×23), `Monthly (update 2023)` (431×10), `FOMC (original)` (323×23), `Monthly (original)` (566×15).
+Columnas de las hojas FOMC: `Date, Time, Unscheduled, FF1, FF2, ED1–ED4, SP500, SP500 emini, TNOTE02/05/10, TBOND, MPS, MPS_ORTH, NFP_SURP, NFP_12M, SP500_3M, SLOPE_3M, BCOM_3M, TR_SKEW`;
+las mensuales, `Year, Month, MPS, MPS_ORTH` y las 6 noticias (la original añade IP, desempleo, CRB, CPI, EBP y el 2 años).
+- La hoja `Description` lo dice expresamente: la hoja FOMC "contains data only for the FOMC announcements, and **excludes** data for the Fed Chair speeches and other types of
+  monetary policy announcements […]. These other data will be released at some point in the future". Las hojas mensuales son "using FOMC announcements only".
+- Comprobado en los datos: la suma mensual de `MPS` de la hoja FOMC reproduce `Monthly MPS` (error máx. 1,4e-5), es decir, sin discursos. `Monthly MPS_ORTH` **no** es la suma de
+  `MPS_ORTH` por evento (se reortogonaliza al nivel mensual con las noticias del primer evento del mes): otro objeto, también solo FOMC, que no se añade.
+- El zip BS-2025 (`mps.csv`, `mps_minutes.csv`, `y1.csv`) y `USMPD.xlsx` (hojas Statements, Press Conferences, Monetary Events, Minutes) tampoco traen discursos; BS-2025 incluye ruedas de prensa, no discursos.
+- Los discursos del presidente están en Swanson-Jayawickrema (2021, citado en BS-2023 como fuente de 880 discursos 1988–2019) y no están publicados con el xlsx; **no se ha localizado una versión pública**. Alternativa: pedirla a los autores del
+  dataset (michael.bauer@sf.frb.org según la hoja `Description`). Sin ella, la recomendación de §5 del borrador (serie con discursos como principal) no se puede ejecutar y queda `mps_bs23_orth` (solo FOMC, con la F baja que BS señalan).
+
 ## Estado de liquidez y servicio de la deuda
 | Variable | Definición | Unidad | Cobertura | Fuente / transformación |
 |---|---|---|---|---|
@@ -57,8 +69,24 @@ La decisión de vintage es de los autores; el panel contiene ambas con identific
 | `liq_narrow_debt`, `liq_broad_debt` | Liquidez / deuda | ratio | idem | cociente |
 
 **No existe en Z.1**: la parte de la deuda a tipo variable o a corto plazo (Z.1 no desglosa por vencimiento ni tipo de interés). No se ha
-construido un sustituto con otro nombre. Candidatos fuera del lago (no probados): Survey of Terms of Business Lending (E.2, % de préstamos C&I a tipo
-variable), Call Reports/SLOOS, datos de empresa (Compustat, no disponible). Las partidas Z.1 (activos/pasivos) usan valoración de mercado en bonos y acciones; la liquidez de una "sociedad no financiera"
+construido un sustituto con otro nombre.
+
+### Exposición a la repreciación `g` (E.2, Survey of Terms of Business Lending; probada 2026-11-04)
+Fuente: Fed DDP `rel=E2` (zip, publicación 2017-08-02; `datalake/raw/fed_board/e2_stbl_ddp.zip`), todos los bancos comerciales, todos los riesgos.
+**E.2 no publica "% a tipo variable"**: publica el volumen por intervalo de repreciación, la cuota basada en el prime y el intervalo medio ponderado.
+| Variable | Definición | Unidad | Cobertura | Fuente / transformación |
+|---|---|---|---|---|
+| `stbl_short_share` | % del volumen de préstamos C&I **con intervalo de vencimiento/repreciación ≤ 30 días** (cero + diario + 2–30 días) | % | 1997Q2–2017Q2 (81, sin huecos) | tramos `BCABLCCEV{Z,O,S}` / suma de los 5 tramos. Los 5 tramos suman 92,8–99,96 % del total publicado (mediana 99,6 %): se divide por el **volumen clasificado**, sin repartir el resto |
+| `stbl_prime_pct` | % del valor de los préstamos con tipo basado en el **prime** (tipo variable de hecho) | % | 2003Q2–2017Q2 (57) | `BCABLCCEQA_N.Q` |
+| `stbl_interval_days` | Intervalo medio ponderado de vencimiento/repreciación, todos los préstamos | días | 2003Q2–2017Q2 (57) | `BCABLCCEIT_N.Q`; muy ruidosa (47–430) |
+
+**Límites que condicionan su uso como `g`:**
+1. Mide los préstamos **concedidos en la semana de la encuesta** (primera semana completa de feb/may/ago/nov), un flujo de bancos, no el stock de deuda de las empresas
+   ni sus bonos. El trimestre natural es el de la fecha de publicación (feb→T1…). El "intervalo ≤ 30 días" incluye préstamos a tipo fijo a muy corto plazo (que no reprecian *dentro* de la vida del préstamo): es un indicador de repreciación rápida, no de tipo variable.
+2. **Termina en 2017Q2** (la encuesta se discontinuó; E.2 pasó a no publicarse) y empieza en 1997Q2. Con la muestra principal de `SAMPLE_COUNTS.md` solo se solapan **53 de 102** trimestres (45 de 58 con DSR); los años ZLB 2009–2015 quedan fuera por construcción.
+3. Es una serie agregada de series temporales: varía en el tiempo, no entre empresas. Sirve como estado/interacción en E3/E4 con esa cobertura, no como medida de la exposición neta de las empresas que invierten (supuesto A-g).
+4. Correlación con `ffr` en 1997Q2–2017Q2: `stbl_short_share` 0,06, `stbl_prime_pct` 0,42 (la cuota prime cae con el tipo oficial bajo).
+Otros candidatos descartados sin descargar: Call Reports (vencimiento residual, trimestral desde 1997 pero requiere construcción con micro-datos), Compustat (no disponible). Las partidas Z.1 (activos/pasivos) usan valoración de mercado en bonos y acciones; la liquidez de una "sociedad no financiera"
 agregada incluye a las grandes empresas, que concentran los saldos.
 
 ## Controles y resultados

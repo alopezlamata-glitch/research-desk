@@ -62,6 +62,10 @@ def main():
                        "interest_expense": "v2/accounting/od/interest_expense"}.items():
         run(lambda n=name, p=path: fiscaldata(n, p), f"Tesoro {name}")
     run(fdic, "FDIC summary")
+    run(lambda: download("fed_board", "e2_stbl_ddp.zip",
+                         "https://www.federalreserve.gov/datadownload/Output.aspx?rel=E2&filetype=zip",
+                         "E.2 STBL, serie completa 1997Q2-2017Q2 (publicación 2017-08-02)"),
+        "Fed E.2 Survey of Terms of Business Lending")
 
 
 if __name__ == "__main__":

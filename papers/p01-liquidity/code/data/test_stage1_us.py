@@ -94,3 +94,29 @@ def test_inv_nfc_real_is_derived_not_filled(df):
     ok = df["inv_nfc_nominal"].notna() & df["gdp_deflator"].notna()
     assert np.allclose(df.loc[ok, "inv_nfc_real"], df.loc[ok, "inv_nfc_nominal"] / df.loc[ok, "gdp_deflator"] * 100)
     assert df.loc[~ok, "inv_nfc_real"].isna().all()
+
+
+def test_stbl_coverage_and_units(df):
+    """E.2 STBL: 1997Q2–2017Q2 sin huecos (cuota), prime/intervalo desde 2003Q2; cuotas en % y plazos en días."""
+    assert span(df["stbl_short_share"]) == ("1997Q2", "2017Q2")
+    assert span(df["stbl_prime_pct"]) == ("2003Q2", "2017Q2") and span(df["stbl_interval_days"]) == ("2003Q2", "2017Q2")
+    for c in ["stbl_short_share", "stbl_prime_pct", "stbl_interval_days"]:
+        s = df[c].loc[df[c].first_valid_index():df[c].last_valid_index()]
+        assert s.notna().all(), c
+    assert df["stbl_short_share"].dropna().between(40, 100).all()
+    assert df["stbl_prime_pct"].dropna().between(0, 100).all()
+    assert df["stbl_interval_days"].dropna().between(10, 500).all()  # máx. observado 430 (2014Q2): encuesta ruidosa
+
+
+def test_sample_counts_are_consistent(df):
+    """SAMPLE_COUNTS.md se genera con sample_counts.py; aquí se recomputa la muestra principal de PREREG_DRAFT §6."""
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).parent))
+    import sample_counts as sc
+
+    d, steps = sc.sample(sc.panel())
+    assert steps[0][1] == 143 and len(d) == 102
+    assert not (d["ffr"] < sc.ZLB).any() and not d.index.isin(pd.period_range("2019Q1", "2021Q4", freq="Q")).any()
+    t = sc.cells(d, d["s_lag"], d["s_lag"] < d["s_lag"].median())
+    assert t.loc["total", "total"] == len(d) and "ε=0" not in t.columns  # sin choques exactamente nulos
