@@ -1,0 +1,15 @@
+# Research Desk — TASKS
+
+- [x] **T1** · Esqueleto: CLAUDE.md, 6 agentes, `kb/`, plantilla de paper, `/new-paper`, `.gitignore`, `git init`.
+- [x] **T2** · Hook protect-raw + test manual (bloquea rutas `data/raw/` en formato Windows y POSIX; probado en vivo).
+- [x] **T3** · uv 0.13.7 (winget) + CPython 3.12.16 + `uv sync`. `uv run pytest`: 4/4 en verde; ruff limpio.
+- [x] **T4** · Pixel Agents v1.5 (`office` en `.claude/launch.json`):
+  - Modo hooks activo, con backup en `~/.claude/settings.json.pixel-agents.backup`.
+  - Oficina en planta abierta generada por `.claude/office/build_office.mjs`: 7 zonas, 35 PCs y nombres en gris.
+  - «Watch All Sessions» activado: las sesiones de otros proyectos también aparecen en la oficina.
+- [x] **T4b** · Desks como sesiones independientes en `desks/<desk>/` (CLAUDE.md que importa el rol + settings con hook y acceso al repo). Probado: la sesión de Datos carga su rol y el hook bloquea la escritura en `data/raw/`.
+- [ ] **T4c** · Confirmar visualmente que cada desk lanzada se sienta en su zona (la configuración de mappings está hecha; falta verlo con un panel más grande).
+- [~] **T8** · Dirección (scientific-director) · Investigar en foros, documentación y papers cómo mejorar cada departamento (skills, conocimiento, estructura, evals) y cómo aprender de la experiencia sin alucinaciones ni AI slop. Encargo: `desks/direccion-cientifica/ENCARGO_2026-11-04_mejora-desks.md`. Hecho: `specs/research-desk/IMPROVEMENT_PROPOSAL.md`, pendiente de aprobación de los autores (no implanta nada).
+- [ ] **T5** · R: comprobar/instalar `fixest` en R 4.5.1. Hecho: `Rscript -e "library(fixest)"` funciona.
+- [ ] **T6** · Primer commit + repo privado en GitHub (opcional). **Requiere OK del usuario.**
+- [ ] **T7** · Rutina programada semanal: recordatorio de curación de `kb/lessons/` (opcional).

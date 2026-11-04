@@ -1,0 +1,44 @@
+# Datos brutos: se regeneran con code/data/download_*.py (MANIFEST.csv sí se versiona)
+papers/*/data/raw/*
+!papers/*/data/raw/MANIFEST.csv
+!papers/*/data/raw/.gitkeep
+papers/*/data/clean/*.parquet
+
+# datalake: raw se regenera con datalake/fetch/update_all.py (MANIFEST.csv sí se versiona)
+datalake/raw/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# Local
+.claude/settings.local.json
+.env
+
+# Material previo de los autores: contiene claves de API escritas en el código y archivos pesados.
+# Solo se versionan los inventarios y diagnósticos (*.md) de prior/.
+papers/*/prior/archive/
+
+# Biblioteca de papers (derechos de autor): solo se versiona el índice
+kb/library/*
+!kb/library/INDEX.md
+
+# Datalake: los datos se regeneran con datalake/fetch/*.py; se versionan scripts, catálogo y manifiesto
+datalake/raw/
+
+# Registros de ejecución de las desks (pueden ser grandes y no son resultado)
+desks/*/run_*.log
+desks/*/run_*.err

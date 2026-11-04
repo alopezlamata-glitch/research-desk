@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "office",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "pixel-agents", "--port", "3100"],
+      "port": 3100
+    }
+  ]
+}

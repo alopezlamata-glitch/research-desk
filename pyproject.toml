@@ -1,0 +1,28 @@
+[project]
+name = "research-desk"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "scipy",
+    "statsmodels",
+    "linearmodels",
+    "sympy",
+    "matplotlib",
+    "requests",
+    "openpyxl",
+    "pymupdf4llm>=2.1",
+]
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+
+[tool.pytest.ini_options]
+testpaths = ["papers", "kb", "tools"]
+pythonpath = ["tools"]
+python_files = ["test_*.py", "check_*.py"]
+
+[tool.ruff]
+line-length = 100
