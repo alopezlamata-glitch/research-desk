@@ -41,3 +41,15 @@ alcance: Dirección, redacción de hipótesis para SPEC.md
 regla: Cada predicción de la SPEC lleva la ecuación del modelo de la que sale; si requiere un ingrediente que el modelo no tiene (un umbral, un canal), se añade al modelo o se marca como exploratoria.
 
 - Además, en el diseño de panel con efectos fijos de tiempo, el choque común se absorbe: contar clústeres y colinealidad entre exposición y restricción por país antes de prometer una interacción triple.
+
+## 2026-11-04 · p01 F3 · Separar el signo del nivel del signo de la diferencia entre estados
+Estado: candidata
+estado: candidata
+evidencia: papers/p01-liquidity/exploration/PREREG_DRAFT.md §2 y §4 (con F1, `I_u ≥ ω_min p_f/a > 0` fija el signo en cada estado, pero β_C − β_U tiene el signo de `a g − p_f`, libre)
+alcance: Dirección, redacción de hipótesis en LP dependientes del estado
+caduca: 2027-05-04
+regla: En una LP con estados, escribir por separado (i) el signo de la respuesta dentro de cada estado y (ii) el signo de la diferencia entre estados, cada uno con su ecuación; solo lo que tenga signo fijo en la teoría verificada es confirmatorio, y declarar los supuestos de signo (p. ej. g ≥ 0) de los que depende.
+
+- Una predicción con signo fijo puede ser poco exigente (H1 casi cualquier modelo la cumple): decirlo a los autores en vez de venderla como prueba del mecanismo.
+- Antes de definir un estado, mirar su figura: la liquidez de Z.1 tiene una tendencia secular fuerte; una mediana en niveles habría confundido el estado con la época (y con el ZLB).
+- Comprobar la página contra el marcador `<!-- p. N -->` de cada cita al final: en este borrador corregí 4 páginas desplazadas por saltos de página dentro de un párrafo.

@@ -40,7 +40,7 @@ TOOLS = {
     "econometria": BASE_TOOLS + PY + ["Bash(Rscript:*)"],
     "redaccion": BASE_TOOLS + PY + ["Bash(latexmk:*)"],
     "referee": BASE_TOOLS + PY + ["Bash(Rscript:*)"],
-    "direccion-cientifica": BASE_TOOLS + WEB,
+    "direccion-cientifica": BASE_TOOLS + WEB + PY,  # Python solo para comprobar cuentas; no implementa
 }
 
 # Modelo por defecto de cada desk según el tipo de trabajo. Un encargo lo cambia con una línea `Modelo: <alias>`
