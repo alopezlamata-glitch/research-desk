@@ -11,11 +11,11 @@
 - [ ] **T4c** · Confirmar visualmente que cada desk lanzada se sienta en su zona (la configuración de mappings está hecha; falta verlo con un panel más grande).
 - [~] **T8** · Dirección (scientific-director) · Investigar en foros, documentación y papers cómo mejorar cada departamento (skills, conocimiento, estructura, evals) y cómo aprender de la experiencia sin alucinaciones ni AI slop. Encargo: `desks/direccion-cientifica/ENCARGO_2026-11-04_mejora-desks.md`. Hecho: `specs/research-desk/IMPROVEMENT_PROPOSAL.md`, pendiente de aprobación de los autores (no implanta nada).
 - [x] **T5** · R: fixest instalado (ver G5).
-- [ ] **T6** · Primer commit + repo privado en GitHub (opcional). **Requiere OK del usuario.**
+- [x] **T6** · Primer commit + repo privado en GitHub (ver G6).
 - [ ] **T7** · Rutina programada semanal: recordatorio de curación de `kb/lessons/` (opcional).
 - [x] **G1** · Guardarraíles: `tools/integrity.py` (8 comprobaciones), hook `guard.js`, pre-commit, `tools/research.py`. Spec: `specs/guardrails/SPEC.md`.
 - [x] **G2** · `tools/desk.py`: lanzador con bloqueo (una sesión por desk), máximo 2 a la vez, memoria libre, registro de ejecuciones; comando `setup` para activar el pre-commit en clones nuevos.
 - [x] **G3** · Skills `verify-citation`, `sympy-check` (+ `tools/symcheck.py`), `mc-validate` (+ `tools/mc.py`), `referee-report`; enlazarlas desde los CLAUDE.md de cada desk.
 - [x] **G4** · Actualizar CLAUDE.md y los prompts de las desks con los guardarraíles.
 - [x] **G5** · R 4.5 con fixest, arrow, sandwich y lmtest (librería de usuario) y TinyTeX con latexmk: un .tex de prueba compila. TinyTeX vive en la ruta virtualizada de la app de Claude (LocalCache), que está en el PATH del usuario.
-- [ ] **G6** · GitHub: `gh auth login` (lo hace el usuario) y crear el repositorio privado + push.
+- [x] **G6** · Repositorio privado https://github.com/alopezlamata-glitch/research-desk (rama master). Historial revisado antes de subir: sin claves.
