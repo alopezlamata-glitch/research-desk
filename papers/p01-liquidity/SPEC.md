@@ -1,7 +1,7 @@
 # p01-liquidity — SPEC
 
-Estado: **Diseño F elegido por los autores (2026-11-04).** Falta el prerregistro, que se escribirá cuando
-Teoría entregue las verificaciones. Hasta entonces, la pregunta y la identificación de F están en `exploration/DEVILS_ADVOCATE_2026-11-04.md` §5.
+Estado: **Diseño F; prerregistro de la etapa 1 aprobado por los autores (2026-11-04).** Siguiente paso: F4
+(Monte Carlo de la especificación exacta) **antes** de estimar con la inversión.
 
 ## Intuición de partida (de los autores)
 Hay una serie de factores que afectan a la liquidez, con **regímenes no lineales**: el mismo impulso
@@ -44,6 +44,85 @@ La toman **los autores**, a partir del informe de la Fase 0 (`exploration/REPORT
 SPEC se reescribe con la pregunta, las hipótesis prerregistradas y la identificación del diseño
 elegido. La plantilla está en `papers/_template/SPEC.md`.
 
+## Prerregistro de la etapa 1: EE. UU. (aprobado por los autores el 2026-11-04)
+
+La justificación completa, con páginas, está en `exploration/PREREG_DRAFT.md` (Director científico, F3). Aquí queda lo que obliga.
+Las cuatro decisiones de los autores sobre el borrador están en Desviaciones (2026-11-04).
+
+**Pregunta.** ¿Sigue transmitiéndose un choque monetario a la inversión no residencial de EE. UU. cuando la liquidez de las empresas no
+financieras está por debajo de su tendencia, en subidas y en bajadas, como predice el margen interior de reservas (ω ≥ ω_min > 0)?
+
+**Especificación (`s1_liq`).** LP de un estado con subidas y bajadas separadas, sobre ȳ_t = (1/5) Σ_{h=0..4} 100·[log I_{t+h} − log I_{t−1}]:
+- `I` = `inv_nonres_q`; choque ε = `mps_bs23_orth`, con ε⁺ = max(ε,0) y ε⁻ = min(ε,0).
+- `D_{t−1}` = 1 si `s_{t−1}` < mediana muestral, con s = log(`liq_broad_debt`) menos su media móvil de 12 trimestres hacia atrás.
+- Regresores: D, D·ε⁺, (1−D)·ε⁺, D·ε⁻ y (1−D)·ε⁻, más 2 retardos sin interactuar de Δlog inversión, Δlog PIB real, Δlog deflactor,
+  Δ`y2_mean` y `ebp`.
+- Errores estándar Newey-West (Bartlett, 5 retardos), salvo que F4 valide otro método (en ese caso, Desviación **antes** de estimar).
+- Forma reducida (no LP-IV).
+- La IRF h = 0..12 se presenta, pero no decide.
+
+**Muestra.** t ∈ 1988Q2–2023Q4, sin ZLB (`ffr` < 0,25) ni 2019Q1–2021Q4. Da N = 102, con celdas de 22, 29, 28 y 23
+(`data/clean/SAMPLE_COUNTS.md`). Datos en última revisión, congelados por el hash del MANIFEST; refrescarlos es una Desviación.
+
+**Hipótesis** (β < 0: la inversión cae tras una subida y sube tras una bajada):
+- **H0** (`s1_lin`): β_lin < 0. Si no se confirma, H1 no se interpreta y se escala al Director.
+- **H1⁺ / H1⁻** (`s1_liq`): β⁺_C < 0 y β⁻_C < 0 en el estado restringido. Sale de I_u = ω p_f/a + (1−ω) g con ω ≥ ω_min > 0 y g ≥ 0
+  (`theory/check_nesting.py`, `check_aggregation.py`).
+  - **Supuesto declarado A-g:** la exposición neta a la repreciación es g ≥ 0. Una refutación refuta "el nido con g ≥ 0".
+
+**Reglas de decisión** (sobre ȳ; α = 0,05 unilateral; Holm sobre {H1⁺, H1⁻}):
+- **Confirma H1^d:** β^d_C < 0 con p de Holm < 0,05.
+- **Refuta H1^d:** se cumple una de estas dos condiciones:
+  - (a) β^d_C > 0 con p < 0,05;
+  - (b) el IC al 90 % de β^d_C queda entero en (−0,146·|β̂^d_U|, +∞).
+    Aquí 0,146 = ω_min con la calibración de TFG2 (`check_nesting.py::test_minimum_transmission_with_g0_at_tfg2_calibration`).
+- **No concluyente:** en cualquier otro caso. Si la potencia de F4 frente a la alternativa de referencia es < 0,8, un β_C no
+  significativo es "no concluyente por potencia", nunca refutación.
+- **Diagnósticos que se publican siempre:**
+  - D1: observaciones por celda;
+  - D2: suma de |ε| por celda;
+  - D3: test de balance ε ~ D_{t−1} + s_{t−1};
+  - D4: estabilidad de la mediana sin 1988–93.
+
+**Exploratorio** (lista cerrada en `PREREG_DRAFT.md` §4):
+- E1, la diferencia entre estados (si la falta de liquidez amplifica o atenúa), que se presenta como medición;
+- la asimetría;
+- la interacción exposición × restricción;
+- la interacción triple;
+- la coordinación;
+- la STAR;
+- otras variables de resultado;
+- h > 4;
+- 2024–26;
+- la etapa 2.
+
+Ids prerregistrados (los lee `tools/research.py`; cualquier otra especificación solo puede registrarse como exploratoria):
+```prereg
+# --- confirmatorias (deciden) ---
+s1_lin
+s1_liq
+# --- robustez prerregistrada (no deciden) ---
+r_dsr
+r_bs25me
+r_bs23orth_1994
+r_bs23raw
+r_zlb_in
+r_covid_in
+r_liq_narrow_assets
+r_state_q25
+r_state_logistic
+r_ctrl_interact
+r_lags4
+r_balance_ctrl
+r_inv_nfc
+```
+
+**Replicación cruzada:** `s1_lin` y `s1_liq` en R (`code/replication_r/`, `fixest`), con paridad `estimates_py.csv` = `estimates_r.csv`.
+
+**Requisito previo a estimar:**
+- Teoría añade los tests de `L_u > 0` con g ≥ 0 y de `∂I_u/∂g = 1−ω`;
+- F4 valida con `mc-validate` esta especificación con N = 102 y da la potencia.
+
 ## Desviaciones
 - 2026-11-04 · El borrador inicial (candidato B) se retira como SPEC y pasa a `exploration/candidates/`
   por decisión de los autores: primero se revisa todo el material.
@@ -61,3 +140,10 @@ elegido. La plantilla está en `papers/_template/SPEC.md`.
     `FIRST_PRINCIPLES.md` quedan fuera hasta que se deriven.
   - **Motivo:** el planteamiento anterior tenía identificación 2 y afirmaciones refutadas (cota del 3 %, novedad
     de TFG1 ⊂ TFG2, diferencias con IOPO y Perez-Orive).
+- 2026-11-04 · **Los autores aprueban el prerregistro de la etapa 1** sobre el borrador `exploration/PREREG_DRAFT.md`, con cuatro decisiones:
+  1. **Choque principal `mps_bs23_orth`**, con `mps_bs25_me` como robustez desde 1994. La serie con discursos no está publicada (Datos lo comprobó).
+  2. **E1** (amplifica o atenúa) **queda exploratoria**: la teoría no fija su signo, y la medida de exposición disponible (E.2 STBL,
+     préstamos nuevos 1997–2017) cubre solo 53 de las 102 observaciones.
+  3. **Umbral de refutación: 0,146 = ω_min de TFG2**, no un 10 % fijo.
+  4. **El estado DSR pasa de secundario confirmatorio a robustez (`r_dsr`)**, porque sus celdas tienen 11–18 observaciones. Por eso
+     desaparece `s1_dsr` del borrador.
