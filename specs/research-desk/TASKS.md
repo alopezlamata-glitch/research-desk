@@ -10,12 +10,12 @@
 - [x] **T4b** · Desks como sesiones independientes en `desks/<desk>/` (CLAUDE.md que importa el rol + settings con hook y acceso al repo). Probado: la sesión de Datos carga su rol y el hook bloquea la escritura en `data/raw/`.
 - [ ] **T4c** · Confirmar visualmente que cada desk lanzada se sienta en su zona (la configuración de mappings está hecha; falta verlo con un panel más grande).
 - [~] **T8** · Dirección (scientific-director) · Investigar en foros, documentación y papers cómo mejorar cada departamento (skills, conocimiento, estructura, evals) y cómo aprender de la experiencia sin alucinaciones ni AI slop. Encargo: `desks/direccion-cientifica/ENCARGO_2026-11-04_mejora-desks.md`. Hecho: `specs/research-desk/IMPROVEMENT_PROPOSAL.md`, pendiente de aprobación de los autores (no implanta nada).
-- [ ] **T5** · R: comprobar/instalar `fixest` en R 4.5.1. Hecho: `Rscript -e "library(fixest)"` funciona.
+- [x] **T5** · R: fixest instalado (ver G5).
 - [ ] **T6** · Primer commit + repo privado en GitHub (opcional). **Requiere OK del usuario.**
 - [ ] **T7** · Rutina programada semanal: recordatorio de curación de `kb/lessons/` (opcional).
 - [x] **G1** · Guardarraíles: `tools/integrity.py` (8 comprobaciones), hook `guard.js`, pre-commit, `tools/research.py`. Spec: `specs/guardrails/SPEC.md`.
-- [ ] **G2** · `tools/desk.py`: lanzador con bloqueo (una sesión por desk), máximo 2 a la vez, memoria libre, registro de ejecuciones; comando `setup` para activar el pre-commit en clones nuevos.
-- [ ] **G3** · Skills `verify-citation`, `sympy-check` (+ `tools/symcheck.py`), `mc-validate` (+ `tools/mc.py`), `referee-report`; enlazarlas desde los CLAUDE.md de cada desk.
-- [ ] **G4** · Actualizar CLAUDE.md y los prompts de las desks con los guardarraíles.
-- [ ] **G5** · Comprobar que terminó la instalación de R (fixest, arrow) y TinyTeX; compilar un .tex de prueba.
+- [x] **G2** · `tools/desk.py`: lanzador con bloqueo (una sesión por desk), máximo 2 a la vez, memoria libre, registro de ejecuciones; comando `setup` para activar el pre-commit en clones nuevos.
+- [x] **G3** · Skills `verify-citation`, `sympy-check` (+ `tools/symcheck.py`), `mc-validate` (+ `tools/mc.py`), `referee-report`; enlazarlas desde los CLAUDE.md de cada desk.
+- [x] **G4** · Actualizar CLAUDE.md y los prompts de las desks con los guardarraíles.
+- [x] **G5** · R 4.5 con fixest, arrow, sandwich y lmtest (librería de usuario) y TinyTeX con latexmk: un .tex de prueba compila. TinyTeX vive en la ruta virtualizada de la app de Claude (LocalCache), que está en el PATH del usuario.
 - [ ] **G6** · GitHub: `gh auth login` (lo hace el usuario) y crear el repositorio privado + push.

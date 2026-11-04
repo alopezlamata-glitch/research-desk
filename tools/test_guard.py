@@ -41,6 +41,20 @@ def test_holdout_reads_blocked_until_opened(tmp_path):
     assert hook("Bash", tmp_path, command="head papers/p01/data/holdout/h.csv") == 0
 
 
+@pytest.mark.parametrize("cmd", ['cp "papers/p01/data/holdout/h.csv" /tmp/x',
+                                 "uv run python -c \"open('papers/p01/data/holdout/h.csv')\"",
+                                 "ls && grep -r beta papers/p01/data/holdout/"])
+def test_holdout_read_commands_blocked(tmp_path, cmd):
+    assert hook("Bash", tmp_path, command=cmd) == 2
+
+
+@pytest.mark.parametrize("cmd", ["printf 'papers/*/data/holdout/\\n' >> .gitignore",
+                                 "git add .gitignore && git commit -m 'ignorar data/holdout/'",
+                                 "uv run python tools/research.py papers/p01/data/holdout"])
+def test_mentioning_holdout_as_text_is_allowed(tmp_path, cmd):
+    assert hook("Bash", tmp_path, command=cmd) == 0
+
+
 def test_raw_reads_are_allowed(tmp_path):
     assert hook("Read", tmp_path, file_path="datalake/raw/fred/meta.json") == 0
 

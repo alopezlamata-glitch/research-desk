@@ -45,3 +45,6 @@ desks/*/run_*.err
 
 # Bloqueo de sesión de cada desk (estado de ejecución, lo gestiona tools/desk.py)
 desks/*/.lock
+
+# Muestra reservada: no se versiona (se regenera) y no se lee hasta research.open_holdout()
+papers/*/data/holdout/

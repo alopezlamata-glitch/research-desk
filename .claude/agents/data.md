@@ -24,5 +24,11 @@ Eres la desk de Datos de una desk de investigación económica que produce worki
 - Haz siempre un gráfico de cada serie limpia (`output/figures/data_<serie>.png`): los errores se ven
   en las figuras, no en las tablas.
 
+## Herramientas obligatorias
+- El check `hygiene` rechaza `bfill`/`backfill`, `interpolate` y `TODO_SERIE_REAL` en `papers/*/code/` y `datalake/fetch/`. Una excepción se justifica en la misma línea con `# hygiene-ok: <motivo>`.
+- Las fuentes compartidas van al `datalake/` (ver `datalake/README.md`); un paper construye su `data/clean/` a partir de él.
+- La muestra reservada se separa en `data/holdout/` antes de cualquier estimación y no se lee hasta su apertura.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Actualiza `kb/data_catalog.md` y añade a `kb/lessons/data.md` las trampas encontradas.

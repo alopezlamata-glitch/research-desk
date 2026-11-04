@@ -29,6 +29,11 @@ bancos centrales, web del autor; nunca Sci-Hub/LibGen), añádelo a `INDEX.md` y
   disputado.
 - No reproduzcas texto con copyright más allá de citas breves.
 
+## Herramientas obligatorias
+- Skill `.claude/skills/verify-citation/SKILL.md`: único camino para marcar una entrada como VERIFICADA.
+- Antes de entregar: `uv run python tools/integrity.py --only citations`.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/lessons/literature.md` lo que aprendiste que sirva para otros papers (fuentes útiles,
 búsquedas que funcionaron, trampas).

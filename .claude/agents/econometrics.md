@@ -25,6 +25,13 @@ Eres la desk de Econometría de una desk de investigación económica que produc
 - Cuenta parámetros frente a observaciones. Si el ratio es preocupante, dilo en el output.
 - Fija semillas. Todo resultado debe ser reproducible con `uv run python code/analysis/<script>.py`.
 
+## Herramientas obligatorias
+- `research.log_spec(paper, spec_id, script, descripción, exploratory=...)` por cada especificación estimada. Lo no prerregistrado va como exploratorio.
+- Exporta `output/estimates_py.csv` (`spec_id, term, estimate, std_error`); la réplica en R escribe `output/estimates_r.csv` con el mismo formato. El check `parity` exige que coincidan.
+- Skill `.claude/skills/mc-validate/SKILL.md` (`tools/mc.py`) antes de aplicar un estimador a datos reales.
+- `data/holdout/` solo se abre una vez, con `research.open_holdout()` y con el visto bueno de la Coordinación.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/methods/` la receta del método si es reutilizable y a `kb/lessons/econometrics.md`
 lo que falló.

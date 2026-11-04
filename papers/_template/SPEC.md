@@ -15,6 +15,12 @@ Escritas **antes** de ver resultados. Cada una con su especificación exacta y s
 |---|---|---|---|
 | H1 | | | |
 
+Ids prerregistrados (los lee `tools/research.py` y los comprueba `tools/integrity.py`; cualquier otra
+especificación solo puede registrarse como exploratoria):
+```prereg
+# H1
+```
+
 ## Identificación
 Qué variación identifica cada parámetro y por qué es exógena. Amenazas principales.
 

@@ -38,9 +38,12 @@ function checkBash(cmd, cwd) {
       block('core.hooksPath solo puede valer .githooks: el pre-commit es obligatorio.');
     }
   }
-  if (/data\/holdout/.test(c) && !/tools\/research\.py/.test(c)) {
-    for (const m of c.matchAll(/(\S*?)data\/holdout\S*/g)) {
-      if (!holdoutOpened(m[0], cwd)) block('la muestra reservada (data/holdout/) no se ha abierto. Usa research.open_holdout().');
+  // Solo cuenta si la ruta va a un comando que lee o copia archivos (no si solo se escribe como texto).
+  const READER = /^(sudo\s+)?(cat|head|tail|less|more|type|gc|get-content|grep|rg|egrep|sed|awk|cut|sort|cp|copy|copy-item|xcopy|robocopy|mv|xxd|od|strings|python3?|py|uv|node|Rscript|duckdb|sqlite3)\b/i;
+  for (const part of commandLines.split(/&&|\|\||;|\||\n/).map((s) => s.trim())) {
+    if (!READER.test(part) || /tools\/research\.py/.test(part)) continue;
+    for (const m of part.matchAll(/["']?(\S*?data\/holdout\S*?)["']?(\s|$)/g)) {
+      if (!holdoutOpened(m[1], cwd)) block('la muestra reservada (data/holdout/) no se ha abierto. Usa research.open_holdout().');
     }
   }
 }

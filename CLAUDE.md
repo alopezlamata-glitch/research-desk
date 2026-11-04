@@ -34,7 +34,7 @@ los papers; lo específico de cada paper vive en `papers/<slug>/SPEC.md`.
     **+ Agent** en la oficina o con `claude` en esa carpeta, y el personaje se sienta en su sala.
   - **Subagente** (`.claude/agents/<desk>.md`): solo para consultas cortas. Aparece al lado de la
     Dirección, no en la sala de la desk.
-- Las sesiones largas de las desks se lanzan como **proceso independiente** (no ligado a la sesión de la
+- Las sesiones largas de las desks se lanzan con `tools/desk.py launch` como **proceso independiente** (no ligado a la sesión de la
   Coordinación) con un encargo escrito en `desks/<desk>/ENCARGO_<fecha>.md` y su salida en
   `desks/<desk>/run_<fecha>.log`. Si la Coordinación se cierra, la desk sigue trabajando.
 - Revisa lo entregado contra el criterio de "hecho" de la tarea y ordena la auditoría del Referee.
@@ -73,9 +73,31 @@ los papers; lo específico de cada paper vive en `papers/<slug>/SPEC.md`.
 - **Las citas tienen que ser verificables.** No se cita nada que la desk de Literatura no haya
   comprobado que existe (DOI, NBER, SSRN o la web del autor).
 
+## Guardarraíles (automáticos; diseño en `specs/guardrails/SPEC.md`)
+
+Las reglas comprobables no dependen de la memoria de nadie:
+- **`tools/integrity.py`** comprueba claves, higiene de datos, citas, cifras tecleadas, paridad Python–R,
+  registro de especificaciones, informes del Referee y lecciones. Lo ejecutan el **pre-commit** (nada que
+  incumpla entra en git) y `uv run pytest`.
+- **Hook `guard.js`:** datos brutos y `data/holdout/` son de solo lectura; `data/holdout/` no se lee hasta
+  abrirla con `research.open_holdout()`; no se usa `--no-verify` ni se cambia `core.hooksPath`.
+- **En los scripts de análisis:** cada especificación estimada se registra con `research.log_spec()`. Lo
+  que no está en el bloque ```prereg``` del SPEC solo puede registrarse como exploratorio. Las estimaciones
+  se exportan a `output/estimates_py.csv` y `output/estimates_r.csv` con las columnas
+  `spec_id, term, estimate, std_error`.
+- **En el `.tex`:** los resultados se escriben como macros generadas en `output/` (`\input{../output/macros.tex}`);
+  una cifra no generada se marca `% num-ok` con su motivo.
+- **Desks:** se lanzan con `uv run python tools/desk.py launch <desk> <ENCARGO.md>`, que impide dos sesiones
+  de la misma desk, más de 2 desks a la vez y lanzar con poca memoria. `tools/desk.py status` muestra qué
+  hay activo. En un clon nuevo, lo primero es `uv run python tools/desk.py setup`, que activa el pre-commit.
+- **Skills** (en `.claude/skills/`): `verify-citation`, `sympy-check`, `mc-validate`, `referee-report`,
+  `standup`, `new-paper`. Las desks las leen en `../../.claude/skills/<nombre>/SKILL.md`.
+- **Lecciones:** cada una lleva `Estado: candidata|validada|retirada`. Solo los autores las pasan a
+  `validada` (con `Validada por:`), y solo las validadas pueden promoverse al prompt de una desk.
+
 ## Datos
 
-- `data/raw/` es **solo lectura**: un hook bloquea Edit/Write. Los datos brutos solo entran
+- `data/raw/` y `datalake/raw/` son **solo lectura**: el hook `guard.js` bloquea Edit/Write. Los datos brutos solo entran
   mediante scripts `code/data/download_*.py` que registran la fuente, la fecha de descarga y el
   hash en `data/raw/MANIFEST.csv`.
 - `data/raw/` no se sube a git (se regenera con los scripts). `MANIFEST.csv` sí se versiona.
@@ -105,7 +127,7 @@ Distribución:
 
 Cada zona es un Area asociada a su carpeta (`.` para la Dirección, `desks/<desk>/` para el resto).
 - **Lanzar una desk:** `cd desks/<desk>` y `claude`, o **+ Agent** en la oficina. Su personaje se sienta en su zona.
-- **Configuración de cada desk:** `desks/<desk>/.claude/settings.json` hereda el hook de `data/raw` y da acceso
+- **Configuración de cada desk:** `desks/<desk>/.claude/settings.json` hereda el hook `guard.js` y da acceso
   al repo (`additionalDirectories: ../..`).
 - **Regenerar la oficina y esa configuración:** `node .claude/office/build_office.mjs`, **con el servidor parado**.
 - **Vista previa en imagen:** `uv run python .claude/office/preview_office.py <assets> <salida.png>`.

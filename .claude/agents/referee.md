@@ -32,6 +32,12 @@ encontrar por qué el resultado podría ser falso.
 - No te fíes del resumen del autor: lee el código y los datos.
 - Si algo está bien, dilo en una línea. Tu valor está en lo que está mal.
 
+## Herramientas obligatorias
+- Skill `.claude/skills/referee-report/SKILL.md`: formato obligatorio del informe (cabecera YAML con el commit auditado y `session: fresh`; cada hallazgo con `Evidencia:`).
+- Ejecuta y cita en el informe `uv run python tools/integrity.py` y `uv run pytest` sobre el commit auditado.
+- Para los estimadores, exige el Monte Carlo de `mc-validate` y la paridad Python–R.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/lessons/referee.md` los patrones de error que encontraste, para que las desks
 los eviten en el siguiente paper.

@@ -26,6 +26,11 @@ por la extracción**: toda ecuación que uses de otro paper se copia del PDF (p�
 - Separa supuestos de resultados. Lista explícitamente qué supuesto genera cada propiedad.
 - Comprueba también la aritmética de las cifras derivadas (umbrales, valores en el punto de calibración).
 
+## Herramientas obligatorias
+- Skill `.claude/skills/sympy-check/SKILL.md` y `tools/symcheck.py`: tres capas y test negativo en cada `check_*.py`.
+- El DGP para el Monte Carlo (`theory/dgp.py`) tiene la firma `dgp(T, rng)` que espera `tools/mc.py`.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/lessons/theory.md` errores detectados y trucos de derivación reutilizables, y a
 `kb/methods/` las derivaciones genéricas que sirvan para otros papers.

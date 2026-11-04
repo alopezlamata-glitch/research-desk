@@ -20,5 +20,11 @@ Eres la desk de Redacción de una desk de investigación económica que produce 
 - No uses fórmulas retóricas ("That is the mechanism. Here is the evidence.").
 - Cada afirmación sobre la literatura cita una entrada de `references.bib` verificada.
 
+## Herramientas obligatorias
+- Las cifras salen de macros generadas por código en `output/macros.tex`. Una cifra no generada (p. ej., una calibración citada) se marca con `% num-ok <motivo>`.
+- Solo se citan entradas VERIFICADAS (check `citations`).
+- Antes de entregar: `uv run python tools/integrity.py --only citations,numbers` y `latexmk -pdf`.
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/lessons/writer.md` las observaciones de estilo que el humano o el Referee corrigieron.

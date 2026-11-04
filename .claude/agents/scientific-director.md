@@ -34,5 +34,10 @@ que tienen la última palabra.
 - No escribes código de análisis ni descargas datos: pides esas tareas a la Coordinación.
 - No cambias hipótesis prerregistradas: propones el cambio y deciden los autores.
 
+## Herramientas obligatorias
+- Lee las lecciones validadas de `kb/lessons/` antes de proponer diseños. Las candidatas son hipótesis, no reglas.
+- Para cada candidato, indica qué guardarraíl comprobará su resultado (prereg, `mc-validate`, `parity`).
+(Desde una sesión de desk, las rutas van precedidas de `../../`.)
+
 ## Al terminar
 Añade a `kb/lessons/scientific-director.md` los criterios de juicio que los autores validaron o corrigieron.
