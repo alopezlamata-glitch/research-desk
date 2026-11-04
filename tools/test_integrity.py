@@ -2,9 +2,8 @@
 
 from pathlib import Path
 
-import pytest
-
 import integrity as ig
+import pytest
 
 
 def write(root: Path, rel: str, text: str) -> str:

@@ -199,7 +199,7 @@ def check_parity(root: Path, files: list[str]) -> list[Violation]:
         if not r.exists():
             out.append(Violation("parity", rel, 0, "falta estimates_r.csv (replicación cruzada en R)"))
             continue
-        key = lambda row: (row["spec_id"], row["term"])  # noqa: E731
+        key = lambda row: (row["spec_id"], row["term"])
         a = {key(x): x for x in _read_csv(py)}
         b = {key(x): x for x in _read_csv(r)}
         for k in sorted(a.keys() ^ b.keys()):
@@ -248,7 +248,7 @@ def check_speclog(root: Path, files: list[str]) -> list[Violation]:
 
 # ---------------------------------------------------------------- referee
 VERDICTS = {"APROBADO", "APROBADO CON CAMBIOS", "RECHAZADO"}
-REFEREE_SKIP = re.compile(r"^(README|_|holdout_opened)", re.I)
+REFEREE_SKIP = re.compile(r"^(README|_|holdout_opened)", re.IGNORECASE)
 
 
 def front_matter(text: str) -> dict[str, str] | None:

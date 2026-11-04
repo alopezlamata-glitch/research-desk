@@ -13,7 +13,8 @@ pytestmark = pytest.mark.skipif(shutil.which("node") is None, reason="node no di
 
 def hook(tool, cwd, **tool_input):
     ev = {"tool_name": tool, "tool_input": tool_input, "cwd": str(cwd)}
-    r = subprocess.run(["node", str(GUARD)], input=json.dumps(ev), capture_output=True, text=True)
+    r = subprocess.run(["node", str(GUARD)], input=json.dumps(ev), capture_output=True, text=True,
+                       check=False)  # el código de salida es lo que se comprueba
     return r.returncode
 
 

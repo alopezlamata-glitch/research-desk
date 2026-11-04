@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import csv
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from integrity import SPECLOG_COLUMNS, prereg_ids
@@ -39,7 +39,7 @@ def _commit(cwd: Path) -> str:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="seconds")
 
 
 def log_spec(paper_dir: Path | str, spec_id: str, script: str, description: str,

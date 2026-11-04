@@ -42,3 +42,6 @@ datalake/raw/
 # Registros de ejecución de las desks (pueden ser grandes y no son resultado)
 desks/*/run_*.log
 desks/*/run_*.err
+
+# Bloqueo de sesión de cada desk (estado de ejecución, lo gestiona tools/desk.py)
+desks/*/.lock
