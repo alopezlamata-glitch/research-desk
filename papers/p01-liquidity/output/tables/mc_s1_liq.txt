@@ -1,0 +1,54 @@
+[NW5 calendario (prerreg.)] **CoverageOutOfBand** con T
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.864 potencia=0.129 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.893 potencia=0.107 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.875 potencia=0.130 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.876 potencia=0.126 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.775 potencia=0.231 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.844 potencia=0.157 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.829 potencia=0.166 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.836 potencia=0.169 fallos=0
+[NW5 filas] **CoverageOutOfBand** con T
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.863 potencia=0.132 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.891 potencia=0.109 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.874 potencia=0.128 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.877 potencia=0.123 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.776 potencia=0.231 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.842 potencia=0.156 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.830 potencia=0.169 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.834 potencia=0.170 fallos=0
+[NW5 calendario ×N/(N−k)] **CoverageOutOfBand** con T
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.898 potencia=0.103 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.905 potencia=0.094 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.903 potencia=0.100 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.906 potencia=0.100 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.851 potencia=0.145 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.910 potencia=0.095 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.892 potencia=0.115 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.901 potencia=0.101 fallos=0
+[HC1 (White ×N/(N−k))] **CoverageOutOfBand** con T
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.904 potencia=0.093 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.934 potencia=0.065 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.939 potencia=0.067 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.936 potencia=0.065 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.867 potencia=0.131 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.943 potencia=0.056 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.941 potencia=0.057 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.937 potencia=0.066 fallos=0
+[HC3] dentro de [0,92; 0,98]
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.949 potencia=0.059 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.960 potencia=0.039 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.969 potencia=0.032 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.962 potencia=0.037 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.971 potencia=0.031 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.983 potencia=0.017 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.991 potencia=0.012 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.974 potencia=0.021 fallos=0
+[NW5 calendario con residuos HC3] dentro de [0,92; 0,98]
+   b_pos_C T=102   sesgo=-0.5186 RMSE=11.0736 cobertura=0.940 potencia=0.062 fallos=0
+   b_pos_U T=102   sesgo=-0.3369 RMSE=15.9105 cobertura=0.938 potencia=0.066 fallos=0
+   b_neg_C T=102   sesgo=+0.2155 RMSE=7.9800 cobertura=0.953 potencia=0.051 fallos=0
+   b_neg_U T=102   sesgo=+0.3186 RMSE=13.8116 cobertura=0.951 potencia=0.054 fallos=0
+   b_pos_C T=51    sesgo=-0.0428 RMSE=17.6378 cobertura=0.962 potencia=0.038 fallos=0
+   b_pos_U T=51    sesgo=+2.0400 RMSE=19.9431 cobertura=0.960 potencia=0.041 fallos=0
+   b_neg_C T=51    sesgo=+0.4951 RMSE=9.8803 cobertura=0.977 potencia=0.027 fallos=0
+   b_neg_U T=51    sesgo=+0.2131 RMSE=17.5943 cobertura=0.960 potencia=0.039 fallos=0
