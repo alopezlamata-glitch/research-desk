@@ -13,3 +13,9 @@
 - [ ] **T5** · R: comprobar/instalar `fixest` en R 4.5.1. Hecho: `Rscript -e "library(fixest)"` funciona.
 - [ ] **T6** · Primer commit + repo privado en GitHub (opcional). **Requiere OK del usuario.**
 - [ ] **T7** · Rutina programada semanal: recordatorio de curación de `kb/lessons/` (opcional).
+- [x] **G1** · Guardarraíles: `tools/integrity.py` (8 comprobaciones), hook `guard.js`, pre-commit, `tools/research.py`. Spec: `specs/guardrails/SPEC.md`.
+- [ ] **G2** · `tools/desk.py`: lanzador con bloqueo (una sesión por desk), máximo 2 a la vez, memoria libre, registro de ejecuciones; comando `setup` para activar el pre-commit en clones nuevos.
+- [ ] **G3** · Skills `verify-citation`, `sympy-check` (+ `tools/symcheck.py`), `mc-validate` (+ `tools/mc.py`), `referee-report`; enlazarlas desde los CLAUDE.md de cada desk.
+- [ ] **G4** · Actualizar CLAUDE.md y los prompts de las desks con los guardarraíles.
+- [ ] **G5** · Comprobar que terminó la instalación de R (fixest, arrow) y TinyTeX; compilar un .tex de prueba.
+- [ ] **G6** · GitHub: `gh auth login` (lo hace el usuario) y crear el repositorio privado + push.
