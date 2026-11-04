@@ -40,3 +40,9 @@ Estado: candidata
    cobertura (`coverage.csv`) y test de primer/último dato; si la serie es corta, decirlo en el diccionario y ofrecer alternativas con otro nombre, no sustituirla en silencio.
 5. **Z.1 no tiene vencimiento ni tipo de interés de la deuda**; las partes de deuda a tipo variable/corto plazo hay que buscarlas en E.2 o en micro-datos. Los CSV de Z.1 usan `ND` y fechas `1945:Q4`.
 6. **FRED (`fredgraph.csv`) puede dar timeout**: construir desde el datalake con sha256 comprobado, no redescargar en el build.
+
+## 2026-11-04 · p01 · F2b (inversión larga)
+Estado: candidata
+1. **Si una serie FRED sale corta, buscar el índice de cantidad del mismo concepto en NIPA** (`A008RA3Q086SBEA` frente a `PNFIC1`: 1947 frente a 2007). Regla: antes de declarar un hueco, probar la
+   variante `A###RA3Q086SBEA` y validar con Δlog contra la serie corta en el solape (ρ ≈ 1); los niveles no son comparables (índice 2017=100 frente a USD encadenados).
+2. **Un fetch parcial no debe rehacer todo el lago**: `fred.py` reescribe y re-hashea todas las series; para añadir una, llamar a `one()`/`save()` solo con ella y añadirla también a `SERIES` para futuras regeneraciones.

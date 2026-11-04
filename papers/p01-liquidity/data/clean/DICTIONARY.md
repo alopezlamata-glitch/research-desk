@@ -64,7 +64,8 @@ agregada incluye a las grandes empresas, que concentran los saldos.
 ## Controles y resultados
 | Variable | Definición | Unidad | Cobertura | Fuente / transformación |
 |---|---|---|---|---|
-| `inv_nonres_real` | **Inversión fija privada no residencial real** | mil mill. USD 2017 encadenados, tasa anual | **2007Q1–2026Q3 (79)** | FRED `PNFIC1`. **El lago solo tiene desde 2007**; FRED no respondió para comprobar si la serie completa existe (ver riesgos) |
+| `inv_nonres_q` | **Inversión fija privada no residencial real (variable principal de inversión)** | índice de cantidad, 2017=100 | **1985Q1–2026Q3 (167)** en el panel; la serie FRED va de 1947Q1 | FRED `A008RA3Q086SBEA` (BEA, índice de cantidad); sin rellenar huecos |
+| `inv_nonres_real` | Inversión fija privada no residencial real, en niveles | mil mill. USD 2017 encadenados, tasa anual | 2007Q1–2026Q3 (79) | FRED `PNFIC1`. **Solo comprobación** desde 2007: la tasa de crecimiento (Δlog) correlaciona 0,99999998 con `inv_nonres_q` |
 | `inv_priv_real` | Inversión privada interior bruta real (incluye vivienda y existencias) | idem | 1985Q1–2026Q3 | FRED `GPDIC1`; **alternativa de muestra larga, otro concepto** |
 | `inv_nfc_nominal` | Formación bruta de capital fijo, sociedades no financieras | mill. USD, flujo anualizado, AE | 1985Q1–2026Q2 | Z.1 S.11.1.t FA105019005 |
 | `inv_nfc_real` | `inv_nfc_nominal / gdp_deflator × 100` | mill. USD 2017 | idem | **derivada**: se deflacta con el deflactor del PIB, no con uno de inversión |
@@ -76,7 +77,7 @@ agregada incluye a las grandes empresas, que concentran los saldos.
 | `ebp`, `gz_spread` | Excess bond premium y spread GZ, media trimestral | pp | 1985Q1–2026Q3 | Fed Board (Gilchrist-Zakrajšek), mensual → media de 3 meses |
 
 ## Huecos y avisos
-1. **`inv_nonres_real` solo desde 2007Q1** → la variable resultado "inversión no residencial real" no cubre la muestra larga de shocks (1988/1994–). Alternativas en el panel: `inv_nfc_real` (sociedades, 1985+; deflactor del PIB) y `inv_priv_real` (concepto más amplio).
+1. La inversión no residencial principal es `inv_nonres_q` (1985Q1+ en el panel, 1947+ en FRED). `inv_nonres_real` (PNFIC1) solo existe desde 2007Q1: úsese como comprobación, no como resultado. Otros conceptos: `inv_nfc_real` (sociedades, deflactor del PIB) e `inv_priv_real` (incluye vivienda y existencias).
 2. `mps_bs23_orth` NaN en 2020Q1–Q4 (decisión de los autores de BS-2023, no de la desk).
 3. Z.1 termina en 2026Q2 y DSR en 2026Q1: las ecuaciones con estado de liquidez o DSR acaban ahí; los shocks BS-2025 llegan a 2026Q3 completos.
 4. 2026Q4 incompleto en shocks BS-2025 (`bs25_quarter_partial`); SLOOS 2026Q4 ya publicada pero PIB, tipos y EBP no.

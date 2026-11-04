@@ -32,6 +32,7 @@ def test_coverage(df):
     assert span(df["mps_bs25_me"]) == ("1994Q1", "2026Q4")
     assert span(df["dsr_nfc"]) == ("1999Q1", "2026Q1")
     assert span(df["liq_narrow_assets"])[0] == "1985Q1"
+    assert span(df["inv_nonres_q"])[0] <= "1985Q1"  # variable principal de inversión (A008RA3Q086SBEA, desde 1947)
     assert span(df["inv_nonres_real"])[0] == "2007Q1"  # límite de PNFIC1 en el datalake
     assert span(df["sloos_ci_large"])[0] == "1990Q2"
     assert span(df["ebp"])[1] == "2026Q3"
@@ -81,6 +82,12 @@ def test_units(df):
 def test_no_jumps(df):
     for c in ["liq_narrow_assets", "dsr_nfc", "dsr_priv_nf"]:
         assert df[c].pct_change(fill_method=None).abs().max() < 0.35, c
+
+
+def test_inv_nonres_q_consistent_with_pnfic1(df):
+    """El índice de cantidad y PNFIC1 miden lo mismo: mismas tasas de crecimiento desde 2007."""
+    g = np.log(df[["inv_nonres_q", "inv_nonres_real"]].loc["2007Q1":]).diff().dropna()
+    assert len(g) > 70 and g.corr().iloc[0, 1] > 0.99
 
 
 def test_inv_nfc_real_is_derived_not_filled(df):

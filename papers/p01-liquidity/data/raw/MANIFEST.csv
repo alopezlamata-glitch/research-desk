@@ -13,3 +13,4 @@ stage1_us/DGS2.csv,https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2,2026-
 stage1_us/DRTSCILM.csv,https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRTSCILM,2026-11-04,16134e6cc6923b8fac3d02ecef12f8290fa7e6eed89e2a89e111656682b0d489,FRED; copiado de datalake/raw/fred/csv/DRTSCILM.csv
 stage1_us/DRTSCIS.csv,https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRTSCIS,2026-11-04,e9c143cc77b32083e3decedc389eeb2b1314752a5b07da277f14ac1eeeb09baa,FRED; copiado de datalake/raw/fred/csv/DRTSCIS.csv
 stage1_us/DRSDCILM.csv,https://fred.stlouisfed.org/graph/fredgraph.csv?id=DRSDCILM,2026-11-04,e4fd4c3fabea18cdc6786c6b77c333a144e3fdfb3e78b34f42ef3f9d5d58cf4c,FRED; copiado de datalake/raw/fred/csv/DRSDCILM.csv
+stage1_us/A008RA3Q086SBEA.csv,https://fred.stlouisfed.org/graph/fredgraph.csv?id=A008RA3Q086SBEA,2026-11-04,948fbd95627101751f2ae65ae235a8d33534118c356766e8284f1d53aa0895e8,FRED; copiado de datalake/raw/fred/csv/A008RA3Q086SBEA.csv

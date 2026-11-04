@@ -89,7 +89,8 @@ Panel `papers/p01-liquidity/data/clean/stage1_us.parquet`; definiciones en su `D
 | Bauer-Swanson zip (ago-2025) | `mps.csv` STMT/PC/ME, 1994-02 – 2026-10 | **probada** | Metodología Acosta et al. (2025) sobre USMPD, PC1 normalizado a la TIR a 1 año; **sin ortogonalizar**. La fecha del `.R` (dic-2025) y la etiqueta web (ago-2025) no coinciden. Correlación trimestral con `MPS_ORTH` ≈ 0,66 |
 | BIS DSR | `Q\|US\|P` (privado no financiero), `Q\|US\|N` (empresas), `Q\|US\|H` (hogares) | **probada** | 1999Q1–2026Q1 sin huecos; valores en % de la renta |
 | Fed Z.1 (S.11.1.b y S.11.1.t) | Balance de sociedades no financieras (niveles, códigos `FL…`) y flujo de inversión fija (`FA105019005`) | **probada** | CSV con `ND` como NA y fechas `1945:Q4`; **no hay desglose por vencimiento ni por tipo variable/fijo**. Para tipo variable: E.2 (STBL) o Call Reports, sin probar |
-| FRED `PNFIC1` | Inversión fija privada no residencial real | **probada, cobertura corta** | La copia del lago empieza en **2007Q1** (79 obs.); no se pudo contrastar con FRED (timeout el 2026-11-04). Alternativas largas: `GPDIC1` (otro concepto) o Z.1 `FA105019005` / deflactor |
+| FRED `PNFIC1` | Inversión fija privada no residencial real | **probada, cobertura corta** | Solo desde **2007Q1** (79 obs.) también en FRED. Para muestra larga usar `A008RA3Q086SBEA` (mismo concepto, índice de cantidad) |
+| FRED `A008RA3Q086SBEA` | Inversión fija privada no residencial real, índice de cantidad (2017=100) | **probada, larga** | 1947Q1–2026Q3 (319 obs.), en el lago desde F2b (2026-11-04). Δlog con `PNFIC1` desde 2007: ρ≈1. Serie de inversión por defecto |
 | FRED SLOOS `DRTSCILM`, `DRTSCIS`, `DRSDCILM` | Estándares y demanda de C&I, trimestral | **probada** | `DRTSCI*` desde 1990Q2, `DRSDCILM` desde 1991Q4; 'DRTSCILM' = grandes y medianas |
 | Fed Board EBP | `ebp`, `gz_spread` mensuales 1973-01 – 2026-09 | **probada** | Se agrega a trimestre solo con 3 meses |
 

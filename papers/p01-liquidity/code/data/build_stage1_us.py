@@ -134,6 +134,7 @@ def main() -> None:
         bs23(), bs25(), bis_dsr(), z1(), ebp(),
         pd.DataFrame({
             "gdp_real": gdp.set_axis(q(gdp.index)), "gdp_deflator": defl.set_axis(q(defl.index)),
+            "inv_nonres_q": fred("A008RA3Q086SBEA").pipe(lambda s: s.set_axis(q(s.index))),
             "inv_nonres_real": fred("PNFIC1").pipe(lambda s: s.set_axis(q(s.index))),
             "inv_priv_real": fred("GPDIC1").pipe(lambda s: s.set_axis(q(s.index))),
             "ffr": complete_quarters(fred("FEDFUNDS"), 3),

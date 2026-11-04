@@ -25,7 +25,7 @@ FILES = [
     ("fed_z1/z1_csv_files_20260911.zip", "Z.1 release 2026-09-11; se usa csv/S11_1_b.csv y S11_1_t.csv"),
     ("fed_board/ebp_csv.csv", "Excess bond premium (Gilchrist-Zakrajsek), mensual"),
 ] + [(f"fred/csv/{s}.csv", "FRED") for s in
-     ["GDPC1", "GDPDEF", "PNFIC1", "GPDIC1", "FEDFUNDS", "DGS2", "DRTSCILM", "DRTSCIS", "DRSDCILM"]]
+     ["GDPC1", "GDPDEF", "A008RA3Q086SBEA", "PNFIC1", "GPDIC1", "FEDFUNDS", "DGS2", "DRTSCILM", "DRTSCIS", "DRSDCILM"]]
 
 
 def sha256(p: Path) -> str:
