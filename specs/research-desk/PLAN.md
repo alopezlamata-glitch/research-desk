@@ -5,7 +5,7 @@
 Humano (director) ── Claude Code (sesión principal, suscripción)
                         ├── subagentes .claude/agents/*  (literatura, teoría, datos, econometría, redacción)
                         ├── Referee: sesión nueva aparte en papers/<slug>/audits/
-                        ├── hooks: protect-raw (PreToolUse) + eventos de Pixel Agents
+                        ├── hooks: guard.js (PreToolUse; ver specs/guardrails) + eventos de Pixel Agents
                         └── git = registro de todo
 Pixel Agents (npx, :3100) ── lee los eventos de Claude Code ── oficina en el navegador (solo observa)
 ```
@@ -26,4 +26,4 @@ Pixel Agents (npx, :3100) ── lee los eventos de Claude Code ── oficina e
 - **OneDrive + git:** la sincronización puede corromper `.git` o hacer lentos los datos grandes. Mitigación:
   datos fuera de git; si da problemas, mover el repo fuera de OneDrive.
 - **Pixel Agents** puede no etiquetar a cada subagente con su nombre: verificar en T3.
-- **Hook protect-raw** no cubre escrituras vía Bash (ver el comentario `ponytail:` en el script).
+- **Hook guard.js:** sus límites conocidos están en `specs/guardrails/SPEC.md`.

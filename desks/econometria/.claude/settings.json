@@ -7,11 +7,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|NotebookEdit",
+        "matcher": "Edit|Write|NotebookEdit|MultiEdit|Read|Grep|Glob|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/../../.claude/hooks/protect-raw.js\""
+            "command": "node \"$CLAUDE_PROJECT_DIR/../../.claude/hooks/guard.js\""
           }
         ]
       }

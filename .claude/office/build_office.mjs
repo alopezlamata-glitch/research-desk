@@ -148,13 +148,13 @@ cfg.standalone.areaMappings = { ...mappings, ...Object.fromEntries(ours.map((d) 
 cfg.standalone.showAreas = true;
 fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2));
 
-// --- Configuración de cada desk: hereda el hook protect-raw y puede trabajar en todo el repo
+// --- Configuración de cada desk: hereda el hook guard.js y puede trabajar en todo el repo
 const deskSettings = {
   permissions: { additionalDirectories: ['../..'] },
   hooks: {
     PreToolUse: [{
-      matcher: 'Edit|Write|NotebookEdit',
-      hooks: [{ type: 'command', command: 'node "$CLAUDE_PROJECT_DIR/../../.claude/hooks/protect-raw.js"' }],
+      matcher: 'Edit|Write|NotebookEdit|MultiEdit|Read|Grep|Glob|Bash',
+      hooks: [{ type: 'command', command: 'node "$CLAUDE_PROJECT_DIR/../../.claude/hooks/guard.js"' }],
     }],
   },
 };
