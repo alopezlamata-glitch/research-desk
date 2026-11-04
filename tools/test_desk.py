@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+import time
 
 import desk
 import pytest
@@ -43,6 +45,17 @@ def test_refuses_low_memory_and_unknown_desk(desks):
         desk.check_can_launch("datos", desks, free_gb=0.5)
     with pytest.raises(desk.LaunchRefused, match="no existe"):
         desk.check_can_launch("inventada", desks, free_gb=8)
+
+
+def test_spawn_detached_runs_with_cwd_and_redirects_output(tmp_path):
+    log, err = tmp_path / "run.log", tmp_path / "run.err"
+    args = [sys.executable, "-c", "import os; print('cwd=' + os.getcwd())"]
+    pid = desk.spawn_detached(args, tmp_path, log, err)
+    assert pid > 0
+    deadline = time.time() + 30
+    while time.time() < deadline and not (log.exists() and "cwd=" in log.read_text()):
+        time.sleep(0.2)
+    assert log.read_text().strip() == f"cwd={tmp_path}"
 
 
 def test_every_real_desk_has_a_tool_profile():

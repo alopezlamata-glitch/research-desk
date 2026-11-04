@@ -115,7 +115,7 @@ def claude_cmd() -> list[str]:
     exe = shutil.which("claude.cmd") or shutil.which("claude")
     if not exe:
         raise LaunchRefused("no encuentro el ejecutable de Claude Code")
-    return ["cmd", "/c", exe] if exe.lower().endswith(".cmd") else [exe]
+    return [exe]  # en Windows, spawn_detached lo ejecuta dentro de cmd, que sabe abrir un .cmd
 
 
 def launch(desk: str, encargo: str) -> int:
@@ -128,12 +128,9 @@ def launch(desk: str, encargo: str) -> int:
               "entregables. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
     args = claude_cmd() + ["-p", prompt, "--permission-mode", "acceptEdits",
                            "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS))]
-    log = (desk_dir / f"run_{stamp}.log").open("w", encoding="utf-8")
-    err = (desk_dir / f"run_{stamp}.err").open("w", encoding="utf-8")
-    flags = 0x00000008 | 0x00000200 | 0x08000000 if os.name == "nt" else 0  # DETACHED|NEW_GROUP|NO_WINDOW
-    proc = subprocess.Popen(args, cwd=desk_dir, stdout=log, stderr=err, stdin=subprocess.DEVNULL,
-                            creationflags=flags, start_new_session=os.name != "nt")
-    info = {"pid": proc.pid, "encargo": encargo, "started": stamp, "log": f"run_{stamp}.log"}
+    log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
+    pid = spawn_detached(args, desk_dir, log, err)
+    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name}
     (desk_dir / ".lock").write_text(json.dumps(info), encoding="utf-8")
     runs = DESKS / "RUNS.csv"
     new = not runs.exists()
@@ -141,8 +138,30 @@ def launch(desk: str, encargo: str) -> int:
         w = csv.writer(f)
         if new:
             w.writerow(["started", "desk", "encargo", "pid", "log"])
-        w.writerow([stamp, desk, encargo, proc.pid, info["log"]])
-    return proc.pid
+        w.writerow([stamp, desk, encargo, pid, info["log"]])
+    return pid
+
+
+def spawn_detached(args: list[str], cwd: Path, log: Path, err: Path) -> int:
+    """Lanza `args` fuera del árbol de procesos de quien llama y devuelve el PID.
+
+    En Windows, un hijo de Popen (aunque sea DETACHED) murió junto con las desks activas al cerrarse el
+    comando de Bash de la sesión que lo lanzó (2026-11-04, código 137). Win32_Process.Create (WMI) crea
+    el proceso como hijo del servicio WMI, sin relación con la sesión.
+    """
+    if os.name != "nt":
+        with log.open("w") as out, err.open("w") as e:
+            return subprocess.Popen(args, cwd=cwd, stdout=out, stderr=e, stdin=subprocess.DEVNULL,
+                                    start_new_session=True).pid
+    cmdline = f'cmd /s /c "{subprocess.list2cmdline(args)} > "{log}" 2> "{err}" < NUL"'
+    ps = ("$r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments "
+          "@{CommandLine=$env:DESK_CMDLINE; CurrentDirectory=$env:DESK_CWD}; "
+          "if ($r.ReturnValue -ne 0) { exit [int]$r.ReturnValue }; $r.ProcessId")
+    r = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", ps], capture_output=True,
+                       text=True, check=False, env={**os.environ, "DESK_CMDLINE": cmdline, "DESK_CWD": str(cwd)})
+    if r.returncode != 0 or not r.stdout.strip().isdigit():
+        raise LaunchRefused(f"Win32_Process.Create falló ({r.returncode}): {r.stderr.strip() or r.stdout.strip()}")
+    return int(r.stdout.strip())
 
 
 def setup() -> None:
