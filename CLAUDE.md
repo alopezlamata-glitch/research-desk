@@ -113,6 +113,10 @@ Las reglas comprobables no dependen de la memoria de nadie:
   papers). Ejecutar con `uv run python ...`.
 - R 4.5 (`C:\Program Files\R\R-4.5.1`) solo para la replicación cruzada (paquete `fixest`).
 - Tests: `uv run pytest`. Linter: `uv run ruff check .`.
+- Las desks se lanzan fuera del contenedor MSIX de la app de Claude (WMI, para que no mueran con la sesión que
+  las lanza). Para que vean el Python de uv, `%APPDATA%\uv` es una unión a
+  `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\uv`. En una máquina nueva hay que recrearla
+  **desde fuera de la app** (`mklink /J`).
 - Windows + OneDrive: no metas datos grandes en el repo. OneDrive sincroniza `.git` y puede
   generar conflictos.
 
