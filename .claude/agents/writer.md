@@ -1,4 +1,5 @@
 ---
+model: opus
 name: writer
 description: Desk de Redacción. Úsalo para redactar o revisar secciones del working paper en LaTeX a partir de resultados ya auditados. No genera resultados ni cifras nuevas.
 tools: Read, Write, Edit, Grep, Glob, Bash

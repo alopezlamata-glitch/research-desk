@@ -1,4 +1,5 @@
 ---
+model: sonnet
 name: data
 description: Desk de Datos. Úsalo para descargar, documentar, limpiar y validar datos (FRED, BIS, BCE, OCDE, bases históricas, series de shocks publicadas por autores). Produce data/clean y su diccionario. No estima modelos.
 tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch

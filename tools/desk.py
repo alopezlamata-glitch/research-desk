@@ -16,6 +16,7 @@ import csv
 import ctypes
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -40,6 +41,22 @@ TOOLS = {
     "redaccion": BASE_TOOLS + PY + ["Bash(latexmk:*)"],
     "referee": BASE_TOOLS + PY + ["Bash(Rscript:*)"],
     "direccion-cientifica": BASE_TOOLS + WEB,
+}
+
+# Modelo por defecto de cada desk según el tipo de trabajo. Un encargo lo cambia con una línea `Modelo: <alias>`
+# (p. ej., haiku para tareas mecánicas, opus para una tarea de datos con juicio de identificación).
+#   opus:   juicio científico, derivaciones, identificación y auditoría adversarial, donde un error es caro.
+#   sonnet: trabajo largo y bien especificado (búsqueda, descarga y limpieza).
+#   haiku:  tareas mecánicas y acotadas (conversiones, inventarios, comprobaciones de formato).
+MODELS = ("opus", "sonnet", "haiku")
+DEFAULT_MODEL = {
+    "direccion-cientifica": "opus",
+    "teoria": "opus",
+    "econometria": "opus",
+    "referee": "opus",
+    "redaccion": "opus",
+    "literatura": "sonnet",
+    "datos": "sonnet",
 }
 
 
@@ -118,27 +135,37 @@ def claude_cmd() -> list[str]:
     return [exe]  # en Windows, spawn_detached lo ejecuta dentro de cmd, que sabe abrir un .cmd
 
 
+def model_for(desk: str, encargo_text: str) -> str:
+    """El `Modelo:` del encargo si lo declara; si no, el de la desk."""
+    m = re.search(r"^\W*Modelo\W+(\w+)", encargo_text, re.MULTILINE | re.IGNORECASE)  # "Modelo: x", "**Modelo:** x"
+    model = m.group(1).lower() if m else DEFAULT_MODEL.get(desk, "sonnet")
+    if model not in MODELS:
+        raise LaunchRefused(f"modelo '{model}' no válido en el encargo; usa uno de {', '.join(MODELS)}")
+    return model
+
+
 def launch(desk: str, encargo: str) -> int:
     check_can_launch(desk)
     desk_dir = DESKS / desk
     if not (desk_dir / encargo).is_file():
         raise LaunchRefused(f"no existe {desk_dir / encargo}")
+    model = model_for(desk, (desk_dir / encargo).read_text(encoding="utf-8"))
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     prompt = (f"Lee y ejecuta el encargo de {encargo} (en esta carpeta). Trabaja hasta completar los "
               "entregables. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
-    args = claude_cmd() + ["-p", prompt, "--permission-mode", "acceptEdits",
+    args = claude_cmd() + ["-p", prompt, "--model", model, "--permission-mode", "acceptEdits",
                            "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS))]
     log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
     pid = spawn_detached(args, desk_dir, log, err)
-    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name}
+    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name, "model": model}
     (desk_dir / ".lock").write_text(json.dumps(info), encoding="utf-8")
     runs = DESKS / "RUNS.csv"
     new = not runs.exists()
     with runs.open("a", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         if new:
-            w.writerow(["started", "desk", "encargo", "pid", "log"])
-        w.writerow([stamp, desk, encargo, pid, info["log"]])
+            w.writerow(["started", "desk", "encargo", "pid", "log", "model"])
+        w.writerow([stamp, desk, encargo, pid, info["log"], model])
     return pid
 
 
@@ -173,11 +200,12 @@ def main(argv: list[str]) -> int:
     cmd = argv[0] if argv else "status"
     try:
         if cmd == "launch" and len(argv) == 3:
-            print(f"{argv[1]} lanzada, PID {launch(argv[1], argv[2])}")
+            pid = launch(argv[1], argv[2])
+            print(f"{argv[1]} lanzada con {read_lock(DESKS / argv[1])['model']}, PID {pid}")
         elif cmd == "status":
             running = active()
             for desk, info in running.items():
-                print(f"{desk:22} PID {info['pid']:>6}  desde {info['started']}  {info['encargo']}")
+                print(f"{desk:22} {info.get('model', '?'):7} PID {info['pid']:>6}  desde {info['started']}  {info['encargo']}")
             print(f"{len(running)}/{MAX_CONCURRENT} desks activas · {free_memory_gb():.1f} GB de memoria comprometida disponible")
         elif cmd == "setup":
             setup()

@@ -1,4 +1,5 @@
 ---
+model: opus
 name: referee
 description: Referee 2. Auditoría adversarial e independiente de un resultado, derivación o borrador. Lánzalo preferiblemente en una sesión nueva desde papers/<slug>/audits/. Nunca modifica el código ni el texto del autor; solo escribe en audits/.
 tools: Read, Grep, Glob, Bash, Write

@@ -1,4 +1,5 @@
 ---
+model: opus
 name: econometrics
 description: Desk de Econometría. Úsalo para estimar modelos (local projections, panel con efectos fijos, GMM, filtros de Kalman, bayesiano), hacer Monte Carlo de identificación, curvas de especificación y robustez. Trabaja solo sobre data/clean.
 tools: Bash, Read, Write, Edit, Grep, Glob

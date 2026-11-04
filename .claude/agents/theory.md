@@ -1,4 +1,5 @@
 ---
+model: opus
 name: theory
 description: Desk de Teoría. Úsalo para derivar modelos, generalizar fórmulas (encontrar familias que aniden especificaciones existentes como casos particulares), demostrar proposiciones y verificarlas con SymPy, y diseñar el modelo generador de datos para Monte Carlo.
 tools: Read, Write, Edit, Bash, Grep, Glob

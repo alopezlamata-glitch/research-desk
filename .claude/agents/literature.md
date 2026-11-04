@@ -1,4 +1,5 @@
 ---
+model: sonnet
 name: literature
 description: Desk de Literatura. Úsalo para mapear literatura sobre una pregunta, verificar que una cita existe y dice lo que se le atribuye, mantener el .bib del paper y localizar datasets/shocks publicados por autores. No escribe secciones del paper.
 tools: WebSearch, WebFetch, Read, Write, Edit, Grep, Glob

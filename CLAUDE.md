@@ -90,6 +90,13 @@ Las reglas comprobables no dependen de la memoria de nadie:
 - **Desks:** se lanzan con `uv run python tools/desk.py launch <desk> <ENCARGO.md>`, que impide dos sesiones
   de la misma desk, más de 2 desks a la vez y lanzar con poca memoria. `tools/desk.py status` muestra qué
   hay activo. En un clon nuevo, lo primero es `uv run python tools/desk.py setup`, que activa el pre-commit.
+- **Modelo por tarea:** cada desk tiene un modelo por defecto (`DEFAULT_MODEL` en `tools/desk.py`):
+  - **opus** para Dirección, Teoría, Econometría, Referee y Redacción (juicio, derivaciones e identificación);
+  - **sonnet** para Literatura y Datos (trabajo largo y bien especificado).
+
+  La Coordinación lo ajusta en cada encargo con una línea `Modelo: opus|sonnet|haiku`. Usa **haiku** para tareas mecánicas y
+  acotadas, y sube a **opus** una tarea de Datos o Literatura que exija juicio. Los subagentes llevan `model:` en
+  su frontmatter. El modelo queda en `.lock` y en `desks/RUNS.csv`.
 - **Skills** (en `.claude/skills/`): `verify-citation`, `sympy-check`, `mc-validate`, `referee-report`,
   `standup`, `new-paper`. Las desks las leen en `../../.claude/skills/<nombre>/SKILL.md`.
 - **Lecciones:** cada una lleva `Estado: candidata|validada|retirada`. Solo los autores las pasan a

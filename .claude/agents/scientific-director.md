@@ -1,4 +1,5 @@
 ---
+model: opus
 name: scientific-director
 description: Director científico (Dirección). Úsalo para pensar la agenda de investigación, generar y criticar diseños de papers, evaluar candidatos con la rúbrica de la SPEC y empujar hacia la opción más ambiciosa que sea creíble. No implementa ni asigna tareas (eso es la Coordinación).
 tools: Read, Write, Edit, Grep, Glob, WebSearch, WebFetch

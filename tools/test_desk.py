@@ -58,6 +58,21 @@ def test_spawn_detached_runs_with_cwd_and_redirects_output(tmp_path):
     assert log.read_text().strip() == f"cwd={tmp_path}"
 
 
-def test_every_real_desk_has_a_tool_profile():
+def test_every_real_desk_has_a_tool_profile_and_a_model():
     real = {d.name for d in desk.DESKS.iterdir() if d.is_dir()}
     assert real <= set(desk.TOOLS), real - set(desk.TOOLS)
+    assert real <= set(desk.DEFAULT_MODEL), real - set(desk.DEFAULT_MODEL)
+    assert set(desk.DEFAULT_MODEL.values()) <= set(desk.MODELS)
+
+
+@pytest.mark.parametrize(("text", "expected"), [("# Encargo\nsin modelo", "opus"),
+                                                ("Modelo: haiku\n", "haiku"),
+                                                ("intro\n**Modelo:** Sonnet\n", "sonnet"),
+                                                ("- Modelo: opus", "opus")])
+def test_model_from_encargo_or_desk_default(text, expected):
+    assert desk.model_for("teoria", text) == expected
+
+
+def test_invalid_model_is_refused():
+    with pytest.raises(desk.LaunchRefused, match="no válido"):
+        desk.model_for("datos", "Modelo: gpt5")
