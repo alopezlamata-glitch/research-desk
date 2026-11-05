@@ -1,0 +1,19 @@
+id: C4
+sets: [dev]
+description: >
+  Replicación (lección 5 de kb/lessons/referee.md). output/macros.tex es de un run anterior (muestra hasta 2019T4,
+  generado con el mismo lp.py): el borrador cita c_1 = −1,17 (e.e. 0,24; N = 101), pero estimates_py.csv, estimates_r.csv
+  y el código actual dan −1,11 (e.e. 0,23; N = 117).
+verdicts: [RECHAZADO, APROBADO CON CAMBIOS]
+regen: false
+locations:
+  - file: papers/p07-credit/output/macros.tex
+    lines: [13, 23]
+    marker: \bInterHone
+  - file: papers/p07-credit/draft/main.tex
+    lines: [31, 35]
+    marker: \bInterHone
+  - file: papers/p07-credit/output/estimates_py.csv
+    lines: [4, 5]
+    marker: lp_h1,shock_x_credit
+    any_line: true

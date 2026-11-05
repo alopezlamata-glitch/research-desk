@@ -8,7 +8,7 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   generado por código. Hecho: el repo temporal construido con la base pasa `integrity.py` y `pytest`.
 - [x] **RE3** · `build.py` + test: construye la base y cada caso en un temporal con un commit, sin `evals/` ni
   `case.yaml` dentro; el `marker` de cada ubicación está en su rango de líneas.
-- [ ] **RE4** · Casos C1–C6 (overlay + `case.yaml`). Hecho: cada caso sigue pasando `integrity.py` (el error no
+- [x] **RE4** · Casos C1–C6 (overlay + `case.yaml`). Hecho: cada caso sigue pasando `integrity.py` (el error no
   lo detecta un check determinista) y el test de `marker` pasa.
 - [ ] **RE5** · `run.py` con `--dry-run` (un ejecutable falso en lugar de `claude`) + test del flujo completo:
   construir, lanzar, recoger informe y transcripción, puntuar y escribir `RESULTS.csv`. Respeta `desk.active()`.
@@ -32,3 +32,9 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   trae `data/clean` y `output/` a la base o al overlay; un caso con `regen: false` (C4) conserva salidas de otro run.
 - El repo temporal incluye `CLAUDE.md` y `.claude/settings.json` (el hook): el Referee se evalúa con el contexto con
   el que trabaja de verdad.
+- **Casos (RE4):** cada `case.yaml` describe el error y sus ubicaciones. Para que cada caso tenga un único error, el DGP
+  de la base no hace depender la inversión de los diferenciales (si lo hiciera, el control contaminado de C2 sesga b y
+  el Monte Carlo de C2 falla, que es el error de C6) y `fci` promedia cuatro componentes. C5 vive en su propio mundo
+  (γ = −0,15, semilla 20261165, elegida para que el cuantil 0,75 sea la única de cuatro variantes significativa: es el
+  jardín de senderos que el caso planta). C4 conserva un `macros.tex` del run con la muestra hasta 2019T4.
+  El Monte Carlo usa 1000 réplicas (500 dejaba la cobertura de la base en el borde de la banda por puro ruido).

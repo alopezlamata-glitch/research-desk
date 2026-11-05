@@ -18,7 +18,7 @@ import lp
 import mc
 
 H_MAIN = 1
-REPS = 500
+REPS = 1000
 SEED = 7
 
 

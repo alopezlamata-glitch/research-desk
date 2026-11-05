@@ -113,12 +113,12 @@ def build(case: str, dest: Path | None = None) -> Path:
     return dest
 
 
-PIPELINE = [
-    ["uv", "run", "python", f"{PAPER}/code/data/build_panel.py"],
-    ["uv", "run", "python", f"{PAPER}/code/analysis/lp.py"],
-    ["RSCRIPT", f"{PAPER}/code/replication_r/lp.R"],
-    ["uv", "run", "python", f"{PAPER}/code/mc/mc_lp.py"],
-]
+def pipeline(repo: Path, r: str) -> list[list[str]]:
+    """Comandos del pipeline del paper en orden: datos, análisis, replicación en R y Monte Carlo (sin los tests)."""
+    code = repo / PAPER / "code"
+    scripts = [f for d in ("data", "analysis", "replication_r", "mc") for f in sorted((code / d).iterdir())
+               if f.suffix in (".py", ".R") and not f.name.startswith("test_")]
+    return [([r] if f.suffix == ".R" else ["uv", "run", "python"]) + [f.relative_to(repo).as_posix()] for f in scripts]
 
 
 def regen(case: str) -> None:
@@ -135,8 +135,8 @@ def regen(case: str) -> None:
         for rel in GENERATED:
             for f in (dest / PAPER / rel).glob("*"):
                 f.unlink()
-        for cmd in PIPELINE:
-            subprocess.run([r if c == "RSCRIPT" else c for c in cmd], cwd=dest, env=env(), check=True)
+        for cmd in pipeline(dest, r):
+            subprocess.run(cmd, cwd=dest, env=env(), check=True)
         for rel in GENERATED:
             for f in sorted((dest / PAPER / rel).glob("*")):
                 base_f = BASE / PAPER / rel / f.name

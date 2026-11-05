@@ -18,8 +18,8 @@ START = "1994Q1"
 BURN = 40
 
 # Parámetros del DGP (SPEC, «Datos»). La inversión responde al choque con más fuerza cuando el crédito está restringido.
-PARAMS = {"mu": 0.5, "rho": 0.3, "beta": -1.0, "gamma": -0.8, "delta": -0.4, "sigma": 1.0}
-FCI_COMPONENTS = ["term_spread", "baa_spread"]
+PARAMS = {"mu": 0.5, "rho": 0.3, "beta": -1.0, "gamma": -0.8, "sigma": 1.0}
+FCI_COMPONENTS = ["term_spread", "baa_spread", "vix", "ted_spread"]
 
 
 def zscore(x: pd.Series | np.ndarray) -> np.ndarray:
@@ -44,6 +44,8 @@ def simulate(T: int, rng: np.random.Generator, params: dict[str, float] = PARAMS
     sloos = ar1(n, 0.85, 5.0, 20.0, rng)  # % neto de bancos que endurecen las condiciones de crédito
     term = ar1(n, 0.9, 1.5, 1.0, rng)
     baa = ar1(n, 0.8, 2.2, 0.6, rng)
+    vix = ar1(n, 0.75, 20.0, 7.0, rng)
+    ted = ar1(n, 0.7, 0.4, 0.3, rng)
     dgdp = ar1(n, 0.5, 0.6, 0.7, rng)
     infl = ar1(n, 0.7, 0.5, 0.3, rng)
     shock, credit = zscore(ff4[BURN:]), zscore(sloos[BURN:])
@@ -52,13 +54,12 @@ def simulate(T: int, rng: np.random.Generator, params: dict[str, float] = PARAMS
     prev, eps = p["mu"] / (1 - p["rho"]), rng.normal(0, p["sigma"], T)
     for t in range(T):
         s_lag = credit[t - 1] if t else 0.0
-        dinv[t] = (p["mu"] + p["rho"] * prev + (p["beta"] + p["gamma"] * s_lag) * shock[t]
-                   + p["delta"] * (baa[BURN + t - 1] - 2.2) + eps[t])
+        dinv[t] = p["mu"] + p["rho"] * prev + (p["beta"] + p["gamma"] * s_lag) * shock[t] + eps[t]
         prev = dinv[t]
     return pd.DataFrame({
         "date": pd.period_range(START, periods=T, freq="Q").astype(str),
         "loginv": 400 + np.cumsum(dinv), "dgdp": dgdp[BURN:], "infl": infl[BURN:], "term_spread": term[BURN:],
-        "baa_spread": baa[BURN:], "sloos": sloos[BURN:], "ff4": ff4[BURN:],
+        "baa_spread": baa[BURN:], "vix": vix[BURN:], "ted_spread": ted[BURN:], "sloos": sloos[BURN:], "ff4": ff4[BURN:],
     })
 
 
@@ -85,6 +86,8 @@ Trimestral, 1994T1–2023T4 (T = 120). Generado por `code/data/build_panel.py` (
 | infl | Inflación trimestral del deflactor | pp |
 | term_spread | Diferencial 10 años − 3 meses | pp |
 | baa_spread | Diferencial Baa − bono a 10 años | pp |
+| vix | Índice de volatilidad implícita VIX (media trimestral) | puntos |
+| ted_spread | Diferencial Libor 3 meses − letra a 3 meses | pp |
 | sloos | % neto de bancos que endurecen el crédito a empresas | % |
 | ff4 | Sorpresa monetaria de alta frecuencia (futuro de fed funds, ventana de 30 min) | pp |
 | shock | ff4 estandarizada en la muestra | desv. típ. |

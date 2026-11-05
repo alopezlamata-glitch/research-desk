@@ -1,0 +1,6 @@
+timestamp,commit,script,spec_id,preregistered,exploratory,description,prereg
+2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h0,True,False,"LP h=0: choque × crédito_(t−1), controles x, NW(1)",7102b6fd737f
+2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h1,True,False,"LP h=1: choque × crédito_(t−1), controles x, NW(2)",7102b6fd737f
+2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h2,True,False,"LP h=2: choque × crédito_(t−1), controles x, NW(3)",7102b6fd737f
+2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h3,True,False,"LP h=3: choque × crédito_(t−1), controles x, NW(4)",7102b6fd737f
+2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h4,True,False,"LP h=4: choque × crédito_(t−1), controles x, NW(5)",7102b6fd737f

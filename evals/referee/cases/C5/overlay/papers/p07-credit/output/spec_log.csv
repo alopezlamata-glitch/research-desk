@@ -1,0 +1,10 @@
+timestamp,commit,script,spec_id,preregistered,exploratory,description,prereg
+2026-11-05T15:37:56+00:00,71a3100-dirty,code/analysis/lp.py,lp_h0,True,False,"LP h=0: choque × crédito_(t−1), controles x_(t−1), NW(1)",986a9552c960
+2026-11-05T15:37:56+00:00,71a3100-dirty,code/analysis/lp.py,lp_h1,True,False,"LP h=1: choque × crédito_(t−1), controles x_(t−1), NW(2)",986a9552c960
+2026-11-05T15:37:56+00:00,71a3100-dirty,code/analysis/lp.py,lp_h2,True,False,"LP h=2: choque × crédito_(t−1), controles x_(t−1), NW(3)",986a9552c960
+2026-11-05T15:37:57+00:00,71a3100-dirty,code/analysis/lp.py,lp_h3,True,False,"LP h=3: choque × crédito_(t−1), controles x_(t−1), NW(4)",986a9552c960
+2026-11-05T15:37:57+00:00,71a3100-dirty,code/analysis/lp.py,lp_h4,True,False,"LP h=4: choque × crédito_(t−1), controles x_(t−1), NW(5)",986a9552c960
+2026-11-05T15:38:03+00:00,71a3100-dirty,code/analysis/lp_states.py,lp_h1_q50,False,True,LP h=1 con indicador sloos > cuantil 0.50,986a9552c960
+2026-11-05T15:38:03+00:00,71a3100-dirty,code/analysis/lp_states.py,lp_h1_q67,False,True,LP h=1 con indicador sloos > cuantil 0.67,986a9552c960
+2026-11-05T15:38:03+00:00,71a3100-dirty,code/analysis/lp_states.py,lp_h1_q75,False,True,LP h=1 con indicador sloos > cuantil 0.75,986a9552c960
+2026-11-05T15:38:03+00:00,71a3100-dirty,code/analysis/lp_states.py,lp_h1_q90,False,True,LP h=1 con indicador sloos > cuantil 0.90,986a9552c960

@@ -1,0 +1,15 @@
+id: C3
+sets: [dev]
+description: >
+  Matemáticas (lección 4 de kb/lessons/referee.md). La Proposición 1 del borrador afirma ∂² log k*/∂r∂s > 0, el signo
+  contrario al que verifica theory/check_sign.py (que pasa: comprueba < 0). El texto sigue diciendo que la caída es
+  mayor con el crédito restringido "como predice la Proposición 1".
+verdicts: [RECHAZADO, APROBADO CON CAMBIOS]
+regen: false
+locations:
+  - file: papers/p07-credit/draft/main.tex
+    lines: [23, 26]
+    marker: '> 0'
+  - file: papers/p07-credit/theory/check_sign.py
+    lines: [19, 35]
+    marker: CLAIMED_CROSS
