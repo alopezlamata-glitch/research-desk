@@ -82,7 +82,9 @@ Las reglas comprobables no dependen de la memoria de nadie:
   registro de especificaciones, prerregistro congelado, informes del Referee, puerta de `paper/` y lecciones. Lo ejecutan el **pre-commit** (nada que
   incumpla entra en git) y `uv run pytest`.
 - **Hook `guard.js`:** datos brutos y `data/holdout/` son de solo lectura; `data/holdout/` no se lee hasta
-  abrirla con `research.open_holdout()`; no se usa `--no-verify` ni se cambia `core.hooksPath`.
+  abrirla con `research.open_holdout()`; no se usa `--no-verify` ni se cambia `core.hooksPath`. El Referee
+  (sesión en `desks/referee/` o `papers/<slug>/audits/`) solo escribe en `audits/`, el `TASKS.md` del paper y
+  `kb/lessons/referee.md`.
 - **En los scripts de análisis:** cada especificación estimada se registra con `research.log_spec()`. Lo
   que no está en el bloque ```prereg``` del SPEC solo puede registrarse como exploratorio. Las estimaciones
   se exportan a `output/estimates_py.csv` y `output/estimates_r.csv` con las columnas

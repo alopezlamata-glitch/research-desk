@@ -38,6 +38,9 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 - Escritura en `data/raw/`, `datalake/raw/` o `data/holdout/`: bloqueada.
 - Lectura de `data/holdout/` (Read, Grep, Bash) antes de abrir la muestra reservada: bloqueada.
 - `git commit --no-verify` / `-n` y cambios de `core.hooksPath`: bloqueados.
+- **Referee** (2026-11-05): si la sesión se lanzó en `desks/referee/` o en `papers/<slug>/audits/` (`CLAUDE_PROJECT_DIR`,
+  que no cambia con un `cd`), Write/Edit solo pasan en `papers/<slug>/audits/`, `papers/<slug>/TASKS.md` (marcar su tarea)
+  y `kb/lessons/referee.md`. Comprobado en vivo con una sesión real del Referee.
 
 ## Herramientas para las desks
 - `tools/research.py`: `log_spec()` (registro de especificaciones) y `open_holdout()` (abre la muestra
@@ -67,6 +70,9 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 - El texto sin resultados (introducción, literatura) no necesita auditoría.
 
 ## Límites conocidos (aceptados)
+- Referee: la regla cubre Write/Edit, no un script lanzado con `uv run python` que escriba fuera de `audits/`. La
+  barrera completa es auditar en un worktree de solo lectura del commit auditado (pendiente). Un Referee lanzado como
+  subagente desde otra carpeta no se reconoce; CLAUDE.md ya exige sesión nueva.
 - `prereg`: quien cambie la línea `prereg_commit` re-congela el prerregistro; es un cambio visible en el diff, y se
   reserva a los autores. Sin git (copia sin historial), `prereg` y `gate` fallan en vez de pasar.
 - `gate` no comprueba que el informe aprobado cubra precisamente los outputs citados ni que no haya un RECHAZADO

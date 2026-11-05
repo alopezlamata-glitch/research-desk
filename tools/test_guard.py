@@ -1,6 +1,7 @@
 """Tests del hook .claude/hooks/guard.js: se ejecuta con node igual que lo hace Claude Code."""
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -72,3 +73,34 @@ def test_precommit_bypass_blocked(tmp_path, cmd):
                                  "git commit -F - <<'EOF'\nTexto que menciona --no-verify y core.hooksPath\nEOF\n"])
 def test_legit_commands_pass(tmp_path, cmd):
     assert hook("Bash", tmp_path, command=cmd) == 0
+
+
+# ---------------------------------------------------------------- el Referee solo escribe en audits/
+ROOT = GUARD.parents[2]
+
+
+def hook_in(session: Path, tool, cwd, **tool_input):
+    """Como `hook`, pero con la sesión lanzada en `session` (CLAUDE_PROJECT_DIR)."""
+    ev = {"tool_name": tool, "tool_input": tool_input, "cwd": str(cwd)}
+    env = {**os.environ, "CLAUDE_PROJECT_DIR": str(session)}
+    return subprocess.run(["node", str(GUARD)], input=json.dumps(ev), capture_output=True, text=True,
+                          check=False, env=env).returncode
+
+
+@pytest.mark.parametrize("session", ["desks/referee", "papers/p01-liquidity/audits"])
+def test_referee_writes_only_audits_tasks_and_its_lessons(session):
+    s = ROOT / session
+    for ok in ["papers/p01-liquidity/audits/F4_mc.md", "papers/p01-liquidity/audits/repl/check.py",
+               "papers/p01-liquidity/TASKS.md", "kb/lessons/referee.md"]:
+        assert hook_in(s, "Write", s, file_path=str(ROOT / ok), content="x") == 0, ok
+    for bad in ["papers/p01-liquidity/code/mc/f4_power.py", "papers/p01-liquidity/output/F4_MC_REPORT.md",
+                "papers/p01-liquidity/SPEC.md", "kb/lessons/econometrics.md", "tools/integrity.py"]:
+        assert hook_in(s, "Edit", s, file_path=str(ROOT / bad)) == 2, bad
+
+
+def test_referee_rule_uses_launch_dir_not_cwd_and_resolves_relative_paths():
+    referee, datos = ROOT / "desks/referee", ROOT / "desks/datos"
+    assert hook_in(referee, "Write", referee, file_path="../../papers/p01-liquidity/audits/a.md") == 0
+    assert hook_in(referee, "Write", referee, file_path="../../papers/p01-liquidity/code/a.py") == 2
+    assert hook_in(referee, "Write", ROOT, file_path="papers/p01-liquidity/code/a.py") == 2  # tras un `cd ../..`
+    assert hook_in(datos, "Write", datos, file_path="../../papers/p01-liquidity/code/a.py") == 0  # otras desks, igual

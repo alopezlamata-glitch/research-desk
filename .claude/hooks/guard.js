@@ -2,12 +2,17 @@
 //  1. Datos brutos y muestra reservada son de solo lectura: data/raw/, datalake/raw/, data/holdout/.
 //  2. data/holdout/ no se lee (Read/Grep/Glob/Bash) hasta abrirla con tools/research.py (deja audits/holdout_opened.md).
 //  3. No se salta el pre-commit: ni `git commit --no-verify|-n` ni cambios de core.hooksPath.
+//  4. El Referee (sesión lanzada en desks/referee/ o en papers/<slug>/audits/) solo escribe en audits/, en el TASKS.md
+//     del paper y en kb/lessons/referee.md: nunca en el código ni en el texto del autor.
 // Sale con 2 y el motivo en stderr para bloquear; con 0 deja pasar.
 const fs = require('fs');
 const path = require('path');
 
 const RAW = /(^|\/)(data|datalake)\/raw\//;
 const HOLDOUT = /(^|\/)data\/holdout(\/|$)/;
+const ROOT = path.resolve(__dirname, '..', '..');
+const REFEREE_SESSION = /(^|\/)(desks\/referee|papers\/[^/]+\/audits)(\/|$)/;
+const REFEREE_WRITABLE = /^(papers\/[^/]+\/audits\/|papers\/[^/]+\/TASKS\.md$|kb\/lessons\/referee\.md$)/;
 
 function block(msg) {
   console.error(`Bloqueado por guard.js: ${msg}`);
@@ -60,6 +65,14 @@ process.stdin.on('data', (d) => (input += d)).on('end', () => {
   if (['Edit', 'Write', 'NotebookEdit', 'MultiEdit'].includes(tool) || (!tool && target)) {
     if (RAW.test(target)) block(`${target} es dato bruto (solo lectura). Usa un script de descarga.`);
     if (HOLDOUT.test(target)) block(`${target} es la muestra reservada (solo lectura).`);
+    // La sesión se identifica por la carpeta en que se lanzó (CLAUDE_PROJECT_DIR), que no cambia con un `cd`.
+    const session = norm(process.env.CLAUDE_PROJECT_DIR || cwd);
+    if (REFEREE_SESSION.test(path.relative(ROOT, session).replace(/\\/g, '/'))) {
+      const rel = path.relative(ROOT, path.resolve(cwd, target)).replace(/\\/g, '/');
+      if (!REFEREE_WRITABLE.test(rel)) {
+        block(`el Referee solo escribe en papers/<slug>/audits/, papers/<slug>/TASKS.md y kb/lessons/referee.md (no en ${rel}).`);
+      }
+    }
   }
   if (['Read', 'Grep', 'Glob'].includes(tool)) {
     const t = target || norm(ti.pattern || '');
