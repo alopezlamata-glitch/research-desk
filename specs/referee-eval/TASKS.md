@@ -10,7 +10,7 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   `case.yaml` dentro; el `marker` de cada ubicación está en su rango de líneas.
 - [x] **RE4** · Casos C1–C6 (overlay + `case.yaml`). Hecho: cada caso sigue pasando `integrity.py` (el error no
   lo detecta un check determinista) y el test de `marker` pasa.
-- [ ] **RE5** · `run.py` con `--dry-run` (un ejecutable falso en lugar de `claude`) + test del flujo completo:
+- [x] **RE5** · `run.py` con `--dry-run` (un ejecutable falso en lugar de `claude`) + test del flujo completo:
   construir, lanzar, recoger informe y transcripción, puntuar y escribir `RESULTS.csv`. Respeta `desk.active()`.
 - [ ] **RE6** · Línea base dev (C0, C1, C3, C4; 1 rep, Opus). Entregable: filas en `RESULTS.csv` y una nota con
   coste medido y falsos positivos para que los autores los revisen. **Requiere el visto bueno de los autores** (gasta
@@ -38,3 +38,10 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   (γ = −0,15, semilla 20261165, elegida para que el cuantil 0,75 sea la única de cuatro variantes significativa: es el
   jardín de senderos que el caso planta). C4 conserva un `macros.tex` del run con la muestra hasta 2019T4.
   El Monte Carlo usa 1000 réplicas (500 dejaba la cobertura de la base en el borde de la banda por puro ruido).
+- **Runner (RE5):** `run.py` lanza al Referee en `audits/` con los argumentos de `desk._start` más `--add-dir <repo>`
+  (las desks lo tienen en `additionalDirectories`) y `--output-format json`, y ocupa el puesto de la desk `referee`
+  (`desk.check_can_launch`) mientras dura. `--dry-run` usa `fake_claude.py`, desks y configuración temporales y escribe
+  en `%TEMP%/referee-eval/RESULTS_dry-run.csv`.
+- **Pendiente de comprobar en RE6** (no se puede sin una sesión real): que la sesión lanzada en `audits/` lee el repo con
+  `--add-dir` sin pedir permisos, y si carga el hook `guard.js`, porque `.claude/settings.json` está en la raíz y no en
+  `audits/`. Esto vale también para las auditorías reales que se lanzan desde `papers/<slug>/audits/`.

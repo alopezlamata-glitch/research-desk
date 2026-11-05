@@ -25,6 +25,9 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+import desk
+
 EVAL = Path(__file__).resolve().parent
 BASE = EVAL / "base"
 CASES = EVAL / "cases"
@@ -53,16 +56,15 @@ def load_case(case: str) -> dict:
 
 
 def rscript() -> str | None:
-    found = shutil.which("Rscript")
-    default = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "R" / "R-4.5.1" / "bin" / "Rscript.exe"
-    return found or (str(default) if default.exists() else None)
+    rbin = desk.r_bin()
+    return str(Path(rbin) / ("Rscript.exe" if os.name == "nt" else "Rscript")) if rbin else None
 
 
 def env() -> dict[str, str]:
     """Entorno para el pipeline y la sesión: el .venv del repo real (pyproject y uv.lock son idénticos) y R en el PATH."""
     out = {**os.environ, "UV_PROJECT_ENVIRONMENT": str(ROOT / ".venv")}
-    if (r := rscript()) and not shutil.which("Rscript"):
-        out["PATH"] = str(Path(r).parent) + os.pathsep + out.get("PATH", "")
+    if rbin := desk.r_bin():
+        out["PATH"] = rbin + os.pathsep + out.get("PATH", "")
     return out
 
 
