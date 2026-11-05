@@ -16,3 +16,15 @@ Patrones de error encontrados en la versión previa, que conviene buscar en cual
 4. **Errores de signo en derivaciones.** Ver `kb/lessons/theory.md`. Regla: SymPy en todas.
 5. **Cifras incoherentes entre figura y tabla** (Fig. 3: 0.158 y +78.8 %; tabla: 0.155 y +82.3 %).
    Regla: todas las cifras salen del mismo run de código.
+
+## 2026-11-05 · p01 · R-F4, Monte Carlo de `s1_liq`
+Estado: candidata
+1. **Las probabilidades de veredicto se calculan con el árbol de decisión completo.** F4 dio las de H1 sin la puerta H0 de la
+   SPEC. Con ella, el resultado modal pasa de "no concluyente por potencia" a "H1 no se interpreta" (P ≈ 0,94). Regla:
+   simular todas las especificaciones que condicionan el veredicto (puertas, gating) y dar la probabilidad conjunta.
+2. **Un error estándar "validado" solo vale para el DGP con el que se validó.** Con apalancamiento alto, HC3 es conservador
+   con innovaciones homocedásticas, pero cae al borde de la banda si la varianza va ligada a |ε|. Regla: validar una alternativa
+   de ee con al menos un DGP heterocedástico ligado a las observaciones de alto apalancamiento (aquí, recesiones).
+3. **Umbrales relativos a otro coeficiente estimado.** Con δ = 0,146·|β̂_U| y ee(β̂_U) ≫ |β_U|, el umbral es ruido y genera
+   falsas refutaciones en cuanto la precisión de β_C mejora. Regla: comprobar E[δ̂] frente al valor verdadero en el MC.
+4. **Diagnósticos triviales.** La media del apalancamiento siempre es k/N; no es evidencia. Mirar el máximo y qué fechas lo producen.
