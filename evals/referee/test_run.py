@@ -49,3 +49,12 @@ def test_main_dry_run_writes_results(tmp_path, monkeypatch):
     rows = list(csv.DictReader((tmp_path / "RESULTS_dry-run.csv").open(encoding="utf-8")))
     assert [r["case"] for r in rows] == run.cases_for("dev", None) == ["C0", "C1", "C3", "C4"]
     assert set(rows[0]) == set(run.FIELDS)
+
+
+def test_api_error_stops_the_run_without_recording(tmp_path, monkeypatch):
+    monkeypatch.setattr(build, "WORKDIR", tmp_path)
+    monkeypatch.setenv("FAKE_CLAUDE_LIMIT", "1")
+    assert run.main(["--set", "dev", "--dry-run"]) == 1
+    assert not (tmp_path / "RESULTS_dry-run.csv").exists()  # ni una fila falsa
+    assert run.session_error('{"is_error": false, "result": "ok"}', 0) is None
+    assert run.session_error("", 1).startswith("claude salió")

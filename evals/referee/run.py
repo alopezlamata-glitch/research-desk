@@ -41,6 +41,21 @@ PROMPT = ("Eres el Referee de esta desk (rol en ../../../.claude/agents/referee.
           "../../../.claude/skills/referee-report/SKILL.md. Al final, resume en 10 líneas el veredicto y por qué.")
 
 
+class SessionFailed(RuntimeError):
+    """La sesión no llegó a auditar (límite de la suscripción, error de la API): no se puntúa ni se anota."""
+
+
+def session_error(stdout: str, returncode: int) -> str | None:
+    """Motivo por el que la sesión falló, según la salida JSON de `claude -p`; None si terminó bien."""
+    try:
+        out = json.loads(stdout.strip().splitlines()[-1]) if stdout.strip() else {}
+    except json.JSONDecodeError:
+        out = {}
+    if out.get("is_error") or out.get("terminal_reason") == "api_error":
+        return str(out.get("result") or out.get("terminal_reason") or "error de la API")
+    return None if returncode == 0 and out else f"claude salió con código {returncode} y sin resultado JSON"
+
+
 def cases_for(selected_set: str | None, case: str | None) -> list[str]:
     if case:
         return [case]
@@ -78,6 +93,8 @@ def run_one(case: str, rep: int, model: str, exe: list[str], *, desks_dir: Path,
     finally:
         lock.unlink(missing_ok=True)
     (repo.parent / f"{repo.name}.session.json").write_text(proc.stdout or proc.stderr, encoding="utf-8")
+    if reason := session_error(proc.stdout or "", proc.returncode):
+        raise SessionFailed(f"{case} rep {rep}: {reason}")
     transcript = next(iter(sorted(transcripts.glob(f"*/{session_id}.jsonl"))), None)
     replication = [p.relative_to(repo).as_posix() for p in audits.glob("replication_*/**/*") if p.is_file()]
     known = grade.load_yaml(build.BASE / "KNOWN_ISSUES.yaml").get("issues") or []
@@ -130,6 +147,9 @@ def main(argv: list[str]) -> int:
                       f"{row['tokens_out']} tokens de salida, {row['minutes']} min · {row['repo']}")
     except desk.LaunchRefused as e:
         print(f"No se lanza: {e}")
+        return 1
+    except SessionFailed as e:  # p. ej., límite de la suscripción: seguir solo produciría filas falsas
+        print(f"Se para sin anotar: {e}")
         return 1
     print(f"Resultados en {results}")
     return 0

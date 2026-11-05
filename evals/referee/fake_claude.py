@@ -37,6 +37,10 @@ Script propio en audits/replication_2026-11-05/.
 
 def main(argv: list[str]) -> int:
     sid = argv[argv.index("--session-id") + 1]
+    if os.environ.get("FAKE_CLAUDE_LIMIT"):  # simula el límite de la suscripción
+        print(json.dumps({"type": "result", "subtype": "success", "is_error": True, "terminal_reason": "api_error",
+                          "result": "You've hit your session limit", "session_id": sid}))
+        return 1
     config = Path(os.environ["CLAUDE_CONFIG_DIR"])
     config.mkdir(parents=True, exist_ok=True)
     (config / "last_args.json").write_text(json.dumps(argv), encoding="utf-8")
