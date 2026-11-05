@@ -25,7 +25,7 @@ import shutil
 import subprocess
 import sys
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -94,6 +94,23 @@ def pid_alive(pid: int) -> bool:
     return True
 
 
+def process_created(pid: int) -> datetime | None:
+    """Hora local de creación del proceso (solo Windows); None si no se puede saber."""
+    if os.name != "nt":
+        return None
+    k32 = ctypes.windll.kernel32
+    handle = k32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+    if not handle:
+        return None
+    times = [ctypes.c_ulonglong() for _ in range(4)]  # creación, salida, kernel, usuario (FILETIME)
+    ok = k32.GetProcessTimes(handle, *(ctypes.byref(x) for x in times))
+    k32.CloseHandle(handle)
+    if not ok:
+        return None
+    utc = datetime(1601, 1, 1, tzinfo=UTC) + timedelta(microseconds=times[0].value // 10)
+    return utc.astimezone().replace(tzinfo=None)  # hora local sin zona, como el `started` del lock
+
+
 def free_memory_gb() -> float:
     if os.name != "nt":
         return float("inf")
@@ -119,7 +136,16 @@ def read_lock(desk_dir: Path) -> dict | None:
         info = json.loads(lock.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return None
-    return info if pid_alive(int(info.get("pid", 0))) else None
+    pid = int(info.get("pid", 0))
+    if not pid_alive(pid):
+        return None
+    # Windows reutiliza PIDs: si el proceso con ese PID nació después del lanzamiento, no es la desk (2026-11-05).
+    try:
+        started = datetime.strptime(info.get("started", ""), "%Y-%m-%d_%H%M")
+    except ValueError:
+        return info
+    created = process_created(pid)
+    return None if created and created > started + timedelta(minutes=2) else info
 
 
 def active(desks_dir: Path = DESKS) -> dict[str, dict]:

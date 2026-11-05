@@ -180,3 +180,15 @@ def test_resume_cli_parses_msg(fake_spawn, monkeypatch):
     assert desk.main(["resume", "datos", "--msg", "Haz X."]) == 0
     assert fake_spawn[1][fake_spawn[1].index("-p") + 1].startswith("Haz X.")
     assert desk.main(["resume", "datos", "--msg"]) == 2  # --msg sin texto
+
+
+@pytest.mark.skipif(os.name != "nt", reason="la hora de creación del proceso solo se lee en Windows")
+def test_lock_with_a_reused_pid_is_stale(desks):
+    from datetime import datetime
+    me = desk.process_created(os.getpid())
+    assert me and abs((datetime.now() - me).total_seconds()) < 3600  # este proceso, en hora local
+    info = {"pid": os.getpid(), "encargo": "E.md"}
+    (desks / "datos" / ".lock").write_text(json.dumps({**info, "started": "2026-01-01_0000"}))
+    assert desk.read_lock(desks / "datos") is None  # el PID vive, pero nació mucho después del lanzamiento
+    (desks / "datos" / ".lock").write_text(json.dumps({**info, "started": me.strftime("%Y-%m-%d_%H%M")}))
+    assert desk.read_lock(desks / "datos") is not None
