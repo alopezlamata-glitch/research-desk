@@ -2,7 +2,7 @@
 
 Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run pytest` en verde.
 
-- [ ] **RE1** · `grade.py` + tests con informes sintéticos (detecta / no detecta / evidencia fuera de rango /
+- [x] **RE1** · `grade.py` + tests con informes sintéticos (detecta / no detecta / evidencia fuera de rango /
   `any_line` / veredicto / falso positivo en C0 / informe sin formato válido). Sin sesiones de Claude.
 - [ ] **RE2** · Base `p07-credit`: DGP, LP, replicación R, check de SymPy, Monte Carlo, macros y `main.tex`, todo
   generado por código. Hecho: el repo temporal construido con la base pasa `integrity.py` y `pytest`.
