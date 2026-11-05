@@ -1,7 +1,8 @@
 """Utilidades de disciplina de investigación para los scripts de análisis de los papers.
 
 - log_spec(): registra cada especificación estimada en output/spec_log.csv. Una especificación que no está en
-  el bloque ```prereg``` del SPEC solo se puede registrar como exploratoria.
+  el bloque ```prereg``` del SPEC solo se puede registrar como exploratoria. Guarda la huella del prerregistro
+  vigente (columna `prereg`), que `integrity.py` liga al commit aprobado.
 - open_holdout(): abre la muestra reservada (data/holdout/) una única vez y deja constancia con el commit.
 
 Las comprueba tools/integrity.py (checks 'speclog') y el hook .claude/hooks/guard.js (holdout).
@@ -14,7 +15,7 @@ import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
-from integrity import SPECLOG_COLUMNS, prereg_ids
+from integrity import SPECLOG_COLUMNS, prereg_hash, prereg_ids
 
 HOLDOUT_MARKER = "audits/holdout_opened.md"
 
@@ -47,7 +48,8 @@ def log_spec(paper_dir: Path | str, spec_id: str, script: str, description: str,
     """Añade una fila a output/spec_log.csv. Llamar en cada script de estimación, por cada especificación."""
     paper = Path(paper_dir)
     spec = paper / "SPEC.md"
-    is_prereg = spec_id in prereg_ids(spec.read_text(encoding="utf-8")) if spec.exists() else False
+    spec_text = spec.read_text(encoding="utf-8") if spec.exists() else ""
+    is_prereg = spec_id in prereg_ids(spec_text)
     if not is_prereg and not exploratory:
         raise SpecNotPreregistered(
             f"'{spec_id}' no está en el bloque prereg de {spec}; regístrala con exploratory=True")
@@ -58,7 +60,8 @@ def log_spec(paper_dir: Path | str, spec_id: str, script: str, description: str,
         w = csv.writer(f)
         if new:
             w.writerow(SPECLOG_COLUMNS)
-        w.writerow([_now(), _commit(paper), script, spec_id, is_prereg, not is_prereg, description])
+        w.writerow([_now(), _commit(paper), script, spec_id, is_prereg, not is_prereg, description,
+                    prereg_hash(spec_text)])
 
 
 def open_holdout(paper_dir: Path | str, reason: str) -> Path:

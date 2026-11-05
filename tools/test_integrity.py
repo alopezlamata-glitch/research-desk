@@ -1,5 +1,6 @@
 """Tests de tools/integrity.py: cada comprobación detecta lo que debe y no da falsos positivos."""
 
+import subprocess
 from pathlib import Path
 
 import integrity as ig
@@ -169,3 +170,72 @@ def test_lessons_require_status_and_validator(tmp_path):
 def test_repository_passes_all_checks():
     violations = ig.run()
     assert violations == [], "\n" + "\n".join(map(str, violations))
+
+
+# ---------------------------------------------------------------- prereg y gate (necesitan un repo git)
+SPEC_V1 = "# P\n\n## Prerregistro\nH1: beta < 0, Holm unilateral.\n```prereg\ns1\n```\n\n## Desviaciones\n"
+
+
+def git(root: Path, *args: str) -> str:
+    return subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "-c", "core.hooksPath=/dev/null", *args],
+                          cwd=root, capture_output=True, text=True, check=True).stdout.strip()
+
+
+@pytest.fixture
+def repo(tmp_path):
+    git(tmp_path, "init", "-q")
+    write(tmp_path, "papers/p/SPEC.md", SPEC_V1)
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "commit", "-q", "-m", "prereg aprobado")
+    return tmp_path
+
+
+def set_spec(root: Path, text: str) -> None:
+    write(root, "papers/p/SPEC.md", text)
+
+
+def test_prereg_frozen_text_can_only_change_with_a_declared_deviation(repo):
+    sha = git(repo, "rev-parse", "--short", "HEAD")
+    freeze = f"\nprereg_commit: {sha}\n"
+    set_spec(repo, SPEC_V1.replace("```\n\n", "```\n" + freeze + "\n"))
+    assert ig.check_prereg(repo, []) == []  # la línea de congelación va fuera del texto congelado
+    changed = SPEC_V1.replace("beta < 0", "beta > 0").replace("```\n\n", "```\n" + freeze + "\n")
+    set_spec(repo, changed)
+    (v,) = ig.check_prereg(repo, [])
+    new = ig.prereg_hash(changed)
+    assert new in v.msg
+    set_spec(repo, changed.replace(freeze, freeze + f"Nota: prereg {new}\n"))
+    assert ig.prereg_hash(changed.replace(freeze, freeze + f"Nota: prereg {new}\n")) == new
+    assert len(ig.check_prereg(repo, [])) == 1  # la huella declarada fuera de Desviaciones no cuenta
+    set_spec(repo, changed + f"- 2026-11-05 · Los autores invierten el signo. prereg {new}\n")
+    assert ig.check_prereg(repo, []) == []
+
+
+def test_prereg_requires_a_valid_freeze_commit_but_not_before_prereg(repo):
+    (v,) = ig.check_prereg(repo, [])
+    assert "sin `prereg_commit" in v.msg
+    set_spec(repo, SPEC_V1 + "prereg_commit: deadbeef\n")
+    (v,) = ig.check_prereg(repo, [])
+    assert "no encuentro" in v.msg
+    set_spec(repo, SPEC_V1.replace("s1\n", "# nada aún\n"))
+    assert ig.check_prereg(repo, []) == []
+
+
+def report(verdict: str, commit: str) -> str:
+    return (f"---\nobject: s1\nverdict: {verdict}\ndate: 2026-11-05\ncommit: {commit}\n"
+            "reviewer: referee\nsession: fresh\n---\n")
+
+
+def test_gate_blocks_results_in_paper_without_an_approved_ancestor_audit(repo):
+    head = git(repo, "rev-parse", "HEAD")
+    prose = write(repo, "papers/p/paper/intro.tex", "Texto sin resultados.\n% \\input{../output/macros.tex}\n")
+    tex = write(repo, "papers/p/paper/main.tex", "\\input{../output/macros.tex}\n")
+    fig = write(repo, "papers/p/paper/fig.tex", "\\includegraphics[width=1\\textwidth]{../output/figures/irf.pdf}\n")
+    assert ig.check_gate(repo, [prose]) == []
+    assert {v.path for v in ig.check_gate(repo, [prose, tex, fig])} == {tex, fig}
+    rejected = write(repo, "papers/p/audits/r1.md", report("RECHAZADO", head))
+    assert len(ig.check_gate(repo, [tex, rejected])) == 1
+    foreign = write(repo, "papers/p/audits/r2.md", report("APROBADO", "0123456789abcdef0123456789abcdef01234567"))
+    assert len(ig.check_gate(repo, [tex, foreign])) == 1  # commit que no está en la historia
+    ok = write(repo, "papers/p/audits/r3.md", report("APROBADO CON CAMBIOS", head[:7]))
+    assert ig.check_gate(repo, [tex, fig, rejected, ok]) == []

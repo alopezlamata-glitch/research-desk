@@ -9,6 +9,7 @@ Uso: uv run python tools/integrity.py [--only id1,id2]   (sale con 1 si hay viol
 from __future__ import annotations
 
 import csv
+import hashlib
 import os
 import re
 import subprocess
@@ -213,7 +214,8 @@ def check_parity(root: Path, files: list[str]) -> list[Violation]:
 
 
 # ---------------------------------------------------------------- speclog
-SPECLOG_COLUMNS = ["timestamp", "commit", "script", "spec_id", "preregistered", "exploratory", "description"]
+SPECLOG_COLUMNS = ["timestamp", "commit", "script", "spec_id", "preregistered", "exploratory", "description",
+                   "prereg"]
 
 
 def prereg_ids(spec_text: str) -> set[str]:
@@ -222,6 +224,28 @@ def prereg_ids(spec_text: str) -> set[str]:
     for block in re.findall(r"```prereg\s*\n(.*?)```", spec_text, re.DOTALL):
         ids |= {ln.split("#")[0].strip() for ln in block.splitlines()} - {""}
     return ids
+
+
+def prereg_text(spec_text: str) -> str | None:
+    """Texto congelado: del último encabezado `## ` anterior al bloque prereg al cierre del bloque, normalizado."""
+    end = re.search(r"```prereg\s*\n.*?```", spec_text, re.DOTALL)
+    if not end:
+        return None
+    start = max((m.start() for m in re.finditer(r"^## ", spec_text[:end.start()], re.MULTILINE)), default=0)
+    return "\n".join(ln.rstrip() for ln in spec_text[start:end.end()].replace("\r\n", "\n").splitlines())
+
+
+def prereg_hash(spec_text: str) -> str:
+    """Huella de 12 hex del texto congelado ('' si el SPEC no tiene bloque prereg)."""
+    text = prereg_text(spec_text)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12] if text is not None else ""
+
+
+def _git(root: Path, *args: str) -> subprocess.CompletedProcess | None:
+    try:
+        return subprocess.run(["git", *args], cwd=root, capture_output=True, check=False)
+    except FileNotFoundError:
+        return None
 
 
 def check_speclog(root: Path, files: list[str]) -> list[Violation]:
@@ -243,6 +267,34 @@ def check_speclog(root: Path, files: list[str]) -> list[Violation]:
                 out.append(Violation("speclog", rel, n, f"'{r['spec_id']}': preregistered={r['preregistered']} no coincide con el SPEC"))
             if not is_prereg and r["exploratory"].lower() != "true":
                 out.append(Violation("speclog", rel, n, f"'{r['spec_id']}' no está prerregistrada y no va marcada como exploratoria"))
+    return out
+
+
+# ---------------------------------------------------------------- prereg
+def check_prereg(root: Path, files: list[str]) -> list[Violation]:
+    """El prerregistro congelado en `prereg_commit` solo cambia con una Desviación que declare la huella nueva."""
+    out = []
+    for paper in sorted(p for p in root.glob("papers/*") if p.is_dir() and p.name != "_template"):
+        spec = paper / "SPEC.md"
+        text = spec.read_text(encoding="utf-8") if spec.exists() else ""
+        if not prereg_ids(text):
+            continue  # sin prerregistro todavía (Fase 0)
+        rel = spec.relative_to(root).as_posix()
+        m = re.search(r"^\W*prereg_commit\W+([0-9a-f]{7,40})\b", text, re.MULTILINE)
+        if not m:
+            out.append(Violation("prereg", rel, 0, "hay bloque prereg sin `prereg_commit: <sha>` del commit aprobado"))
+            continue
+        frozen = _git(root, "show", f"{m.group(1)}:{rel}")
+        if frozen is None or frozen.returncode != 0:
+            out.append(Violation("prereg", rel, 0, f"no encuentro {rel} en el commit {m.group(1)} (prereg_commit)"))
+            continue
+        current = prereg_hash(text)
+        if current == prereg_hash(frozen.stdout.decode("utf-8")):
+            continue
+        deviations = text.partition("\n## Desviaciones")[2]
+        if not re.search(rf"\bprereg\W+{current}\b", deviations):
+            out.append(Violation("prereg", rel, 0, f"el prerregistro cambió desde {m.group(1)} sin Desviación: si lo "
+                                 f"aprueban los autores, añade a su entrada fechada `prereg {current}`"))
     return out
 
 
@@ -284,6 +336,35 @@ def check_referee(root: Path, files: list[str]) -> list[Violation]:
     return out
 
 
+# ---------------------------------------------------------------- gate
+APPROVED = {"APROBADO", "APROBADO CON CAMBIOS"}
+USES_OUTPUT = re.compile(r"\\(?:input|include|includegraphics)(?:\[[^\]]*\])?\{[^}]*\boutput/")
+
+
+def check_gate(root: Path, files: list[str]) -> list[Violation]:
+    """Ningún resultado (`output/`) entra en un .tex sin un informe APROBADO de un commit antecesor de HEAD."""
+    out = []
+    approved_by_paper: dict[str, bool] = {}
+    for rel in _paper_tex(files):
+        lines = [strip_tex_comments(ln) for ln in (_read(root, rel) or "").splitlines()]
+        n = next((i for i, ln in enumerate(lines, 1) if USES_OUTPUT.search(ln)), 0)
+        if not n:
+            continue
+        paper = rel.split("/")[1]
+        if paper == "_template":
+            continue
+        if paper not in approved_by_paper:
+            approved_by_paper[paper] = any(
+                (fm := front_matter(_read(root, a) or "")) and fm.get("verdict") in APPROVED
+                and re.fullmatch(r"[0-9a-f]{7,40}", fm.get("commit", ""))
+                and (r := _git(root, "merge-base", "--is-ancestor", fm["commit"], "HEAD")) and r.returncode == 0
+                for a in files if re.match(rf"^papers/{re.escape(paper)}/audits/[^/]+\.md$", a))
+        if not approved_by_paper[paper]:
+            out.append(Violation("gate", rel, n, "usa resultados de output/ sin un informe APROBADO del Referee "
+                                 "en audits/ cuyo commit sea antecesor de HEAD"))
+    return out
+
+
 # ---------------------------------------------------------------- lessons
 def check_lessons(root: Path, files: list[str]) -> list[Violation]:
     out = []
@@ -304,7 +385,7 @@ def check_lessons(root: Path, files: list[str]) -> list[Violation]:
 CHECKS = {
     "secrets": check_secrets, "hygiene": check_hygiene, "citations": check_citations,
     "numbers": check_numbers, "parity": check_parity, "speclog": check_speclog,
-    "referee": check_referee, "lessons": check_lessons,
+    "prereg": check_prereg, "referee": check_referee, "gate": check_gate, "lessons": check_lessons,
 }
 
 

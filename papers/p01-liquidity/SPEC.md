@@ -117,6 +117,9 @@ r_balance_ctrl
 r_inv_nfc
 ```
 
+prereg_commit: af1c346 (aprobación de los autores, 2026-11-04). Lo que va de `## Prerregistro` a este bloque está
+congelado: cambiarlo exige una Desviación con su huella (`tools/integrity.py`, check `prereg`).
+
 **Replicación cruzada:** `s1_lin` y `s1_liq` en R (`code/replication_r/`, `fixest`), con paridad `estimates_py.csv` = `estimates_r.csv`.
 
 **Requisito previo a estimar:**

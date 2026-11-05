@@ -21,6 +21,9 @@ especificación solo puede registrarse como exploratoria):
 # H1
 ```
 
+Cuando los autores lo aprueben, se congela con una línea `prereg_commit: <sha>` (el commit de la aprobación). Desde ahí,
+cambiar esta sección exige una Desviación con la huella que da `tools/integrity.py` (check `prereg`).
+
 ## Identificación
 Qué variación identifica cada parámetro y por qué es exógena. Amenazas principales.
 

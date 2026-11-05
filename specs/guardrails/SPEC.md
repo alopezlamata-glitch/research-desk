@@ -30,6 +30,8 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 | `parity` | `estimates_py.csv` y `estimates_r.csv` coinciden (tolerancia 1e-6 relativa) | `papers/*/output/` |
 | `speclog` | Toda especificación estimada está registrada; las no prerregistradas van marcadas como exploratorias | `papers/*/output/spec_log.csv` + bloque `prereg` del SPEC |
 | `referee` | Informes del Referee con cabecera YAML válida y cada hallazgo con evidencia | `papers/*/audits/` |
+| `prereg` | El prerregistro congelado no cambia sin Desviación (ver abajo) | `papers/*/SPEC.md` con bloque `prereg` |
+| `gate` | Un `.tex` que usa resultados (`output/`) exige un informe APROBADO cuyo commit sea antecesor de HEAD | `papers/*/paper/` + `papers/*/audits/` |
 | `lessons` | Cada lección tiene `Estado: candidata/validada/retirada`; las validadas, quién las validó | `kb/lessons/` |
 
 ## Hook de Claude Code (`guard.js`, sustituye a `protect-raw.js`)
@@ -47,7 +49,28 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 ## Skills (procedimientos que se cargan al necesitarse)
 `verify-citation`, `sympy-check`, `mc-validate`, `referee-report`.
 
+## Prerregistro congelado (`prereg`, 2026-11-05)
+- **Qué se congela:** el texto desde el último encabezado `## ` anterior al bloque ```prereg``` hasta el cierre del bloque
+  (pregunta, hipótesis, reglas de decisión e ids). Lo que va después (requisitos previos, replicación) puede tacharse sin Desviación.
+- **Cómo:** una línea `prereg_commit: <sha>` en el SPEC, con el commit en que los autores aprobaron el prerregistro.
+  `integrity.py` compara el texto congelado actual con el de ese commit (`git show`).
+- **Cambiar el prerregistro:** si el texto difiere, su huella (`prereg <12 hex>`, sha256 del texto normalizado) tiene que
+  aparecer en la sección `## Desviaciones`, en la entrada fechada que registra la decisión de los autores. El mensaje de
+  la violación da la huella que hay que copiar. Así cada versión del prerregistro es la aprobada o una declarada.
+- **Por estimación:** `research.log_spec()` guarda la huella vigente en `spec_log.csv` (columna `prereg`).
+- **Por qué no solo el commit de `log_spec`:** ese commit prueba con qué código se estimó, pero no que el prerregistro
+  fuese el aprobado; un id añadido después al bloque pasaba como prerregistrado.
+
+## Puerta de `paper/` (`gate`, 2026-11-05)
+- Un `.tex` de `papers/<slug>/paper/` que referencia `output/` (macros, tablas o figuras) solo pasa si en `audits/` hay un
+  informe con `verdict: APROBADO` o `APROBADO CON CAMBIOS` cuyo `commit` es antecesor de HEAD (`git merge-base --is-ancestor`).
+- El texto sin resultados (introducción, literatura) no necesita auditoría.
+
 ## Límites conocidos (aceptados)
+- `prereg`: quien cambie la línea `prereg_commit` re-congela el prerregistro; es un cambio visible en el diff, y se
+  reserva a los autores. Sin git (copia sin historial), `prereg` y `gate` fallan en vez de pasar.
+- `gate` no comprueba que el informe aprobado cubra precisamente los outputs citados ni que no haya un RECHAZADO
+  posterior; ligar los hashes de los outputs al informe es el siguiente paso.
 - `numbers` no detecta enteros tecleados (p. ej., "135 observaciones").
 - `hygiene` es léxico: un relleno escrito a mano con un bucle no se detecta.
 - El pre-commit comprueba el árbol de trabajo, no solo lo preparado para el commit.

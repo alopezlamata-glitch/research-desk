@@ -17,6 +17,7 @@ def test_log_spec_marks_prereg_and_refuses_undeclared(paper):
     rows = ig._read_csv(paper / "output/spec_log.csv")
     assert [(r["spec_id"], r["preregistered"], r["exploratory"]) for r in rows] == [
         ("H1", "True", "False"), ("R7", "False", "True")]
+    assert {r["prereg"] for r in rows} == {ig.prereg_hash((paper / "SPEC.md").read_text(encoding="utf-8"))} != {""}
 
 
 def test_log_spec_output_passes_speclog_check(tmp_path):
