@@ -25,7 +25,7 @@ Medir, de forma repetible y comparable entre versiones:
   `raw/` modificado): medirían si el Referee ejecuta el check, no su juicio. Eso se mide aparte, en "Protocolo".
 
 ## Casos
-Un **mini-paper base** sintético y realista (DGP conocido, N ≈ 120, una LP con interacción de estado, un check de
+Un **mini-paper base** realista (datos públicos reales desde 2026-11-05, ver «Desviaciones»; N ≈ 120, una LP con interacción de estado, un check de
 SymPy, un Monte Carlo, replicación en R, macros generadas y un `main.tex` corto) que pasa `integrity.py` y
 `pytest`. Cada caso es la base con **un único error plantado**, para atribuir cada detección a un tipo. Todos los
 errores salen de patrones reales de `kb/lessons/referee.md` y del rol del Referee:
@@ -97,3 +97,28 @@ errores salen de patrones reales de `kb/lessons/referee.md` y del rol del Refere
   pequeño y limpio que un paper real; la eval mide un mínimo, no la fiabilidad en p01.
 - El Referee podría reconocer que está en una eval; se mitiga con un repo sin pistas (nombres realistas, sin
   comentarios, un único commit) y con el mismo encargo que en un caso real.
+
+## Desviaciones
+
+### 2026-11-05 · Mini-paper con datos públicos reales en vez de sintético
+**Qué cambia.** La base `p07-credit` deja de generar sus datos con un DGP (`simulate()`). Usa series públicas reales
+copiadas del datalake a `data/raw/` con su `MANIFEST.csv` (sha256) por `code/data/download_series.py`, y `data/clean/`
+sale de `raw/` por código: producción industrial (FRED `INDPRO`), IPC, paro, diferencial Baa − Tesoro a 10 años como
+estado del crédito y el choque monetario `MP_pm` de Jarociński-Karadi (actualización 2024-01). El panel es mensual,
+1990-02 – 2019-12 (T = 359), y la LP lleva «lag augmentation» con 6 retardos y errores HC3, con H1 en h = 12. El
+Monte Carlo conserva un DGP propio, calibrado a esos datos (choques remuestreados, AR estimados) y descrito como tal.
+El resultado prerregistrado de la base es nulo (c_12 no significativo), y el borrador lo presenta así.
+
+**Por qué.** En la línea base real de C0 (RESULTS.csv, 2026-11-05), el Referee dio RECHAZADO con razón: demostró que el
+panel era `simulate(SEED)` con el efecto de H1 programado (γ = −0,8), sin `data/raw/` ni MANIFEST, y que el borrador lo
+presentaba como datos de EE. UU. Como todos los casos comparten la base, todos habrían salido RECHAZADO por eso y la
+eval no habría medido los errores plantados. El supuesto de «Mini-paper sintético» de esta SPEC (no contamina p01 y
+el Referee no lo conoce) se mantiene con datos reales: el tema y las series son distintos de p01.
+
+**Otros hallazgos de esa auditoría, resueltos en la base:** Monte Carlo con el mismo DGP que los datos (ahora calibrado
+y separado); la Proposición 1 se presenta como motivación del signo, no como derivación de la LP, y `check_sign.py`
+verifica que con una prima aditiva el signo se invierte; TED discontinuado (ya no se usa); agregación mensual de los
+choques (la hacen los autores de la serie); estado predeterminado (media del mes t − 1); más retardos de control;
+p < 0,001, intervalo bilateral frente a contraste unilateral y «cobertura nominal» en el texto. El hallazgo sobre los
+guardarraíles (un `data/clean/` que no sale de `raw/` pasa `integrity.py`) es de la infraestructura, no de la base: se
+deja como propuesta para la Coordinación. `KNOWN_ISSUES.yaml` sigue vacío.

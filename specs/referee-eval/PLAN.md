@@ -48,3 +48,16 @@ evals/referee/
 - **Deriva de la infraestructura:** el repo temporal copia las versiones actuales de rol, skills y tools; la fila de
   `RESULTS.csv` guarda el commit del repo real para saber qué versión se evaluó.
 - **R en la eval:** si `Rscript` no está, la replicación del Referee falla; `run.py` lo comprueba antes de lanzar.
+
+## Desviaciones
+
+### 2026-11-05 · Base con datos públicos reales (ver la entrada del mismo día en SPEC.md)
+- `base/` contiene `data/raw/MANIFEST.csv` pero no los datos brutos: `build.py` los copia del datalake por su sha256
+  al construir cada repo temporal (los datos brutos no se versionan, tampoco en `evals/`), y `regen` ejecuta primero
+  `code/data/download_*.py` con `DATALAKE` apuntando al datalake real.
+- «Contenido de la base» queda así: `download_series.py` + `build_panel.py` (mensual, 1990-02 – 2019-12, T = 359);
+  `lp.py` (LP con 6 retardos de producción, IPC, paro, diferencial y choque, HC3, h ∈ {0, 6, 12, 18, 24}, H1 en h = 12);
+  `lp.R` (fixest); `check_sign.py`; `mc_lp.py` (DGP calibrado a los datos, 1000 réplicas); `draft/main.tex`.
+- Los casos se rehacen sobre los datos reales. C2 añade el EBP y la letra a 3 meses (índice `fci` con el choque dentro);
+  C5 deja de ser un «mundo» simulado propio: es la exploración real de otras variables de actividad, de la que solo las
+  viviendas iniciadas salen significativas, presentada como prerregistrada.

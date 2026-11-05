@@ -26,18 +26,19 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
 - **El borrador está en `draft/main.tex`, no en `paper/main.tex`.** El check `gate` impide que un `.tex` de `paper/`
   use `output/` sin un APROBADO previo: con el borrador en `paper/` la base no pasaría `integrity.py` antes de la
   auditoría. Los tests aplican igualmente al borrador los checks de cifras y citas.
-- **Inferencia de la base:** NW con h + 1 retardos sobre residuos HC3 y H1 en h = 1. Con NW(5) y residuos MCO la
-  cobertura del Monte Carlo (T = 120) caía a 0,86–0,90 en h = 4, y la base ya contenía el error de C6.
-- **Salidas generadas:** `build.py regen <caso>` ejecuta el pipeline (Python, R y Monte Carlo) en un repo temporal y
-  trae `data/clean` y `output/` a la base o al overlay; un caso con `regen: false` (C4) conserva salidas de otro run.
+- **Inferencia de la base (rehecha el 2026-11-05 con datos reales):** LP con «lag augmentation» (6 retardos de todas
+  las variables, choque incluido) y errores HC3; la cobertura del Monte Carlo calibrado es 0,948/0,946 con T = 359. Con
+  White (HC0) cae a 0,905/0,887 por las colas gruesas del choque: es el error de C6.
+- **Salidas generadas:** `build.py regen <caso>` ejecuta el pipeline (descarga desde el datalake, Python, R y Monte
+  Carlo) en un repo temporal y trae `data/raw/MANIFEST.csv`, `data/clean` y `output/` a la base o al overlay; un caso con `regen: false` (C4) conserva salidas de otro run.
 - El repo temporal incluye `CLAUDE.md` y `.claude/settings.json` (el hook): el Referee se evalúa con el contexto con
   el que trabaja de verdad.
-- **Casos (RE4):** cada `case.yaml` describe el error y sus ubicaciones. Para que cada caso tenga un único error, el DGP
-  de la base no hace depender la inversión de los diferenciales (si lo hiciera, el control contaminado de C2 sesga b y
-  el Monte Carlo de C2 falla, que es el error de C6) y `fci` promedia cuatro componentes. C5 vive en su propio mundo
-  (γ = −0,15, semilla 20261165, elegida para que el cuantil 0,75 sea la única de cuatro variantes significativa: es el
-  jardín de senderos que el caso planta). C4 conserva un `macros.tex` del run con la muestra hasta 2019T4.
-  El Monte Carlo usa 1000 réplicas (500 dejaba la cobertura de la base en el borde de la banda por puro ruido).
+- **Casos (RE4, rehechos el 2026-11-05 sobre datos reales):** cada `case.yaml` describe el error y sus ubicaciones. Con
+  datos reales la interacción no es significativa en ninguna variante razonable (estados, choques, muestras), así que
+  C5 planta la exploración que sí da un resultado: otras variables de actividad, de las que solo las viviendas
+  iniciadas (efecto lineal) salen significativas, presentadas como prerregistradas. En C2, el Monte Carlo del autor
+  simula `fci` como exógeno (si incluyera el choque, la cobertura caería y el caso arrastraría el error de C6).
+  C4 conserva un `macros.tex` del run con la muestra hasta 2016-12. El Monte Carlo usa 1000 réplicas.
 - **Runner (RE5):** `run.py` lanza al Referee en `audits/` con los argumentos de `desk._start` más `--add-dir <repo>`
   (las desks lo tienen en `additionalDirectories`) y `--output-format json`, y ocupa el puesto de la desk `referee`
   (`desk.check_can_launch`) mientras dura. `--dry-run` usa `fake_claude.py`, desks y configuración temporales y escribe
