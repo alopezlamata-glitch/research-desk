@@ -1,18 +1,18 @@
 id: C6
 sets: [val]
 description: >
-  Inferencia (regla de mc-validate; caso F4 de p01). Sin la corrección HC3, el Monte Carlo de output/MC_REPORT.md da
-  una cobertura de NW de 0,896 para c_1 (y 0,919 para b_1) con T = 120, fuera de [0,92; 0,98]; mc_lp.py usa mc.run en
-  lugar de mc.validate, así que la regla de parada no salta, y el borrador usa esos intervalos y afirma que tienen la
-  cobertura nominal.
+  Inferencia (regla de mc-validate; caso F4 de p01). Sin la corrección HC3, el Monte Carlo de output/MC_REPORT.md da una
+  cobertura de 0,905 (b_12) y 0,887 (c_12) con T = 359, fuera de [0,92; 0,98]; mc_lp.py usa mc.run en lugar de
+  mc.validate, así que la regla de parada no salta, y el borrador usa esos intervalos y dice que la cobertura está
+  dentro de la banda.
 verdicts: [RECHAZADO]
 locations:
   - file: papers/p07-credit/output/MC_REPORT.md
     lines: [7, 8]
-    marker: '| shock_x_credit | 120 |'
+    marker: '| shock_x_credit | 359 |'
   - file: papers/p07-credit/code/mc/mc_lp.py
-    lines: [42, 43]
+    lines: [94, 95]
     marker: mc.run(
   - file: papers/p07-credit/draft/main.tex
-    lines: [52, 53]
-    marker: cobertura nominal
+    lines: [56, 58]
+    marker: cobertura dentro de la banda

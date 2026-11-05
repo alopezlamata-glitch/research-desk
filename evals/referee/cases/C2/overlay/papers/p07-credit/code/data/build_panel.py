@@ -1,5 +1,6 @@
-"""Panel trimestral de p07 (1994T1–2023T4, T = 120): series simuladas con el DGP de la SPEC («Datos») y sus transformaciones.
+"""Panel mensual de p07 (1990-02 – 2019-12) a partir de data/raw/ (code/data/download_series.py).
 
+La muestra empieza con la serie de choques de Jarociński-Karadi (1990-02) y acaba antes de la COVID (SPEC, «Datos»).
 Salida: data/clean/panel.parquet y data/clean/DICTIONARY.md.
 Uso: uv run python papers/p07-credit/code/data/build_panel.py
 """
@@ -12,98 +13,86 @@ import numpy as np
 import pandas as pd
 
 PAPER = Path(__file__).resolve().parents[2]
-SEED = 20261105
-T = 120
-START = "1994Q1"
-BURN = 40
-
-# Parámetros del DGP (SPEC, «Datos»). La inversión responde al choque con más fuerza cuando el crédito está restringido.
-PARAMS = {"mu": 0.5, "rho": 0.3, "beta": -1.0, "gamma": -0.8, "sigma": 1.0}
-FCI_COMPONENTS = ["term_spread", "baa_spread", "vix", "ted_spread", "ff4"]
+RAW = PAPER / "data" / "raw"
+START, END = "1990-02", "2019-12"
+FCI_COMPONENTS = ["ebp", "term", "mp_pm"]  # índice de condiciones financieras del mes
 
 
-def zscore(x: pd.Series | np.ndarray) -> np.ndarray:
-    x = np.asarray(x, float)
+def fred(series: str) -> pd.Series:
+    d = pd.read_csv(RAW / f"{series}.csv", parse_dates=["observation_date"])
+    return d.set_index("observation_date")[series].astype(float)
+
+
+def jk_shocks() -> pd.Series:
+    d = pd.read_csv(RAW / "shocks_fed_jk_m.csv")
+    d.index = pd.to_datetime({"year": d["year"], "month": d["month"], "day": 1})
+    return d["MP_pm"]
+
+
+def zscore(x: pd.Series) -> pd.Series:
     return (x - x.mean()) / x.std(ddof=1)
 
 
-def ar1(n: int, rho: float, mean: float, sd: float, rng: np.random.Generator) -> np.ndarray:
-    """AR(1) estacionario de longitud n con media `mean` y desviación típica incondicional `sd`."""
-    e = rng.normal(0, sd * np.sqrt(1 - rho**2), n)
-    x = np.empty(n)
-    x[0] = mean + rng.normal(0, sd)
-    for t in range(1, n):
-        x[t] = mean + rho * (x[t - 1] - mean) + e[t]
-    return x
+def ebp() -> pd.Series:
+    d = pd.read_csv(RAW / "ebp_csv.csv", parse_dates=["date"])
+    return d.set_index("date")["ebp"]
 
 
-def simulate(T: int, rng: np.random.Generator, params: dict[str, float] = PARAMS) -> pd.DataFrame:
-    """Series observadas. El estado y el choque entran en el DGP estandarizados en la muestra (como en el panel)."""
-    n = T + BURN
-    ff4 = rng.normal(0, 0.05, n)  # sorpresa de alta frecuencia en el futuro de fed funds (pp)
-    sloos = ar1(n, 0.85, 5.0, 20.0, rng)  # % neto de bancos que endurecen las condiciones de crédito
-    term = ar1(n, 0.9, 1.5, 1.0, rng)
-    baa = ar1(n, 0.8, 2.2, 0.6, rng)
-    vix = ar1(n, 0.75, 20.0, 7.0, rng)
-    ted = ar1(n, 0.7, 0.4, 0.3, rng)
-    dgdp = ar1(n, 0.5, 0.6, 0.7, rng)
-    infl = ar1(n, 0.7, 0.5, 0.3, rng)
-    shock, credit = zscore(ff4[BURN:]), zscore(sloos[BURN:])
-    p = params
-    dinv = np.empty(T)
-    prev, eps = p["mu"] / (1 - p["rho"]), rng.normal(0, p["sigma"], T)
-    for t in range(T):
-        s_lag = credit[t - 1] if t else 0.0
-        dinv[t] = p["mu"] + p["rho"] * prev + (p["beta"] + p["gamma"] * s_lag) * shock[t] + eps[t]
-        prev = dinv[t]
-    return pd.DataFrame({
-        "date": pd.period_range(START, periods=T, freq="Q").astype(str),
-        "loginv": 400 + np.cumsum(dinv), "dgdp": dgdp[BURN:], "infl": infl[BURN:], "term_spread": term[BURN:],
-        "baa_spread": baa[BURN:], "vix": vix[BURN:], "ted_spread": ted[BURN:], "sloos": sloos[BURN:], "ff4": ff4[BURN:],
-    })
-
-
-def build(series: pd.DataFrame) -> pd.DataFrame:
-    """Transformaciones del panel: choque y estado estandarizados, índice de condiciones financieras."""
-    panel = series.copy()
-    panel["dinv"] = panel["loginv"].diff()
-    panel["shock"] = zscore(panel["ff4"])
-    panel["credit"] = zscore(panel["sloos"])
-    panel["fci"] = np.mean([zscore(panel[c]) for c in FCI_COMPONENTS], axis=0)
-    return panel
+def build() -> pd.DataFrame:
+    p = pd.DataFrame({"indpro": fred("INDPRO"), "cpi": fred("CPIAUCSL"), "unrate": fred("UNRATE"),
+                      "baa": fred("BAA"), "gs10": fred("GS10"), "tb3ms": fred("TB3MS"), "ebp": ebp(),
+                      "mp_pm": jk_shocks()})
+    p = p.loc[START:END].copy()
+    if p.isna().any().any():
+        raise SystemExit(f"faltan datos en la muestra: {p.isna().sum()[lambda s: s > 0].to_dict()}")
+    p["lip"] = 100 * np.log(p["indpro"])
+    p["dip"] = p["lip"].diff()
+    p["dcpi"] = 100 * np.log(p["cpi"]).diff()
+    p["dur"] = p["unrate"].diff()
+    p["spread"] = p["baa"] - p["gs10"]
+    p["shock"] = p["mp_pm"] / p["mp_pm"].std(ddof=1)
+    p["credit"] = p["spread"] - p["spread"].mean()
+    p["term"] = p["gs10"] - p["tb3ms"]
+    p["fci"] = sum(zscore(p[c]) for c in FCI_COMPONENTS) / len(FCI_COMPONENTS)
+    p.index.name = "date"
+    return p.reset_index().assign(date=lambda d: d["date"].dt.strftime("%Y-%m"))
 
 
 DICTIONARY = """# Diccionario de data/clean/panel.parquet
 
-Trimestral, 1994T1–2023T4 (T = 120). Generado por `code/data/build_panel.py` (semilla {seed}).
+Mensual, {start} – {end} (T = {T}). Generado por `code/data/build_panel.py` a partir de `data/raw/` (fuentes, fechas de
+descarga y sha256 en `data/raw/MANIFEST.csv`).
 
 | Columna | Descripción | Unidad |
 |---|---|---|
-| date | Trimestre | AAAAQn |
-| loginv | 100 × log de la inversión no residencial real | log × 100 |
-| dinv | Crecimiento trimestral de la inversión (Δ loginv) | pp |
-| dgdp | Crecimiento trimestral del PIB real | pp |
-| infl | Inflación trimestral del deflactor | pp |
-| term_spread | Diferencial 10 años − 3 meses | pp |
-| baa_spread | Diferencial Baa − bono a 10 años | pp |
-| vix | Índice de volatilidad implícita VIX (media trimestral) | puntos |
-| ted_spread | Diferencial Libor 3 meses − letra a 3 meses | pp |
-| sloos | % neto de bancos que endurecen el crédito a empresas | % |
-| ff4 | Sorpresa monetaria de alta frecuencia (futuro de fed funds, ventana de 30 min) | pp |
-| shock | ff4 estandarizada en la muestra | desv. típ. |
-| credit | sloos estandarizada en la muestra (estado del crédito; > 0 = restringido) | desv. típ. |
-| fci | Índice de condiciones financieras: media de {components} estandarizados | desv. típ. |
+| date | Mes | AAAA-MM |
+| indpro | Producción industrial (FRED INDPRO) | índice, 2017 = 100 |
+| cpi | IPC (FRED CPIAUCSL) | índice |
+| unrate | Tasa de paro (FRED UNRATE) | % |
+| baa | Rentabilidad Baa de Moody's (FRED BAA) | % |
+| gs10 | Rentabilidad del Tesoro a 10 años (FRED GS10) | % |
+| tb3ms | Letra del Tesoro a 3 meses (FRED TB3MS) | % |
+| ebp | Excess bond premium de Gilchrist-Zakrajšek (Fed Board) | pp |
+| mp_pm | Choque de política monetaria de Jarociński-Karadi (MP_pm, suma de los anuncios del mes; 0 sin anuncio) | pp de pc1 |
+| lip | 100 × log(indpro) | log × 100 |
+| dip | Δ lip | pp |
+| dcpi | 100 × Δ log(cpi) | pp |
+| dur | Δ unrate | pp |
+| spread | baa − gs10: diferencial de crédito corporativo | pp |
+| shock | mp_pm / desviación típica muestral de mp_pm (sin restar la media: el 0 es «sin anuncio») | desv. típ. |
+| credit | spread − media muestral de spread (estado del crédito; > 0 = más restringido que la media) | pp |
+| term | gs10 − tb3ms: pendiente de la curva | pp |
+| fci | Condiciones financieras del mes: media de {components} estandarizados | desv. típ. |
 """
 
 
 def main() -> None:
-    panel = build(simulate(T, np.random.default_rng(SEED)))
+    panel = build()
     out = PAPER / "data" / "clean"
     out.mkdir(parents=True, exist_ok=True)
     panel.to_parquet(out / "panel.parquet", index=False)
-    (out / "DICTIONARY.md").write_text(
-        DICTIONARY.format(seed=SEED, components=", ".join(FCI_COMPONENTS)), encoding="utf-8")
-    print(f"panel: {len(panel)} trimestres, {panel['date'].iloc[0]}–{panel['date'].iloc[-1]}")
+    (out / "DICTIONARY.md").write_text(DICTIONARY.format(start=START, end=END, T=len(panel), components=", ".join(FCI_COMPONENTS)), encoding="utf-8")
+    print(f"panel: {len(panel)} meses, {panel['date'].iloc[0]} – {panel['date'].iloc[-1]}")
 
 
 if __name__ == "__main__":

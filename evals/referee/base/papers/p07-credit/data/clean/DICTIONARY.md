@@ -1,20 +1,21 @@
 # Diccionario de data/clean/panel.parquet
 
-Trimestral, 1994T1–2023T4 (T = 120). Generado por `code/data/build_panel.py` (semilla 20261105).
+Mensual, 1990-02 – 2019-12 (T = 359). Generado por `code/data/build_panel.py` a partir de `data/raw/` (fuentes, fechas de
+descarga y sha256 en `data/raw/MANIFEST.csv`).
 
 | Columna | Descripción | Unidad |
 |---|---|---|
-| date | Trimestre | AAAAQn |
-| loginv | 100 × log de la inversión no residencial real | log × 100 |
-| dinv | Crecimiento trimestral de la inversión (Δ loginv) | pp |
-| dgdp | Crecimiento trimestral del PIB real | pp |
-| infl | Inflación trimestral del deflactor | pp |
-| term_spread | Diferencial 10 años − 3 meses | pp |
-| baa_spread | Diferencial Baa − bono a 10 años | pp |
-| vix | Índice de volatilidad implícita VIX (media trimestral) | puntos |
-| ted_spread | Diferencial Libor 3 meses − letra a 3 meses | pp |
-| sloos | % neto de bancos que endurecen el crédito a empresas | % |
-| ff4 | Sorpresa monetaria de alta frecuencia (futuro de fed funds, ventana de 30 min) | pp |
-| shock | ff4 estandarizada en la muestra | desv. típ. |
-| credit | sloos estandarizada en la muestra (estado del crédito; > 0 = restringido) | desv. típ. |
-| fci | Índice de condiciones financieras: media de term_spread, baa_spread, vix, ted_spread estandarizados | desv. típ. |
+| date | Mes | AAAA-MM |
+| indpro | Producción industrial (FRED INDPRO) | índice, 2017 = 100 |
+| cpi | IPC (FRED CPIAUCSL) | índice |
+| unrate | Tasa de paro (FRED UNRATE) | % |
+| baa | Rentabilidad Baa de Moody's (FRED BAA) | % |
+| gs10 | Rentabilidad del Tesoro a 10 años (FRED GS10) | % |
+| mp_pm | Choque de política monetaria de Jarociński-Karadi (MP_pm, suma de los anuncios del mes; 0 sin anuncio) | pp de pc1 |
+| lip | 100 × log(indpro) | log × 100 |
+| dip | Δ lip | pp |
+| dcpi | 100 × Δ log(cpi) | pp |
+| dur | Δ unrate | pp |
+| spread | baa − gs10: diferencial de crédito corporativo | pp |
+| shock | mp_pm / desviación típica muestral de mp_pm (sin restar la media: el 0 es «sin anuncio») | desv. típ. |
+| credit | spread − media muestral de spread (estado del crédito; > 0 = más restringido que la media) | pp |

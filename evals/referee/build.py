@@ -12,6 +12,7 @@ que se audita.
 
 from __future__ import annotations
 
+import csv
 import filecmp
 import os
 import re
@@ -42,7 +43,8 @@ INFRA = [
     "tools/integrity.py", "tools/research.py", "tools/symcheck.py", "tools/mc.py",
 ]
 PREREG_LINE = "prereg_commit: {PREREG_COMMIT}"
-GENERATED = ["data/clean", "output"]  # lo que produce el pipeline del paper
+GENERATED = ["data/raw", "data/clean", "output"]  # lo que produce el pipeline del paper
+LAKE = ROOT / "datalake"
 GIT_ID = {"GIT_AUTHOR_NAME": "Research Desk", "GIT_AUTHOR_EMAIL": "desk@research.local",
           "GIT_COMMITTER_NAME": "Research Desk", "GIT_COMMITTER_EMAIL": "desk@research.local"}
 
@@ -90,6 +92,24 @@ def tree(case: str, dest: Path) -> None:
         if not overlay.is_dir():
             raise SystemExit(f"no existe {overlay}")
         shutil.copytree(overlay, dest, dirs_exist_ok=True)
+    copy_raw(dest)
+
+
+def copy_raw(dest: Path) -> None:
+    """Pone en data/raw/ los archivos de su MANIFEST, copiados del datalake (sin modificar) por su sha256.
+
+    Los datos brutos no se versionan (tampoco en evals/): se regeneran como en un paper real, desde el datalake.
+    """
+    manifest = dest / PAPER / "data" / "raw" / "MANIFEST.csv"
+    if not manifest.exists():
+        return
+    with (LAKE / "MANIFEST.csv").open(encoding="utf-8", newline="") as f:
+        by_sha = {r["sha256"]: LAKE / r["path"] for r in csv.DictReader(f)}
+    with manifest.open(encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            if row["sha256"] not in by_sha:
+                raise SystemExit(f"{row['file']}: su sha256 no está en datalake/MANIFEST.csv")
+            shutil.copy2(by_sha[row["sha256"]], manifest.parent / row["file"])
 
 
 def build(case: str, dest: Path | None = None) -> Path:
@@ -118,7 +138,8 @@ def build(case: str, dest: Path | None = None) -> Path:
 def pipeline(repo: Path, r: str) -> list[list[str]]:
     """Comandos del pipeline del paper en orden: datos, análisis, replicación en R y Monte Carlo (sin los tests)."""
     code = repo / PAPER / "code"
-    scripts = [f for d in ("data", "analysis", "replication_r", "mc") for f in sorted((code / d).iterdir())
+    scripts = [f for d in ("data", "analysis", "replication_r", "mc")
+               for f in sorted((code / d).iterdir(), key=lambda f: (not f.name.startswith("download_"), f.name))
                if f.suffix in (".py", ".R") and not f.name.startswith("test_")]
     return [([r] if f.suffix == ".R" else ["uv", "run", "python"]) + [f.relative_to(repo).as_posix()] for f in scripts]
 
@@ -138,9 +159,11 @@ def regen(case: str) -> None:
             for f in (dest / PAPER / rel).glob("*"):
                 f.unlink()
         for cmd in pipeline(dest, r):
-            subprocess.run(cmd, cwd=dest, env=env(), check=True)
+            subprocess.run(cmd, cwd=dest, env={**env(), "DATALAKE": str(LAKE)}, check=True)
         for rel in GENERATED:
             for f in sorted((dest / PAPER / rel).glob("*")):
+                if rel == "data/raw" and f.name != "MANIFEST.csv":
+                    continue  # los datos brutos no se guardan en evals/: copy_raw los trae del datalake
                 base_f = BASE / PAPER / rel / f.name
                 target = base_f if case == "C0" else CASES / case / "overlay" / PAPER / rel / f.name
                 if case != "C0" and base_f.exists() and filecmp.cmp(f, base_f, shallow=False):

@@ -1,12 +1,12 @@
-# Monte Carlo de la LP (h = 1)
+# Monte Carlo de la LP (h = 12)
 
-Estimador: `code/analysis/lp.py` (NW(2)). DGP: `code/data/build_panel.py`. 1000 réplicas, semilla 7. Banda de cobertura aceptable: [0,92; 0,98].
+Estimador: `code/analysis/lp.py` (6 retardos, White). DGP propio calibrado a los datos (`code/mc/mc_lp.py`): β = -0.1, γ = -0.2, ρ = 0.246. 1000 réplicas, semilla 7. Banda de cobertura aceptable: [0,92; 0,98].
 
 | Parámetro | T | Verdadero | Sesgo | RMSE | Cobertura 95 % | Potencia | Fallos |
 |---|---|---|---|---|---|---|---|
-| shock | 120 | -1.300 | +0.045 | 0.200 | 0.919 | 1.000 | 0 |
-| shock_x_credit | 120 | -1.040 | +0.038 | 0.213 | 0.896 | 0.999 | 0 |
-| shock | 60 | -1.300 | +0.084 | 0.305 | 0.854 | 0.994 | 0 |
-| shock_x_credit | 60 | -1.040 | +0.076 | 0.310 | 0.847 | 0.942 | 0 |
+| shock | 359 | -0.133 | +0.006 | 0.172 | 0.905 | 0.198 | 0 |
+| shock_x_credit | 359 | -0.265 | +0.037 | 0.307 | 0.887 | 0.217 | 0 |
+| shock | 179 | -0.133 | +0.039 | 0.275 | 0.872 | 0.169 | 0 |
+| shock_x_credit | 179 | -0.265 | +0.021 | 0.532 | 0.872 | 0.163 | 0 |
 
-Los intervalos de NW de esta especificación son los que se usan en el texto.
+Los intervalos de esta especificación son los que se usan en el texto.

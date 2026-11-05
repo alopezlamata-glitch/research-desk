@@ -1,6 +1,6 @@
 timestamp,commit,script,spec_id,preregistered,exploratory,description,prereg
-2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h0,True,False,"LP h=0: choque × crédito_(t−1), controles x, NW(1)",7102b6fd737f
-2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h1,True,False,"LP h=1: choque × crédito_(t−1), controles x, NW(2)",7102b6fd737f
-2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h2,True,False,"LP h=2: choque × crédito_(t−1), controles x, NW(3)",7102b6fd737f
-2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h3,True,False,"LP h=3: choque × crédito_(t−1), controles x, NW(4)",7102b6fd737f
-2026-11-05T15:32:46+00:00,4758ef9-dirty,code/analysis/lp.py,lp_h4,True,False,"LP h=4: choque × crédito_(t−1), controles x, NW(5)",7102b6fd737f
+2026-11-05T20:32:18+00:00,2e6023a-dirty,code/analysis/lp.py,lp_h0,True,False,"LP h=0: choque × crédito_(t−1), 6 retardos de x, HC3",94a382678cb4
+2026-11-05T20:32:19+00:00,2e6023a-dirty,code/analysis/lp.py,lp_h6,True,False,"LP h=6: choque × crédito_(t−1), 6 retardos de x, HC3",94a382678cb4
+2026-11-05T20:32:19+00:00,2e6023a-dirty,code/analysis/lp.py,lp_h12,True,False,"LP h=12: choque × crédito_(t−1), 6 retardos de x, HC3",94a382678cb4
+2026-11-05T20:32:19+00:00,2e6023a-dirty,code/analysis/lp.py,lp_h18,True,False,"LP h=18: choque × crédito_(t−1), 6 retardos de x, HC3",94a382678cb4
+2026-11-05T20:32:19+00:00,2e6023a-dirty,code/analysis/lp.py,lp_h24,True,False,"LP h=24: choque × crédito_(t−1), 6 retardos de x, HC3",94a382678cb4

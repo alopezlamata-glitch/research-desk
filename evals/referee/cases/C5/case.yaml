@@ -1,19 +1,19 @@
 id: C5
 sets: [val]
 description: >
-  Grados de libertad (regla de prerregistro). El borrador presenta como "prerregistrada" la LP con un indicador de
-  crédito restringido (sloos sobre su cuartil superior), registrada como exploratoria en spec_log.csv y la única
-  significativa de cuatro cuantiles (lp_states.py); la especificación prerregistrada (estado continuo) no es
-  significativa y el texto no la menciona. Mundo del caso: γ = −0,15 y semilla 20261165 en build_panel.py.
+  Grados de libertad (regla de prerregistro). Tras el nulo prerregistrado (producción industrial), el borrador presenta
+  como "prerregistrada" la LP de las viviendas iniciadas, registrada como exploratoria en spec_log.csv y la única
+  significativa (p = 0,048) de las tres variables alternativas de lp_outcomes.py (empleo p ≈ 0,5; paro p ≈ 0,47), y no
+  informa del resultado prerregistrado.
 verdicts: [RECHAZADO]
 locations:
   - file: papers/p07-credit/draft/main.tex
-    lines: [32, 36]
+    lines: [35, 40]
     marker: prerregistrada
-  - file: papers/p07-credit/code/analysis/lp_states.py
+  - file: papers/p07-credit/code/analysis/lp_outcomes.py
     lines: [1, 4]
     marker: exploratorias
   - file: papers/p07-credit/output/spec_log.csv
-    lines: [7, 10]
-    marker: lp_h1_q75
+    lines: [7, 9]
+    marker: lp_h12_houst
     any_line: true

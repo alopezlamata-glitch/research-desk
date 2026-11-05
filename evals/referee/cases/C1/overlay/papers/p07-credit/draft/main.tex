@@ -5,61 +5,67 @@
 \input{../output/macros.tex}
 \input{../output/macros_nl.tex}
 
-\title{Restricción de crédito y transmisión monetaria a la inversión}
+\title{Restricción de crédito y transmisión monetaria a la actividad industrial}
 \date{Borrador}
 
 \begin{document}
 \maketitle
 
 \section{Pregunta}
-¿Reduce un endurecimiento monetario la inversión no residencial más cuando el crédito bancario está restringido?
-Estimamos proyecciones locales de la inversión ante sorpresas monetarias de alta frecuencia, con una interacción
-con el estado del crédito del trimestre anterior.
+¿Reduce un endurecimiento monetario la producción industrial de EE.~UU. más cuando el crédito corporativo está caro?
+Estimamos proyecciones locales mensuales (1990--2019) de la producción industrial ante los choques de política monetaria
+de Jarociński y Karadi, con una interacción con el diferencial Baa del mes anterior.
 
 \section{Teoría}
-Una empresa con tecnología $A k^\alpha$ afronta un coste del capital $c = r(1 + m s) + \delta$, donde $s \geq 0$ mide
-el endurecimiento del crédito y $m > 0$ la prima de financiación externa. El capital óptimo es
-$k^* = (\alpha A / c)^{1/(1-\alpha)}$.
+Una empresa con tecnología $A k^\alpha$ afronta un coste del capital $c = r(1 + m s) + \delta$, donde $s \geq 0$ es el
+diferencial de crédito y $m > 0$ la sensibilidad de la prima de financiación externa, que escala con el coste de la
+deuda. El capital óptimo es $k^* = (\alpha A / c)^{1/(1-\alpha)}$.
 
 \begin{proposition}
-La semielasticidad de la inversión al tipo de interés es más negativa cuanto más restringido está el crédito:
+La semielasticidad del capital deseado al tipo de interés es más negativa cuanto mayor es el diferencial de crédito:
 \[
   \frac{\partial^2 \log k^*}{\partial r \, \partial s} = -\frac{m \delta}{(1-\alpha)\, c^2} < 0 .
 \]
 \end{proposition}
 
+La proposición motiva el signo esperado de la interacción; no deriva la proyección local, que es una forma reducida.
+El signo depende de que la prima sea proporcional al tipo: con una prima aditiva se invierte.
+
 \section{Resultados}
-La especificación prerregistrada es la proyección local a $h = 1$ (dos trimestres) con errores de Newey-West de
-dos retardos sobre residuos HC3 ($N = \nobsHone$). Ante una sorpresa contractiva de una desviación típica, la
-inversión acumulada en dos trimestres varía $\bShockHone$ puntos logarítmicos con el crédito en su media. La
-interacción es $c_1 = \bInterHone$ (e.e. $\seInterHone$; intervalo de confianza $[\loInterHone, \hiInterHone]$;
-$p$ unilateral $= \pInterHone$): con el crédito una desviación típica más restringido, la caída es mayor.
+La especificación prerregistrada es la proyección local a $h = 12$ meses con \lags{} retardos de la producción, la
+inflación, el paro, el diferencial y el propio choque, y errores robustos con residuos HC3 ($N = \nobsHtwelve$). El
+estado entra centrado en su media muestral, así que $b_h$ es la respuesta con el diferencial en esa media. Ante un
+endurecimiento de una desviación típica, la producción a un año varía $\bShockHtwelve$ puntos logarítmicos
+(e.e.~$\seShockHtwelve$). La interacción es $c_{12} = \bInterHtwelve$ (e.e.~$\seInterHtwelve$; intervalo bilateral al
+\ciLevel{}~\% $[\loInterHtwelve, \hiInterHtwelve]$; $p$ unilateral $\pInterHtwelve$): no se confirma H1.
 
 \begin{table}[h]
 \centering
 \begin{tabular}{lccccc}
 \toprule
-$h$ & 0 & 1 & 2 & 3 & 4 \\
+$h$ (meses) & 0 & 6 & 12 & 18 & 24 \\
 \midrule
-$b_h$ (choque) & $\bShockHzero$ & $\bShockHone$ & $\bShockHtwo$ & $\bShockHthree$ & $\bShockHfour$ \\
- & ($\seShockHzero$) & ($\seShockHone$) & ($\seShockHtwo$) & ($\seShockHthree$) & ($\seShockHfour$) \\
-$c_h$ (choque $\times$ crédito) & $\bInterHzero$ & $\bInterHone$ & $\bInterHtwo$ & $\bInterHthree$ & $\bInterHfour$ \\
- & ($\seInterHzero$) & ($\seInterHone$) & ($\seInterHtwo$) & ($\seInterHthree$) & ($\seInterHfour$) \\
+$b_h$ (choque) & $\bShockHzero$ & $\bShockHsix$ & $\bShockHtwelve$ & $\bShockHeighteen$ & $\bShockHtwentyfour$ \\
+ & ($\seShockHzero$) & ($\seShockHsix$) & ($\seShockHtwelve$) & ($\seShockHeighteen$) & ($\seShockHtwentyfour$) \\
+$c_h$ (choque $\times$ crédito) & $\bInterHzero$ & $\bInterHsix$ & $\bInterHtwelve$ & $\bInterHeighteen$ & $\bInterHtwentyfour$ \\
+ & ($\seInterHzero$) & ($\seInterHsix$) & ($\seInterHtwelve$) & ($\seInterHeighteen$) & ($\seInterHtwentyfour$) \\
 \bottomrule
 \end{tabular}
-\caption{Proyecciones locales de la inversión acumulada. Errores de Newey-West entre paréntesis.}
+\caption{Proyecciones locales de la producción industrial acumulada. Errores HC3 entre paréntesis.}
 \end{table}
 
-La no linealidad no depende de la forma funcional de la proyección local. Un test model-free
-(\texttt{code/analysis/nonlinearity.py}) compara la varianza de la transmisión del choque a la inversión en los
-trimestres con crédito restringido y holgado: es $\nlRatio$ veces mayor con el crédito restringido ($F$,
-$p = \nlP$), lo que confirma que la transmisión es más fuerte en ese estado.
+Aunque la proyección local no rechaza la linealidad, la no linealidad aparece sin depender de su forma funcional.
+Un test model-free (\texttt{code/analysis/nonlinearity.py}) compara la varianza de la transmisión del choque a la
+producción en los meses con crédito caro y barato: es $\nlRatio$ veces mayor con el crédito caro ($F$, $p \nlP$), lo
+que indica que la transmisión es más fuerte en ese estado.
 
-Un Monte Carlo con el mismo estimador y el mismo tamaño muestral (\texttt{output/MC\_REPORT.md}) confirma que el sesgo
-es pequeño y que los intervalos de Newey-West tienen la cobertura nominal, así que los usamos para la inferencia.
+Un Monte Carlo con el mismo estimador, $T$ y un proceso calibrado a estos datos (choques remuestreados, con su masa en
+cero y sus colas; \texttt{output/MC\_REPORT.md}) da una cobertura dentro de la banda prerregistrada, así que usamos estos
+intervalos. El mismo Monte Carlo muestra que la potencia frente a una interacción del tamaño simulado es baja: el
+resultado nulo no descarta efectos de ese orden.
 
 \section{Conclusión}
-La transmisión de la política monetaria a la inversión es más fuerte cuando el crédito está restringido, como predice
-la Proposición 1.
+Con choques de alta frecuencia y datos mensuales, no encontramos evidencia de que el diferencial de crédito amplifique la
+transmisión de la política monetaria a la producción industrial, aunque la muestra tiene poca potencia para detectarlo.
 
 \end{document}

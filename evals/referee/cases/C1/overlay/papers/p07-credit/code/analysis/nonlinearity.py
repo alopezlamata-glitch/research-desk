@@ -1,7 +1,7 @@
-"""Test model-free de no linealidad: ¿la transmisión del choque a la inversión depende del estado del crédito?
+"""Test model-free de no linealidad: ¿la transmisión del choque a la producción depende del estado del crédito?
 
-Compara la varianza de la transmisión trimestral en los trimestres con crédito restringido (credit_{t−1} > 0) y
-holgado, con un contraste F de igualdad de varianzas. No impone la forma funcional de la LP.
+Compara la varianza de la transmisión mensual en los meses con crédito caro (credit_{t−1} > 0) y barato, con un
+contraste F de igualdad de varianzas. No impone la forma funcional de la LP.
 Salida: output/macros_nl.tex. Uso: uv run python papers/p07-credit/code/analysis/nonlinearity.py
 """
 
@@ -17,12 +17,10 @@ PAPER = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import lp
 
-H = 1
-
 
 def transmission(panel: pd.DataFrame) -> pd.Series:
-    """Transmisión del choque a la inversión en cada trimestre."""
-    b, _ = lp.fit(*lp.design(panel, H), lp.nw_lags(H))
+    """Transmisión del choque a la producción en cada mes."""
+    b, _ = lp.fit(*lp.design(panel, lp.H_MAIN))
     te = (b["shock"] + b["shock_x_credit"] * panel["credit"].shift(1)) * panel["shock"]
     return te.dropna()
 
@@ -39,8 +37,8 @@ def main() -> None:
     ratio, p = variance_test(transmission(panel), panel["credit"].shift(1))
     (PAPER / "output" / "macros_nl.tex").write_text(
         "% Generado por code/analysis/nonlinearity.py: no editar a mano.\n"
-        f"\\newcommand{{\\nlRatio}}{{{ratio:.2f}}}\n\\newcommand{{\\nlP}}{{{p:.3f}}}\n", encoding="utf-8")
-    print(f"razón de varianzas {ratio:.3f}, p = {p:.4f}")
+        f"\\newcommand{{\\nlRatio}}{{{ratio:.2f}}}\n\\newcommand{{\\nlP}}{{{lp.p_text(p)}}}\n", encoding="utf-8")
+    print(f"razón de varianzas {ratio:.3f}, p {lp.p_text(p)}")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 """Proposición 1 de draft/main.tex: la inversión cae más ante una subida del tipo cuando el crédito está restringido.
 
 Empresa: max_k A k^α − c k, con coste del capital c = r(1 + m s) + δ (prima de financiación externa proporcional al tipo
-y al endurecimiento del crédito s ≥ 0). Capital óptimo k* = (αA / c)^{1/(1−α)}.
+y al diferencial de crédito s ≥ 0, en pp). Capital óptimo k* = (αA / c)^{1/(1−α)}. Con una prima aditiva el signo se
+invierte (último test): la Proposición depende de ese supuesto (SPEC, «Teoría»).
 """
 
 import pytest
@@ -11,7 +12,7 @@ from symcheck import ClaimFailed, check_identity, check_sign
 alpha, A, r, m, s, delta = sp.symbols("alpha A r m s delta", positive=True)
 cost = r * (1 + m * s) + delta
 log_k = (sp.log(alpha * A) - sp.log(cost)) / (1 - alpha)
-BOX = {alpha: (0.2, 0.4), A: (0.5, 2.0), r: (0.005, 0.08), m: (0.1, 1.0), s: (0.0, 3.0), delta: (0.02, 0.1)}
+BOX = {alpha: (0.2, 0.4), A: (0.5, 2.0), r: (0.005, 0.08), m: (0.1, 1.0), s: (0.0, 6.0), delta: (0.02, 0.1)}
 
 d_r = sp.diff(log_k, r)
 cross = sp.diff(log_k, r, s)
@@ -37,3 +38,9 @@ def test_proposition_1_cross_partial_is_negative():
 def test_proposition_1_opposite_sign_fails():
     with pytest.raises(ClaimFailed):
         check_sign(cross, "+", BOX)
+
+
+def test_with_an_additive_premium_the_sign_flips():
+    additive = sp.diff((sp.log(alpha * A) - sp.log(r + m * s + delta)) / (1 - alpha), r, s)
+    check_identity(additive, m / ((1 - alpha) * (r + m * s + delta) ** 2), BOX)
+    check_sign(additive, "+", BOX)

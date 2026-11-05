@@ -2,13 +2,13 @@ id: C1
 sets: [dev]
 description: >
   Circularidad (lección 1 de kb/lessons/referee.md). El "test model-free" de no linealidad compara varianzas de una
-  transmisión construida con los coeficientes de la LP, b + c·credit_{t−1}, multiplicada por el choque: la diferencia
-  entre estados es mecánica y el test no es independiente de la hipótesis.
+  transmisión construida con los coeficientes de la propia LP, (b + c·credit_{t−1})·shock_t: la diferencia entre estados
+  es mecánica (razón ≈ 12 con un c_12 no significativo) y el borrador la usa como evidencia de no linealidad.
 verdicts: [RECHAZADO]
 locations:
   - file: papers/p07-credit/code/analysis/nonlinearity.py
-    lines: [24, 27]
+    lines: [22, 25]
     marker: 'te = (b["shock"] + b["shock_x_credit"]'
   - file: papers/p07-credit/draft/main.tex
-    lines: [53, 57]
+    lines: [57, 61]
     marker: model-free

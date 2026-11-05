@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 import build
+import pandas as pd
 import pytest
 
 sys.path.insert(0, str(build.ROOT / "tools"))
@@ -71,3 +72,17 @@ def test_marker_errors_detects_a_moved_marker(built):
     loc = key["locations"][0]
     moved = {"locations": [{**loc, "lines": [loc["lines"][1] + 50, loc["lines"][1] + 60]}]}
     assert build.marker_errors(moved, repo)
+
+
+def test_clean_data_come_from_raw_by_code(built):
+    """Hallazgo 1 del Referee en la línea base de C0 (2026-11-05): el panel tiene que salir de data/raw/ por código."""
+    case, _, repo = built
+    data_code = repo / build.PAPER / "code" / "data"
+    assert not any(w in f.read_text(encoding="utf-8") for f in data_code.glob("*.py") for w in ("simulate", "random"))
+    if case not in ("C0", "C2", "C5"):
+        pytest.skip("solo los casos que cambian los datos")
+    clean = repo / build.PAPER / "data" / "clean" / "panel.parquet"
+    before = pd.read_parquet(clean)
+    r = run(repo, "uv", "run", "python", f"{build.PAPER}/code/data/build_panel.py")
+    assert r.returncode == 0, r.stderr
+    pd.testing.assert_frame_equal(pd.read_parquet(clean), before)

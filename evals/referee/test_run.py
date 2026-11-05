@@ -8,6 +8,12 @@ import pytest
 import run
 
 
+@pytest.fixture(autouse=True)
+def enough_memory(monkeypatch):
+    """La memoria libre de la máquina no es parte de lo que se prueba (la negativa por memoria está en test_desk.py)."""
+    monkeypatch.setattr(build.desk, "free_memory_gb", lambda: 8.0)
+
+
 @pytest.fixture
 def dry(tmp_path, monkeypatch):
     monkeypatch.setattr(build, "WORKDIR", tmp_path / "work")
