@@ -1,0 +1,14 @@
+N = 102; celdas C-, C+, U-, U+ = 22 29 28 23
+AR(2): mu=0.258251030 phi1=0.465499081 phi2=0.270794546 sd(df=n-3)=1.356738960 kappa=1.865344583
+pi_ffr=1.761003520 (ee HC1 0.855971393); beta_ref=-0.880501760
+apalancamiento: max=0.404 media=0.157
+  col 3: top2 = 0.361 (2007Q4, 2008Q3)
+  col 4: top2 = 0.346 (2000Q4, 2003Q1)
+  col 5: top2 = 0.449 (1998Q4, 2001Q2)
+  col 6: top2 = 0.394 (1992Q2, 2001Q1)
+error de diseño m=1 (C+,U+,C-,U-): 0.043171 0.250703 0.027866 0.136355 
+determinista: ee NW5 0.153721481 0.335737485 0.113365024 0.306359432 | ee NW5-HC3 0.191393275 0.472335444 0.143703223 0.436728501 | s1_lin b, ee -0.799657475 0.061755621 
+(veredictos: confirma, refuta_a, refuta_b, no_concluyente; cobertura: C+, U+, C-, U-)
+[m=1 c=1 hetero=FALSE] NW5: cobertura 0.861 0.890 0.902 0.885; subida 0.082 0.095 0.031 0.792; bajada 0.061 0.069 0.032 0.838
+[m=1 c=1 hetero=FALSE] NW5-HC3: cobertura 0.941 0.944 0.964 0.952; subida 0.034 0.046 0.026 0.894; bajada 0.020 0.027 0.015 0.937
+[m=1 c=1 hetero=FALSE] P(H0 confirma)=0.086; P(H0 y confirma H1+, H1-)= 0.010 0.007

@@ -1,0 +1,23 @@
+N = 102; celdas C-, C+, U-, U+ = 22 29 28 23
+AR(2): mu=0.258251030 phi1=0.465499081 phi2=0.270794546 sd(df=n-3)=1.356738960 kappa=1.865344583
+pi_ffr=1.761003520 (ee HC1 0.855971393); beta_ref=-0.880501760
+apalancamiento: max=0.404 media=0.157
+  col 3: top2 = 0.361 (2007Q4, 2008Q3)
+  col 4: top2 = 0.346 (2000Q4, 2003Q1)
+  col 5: top2 = 0.449 (1998Q4, 2001Q2)
+  col 6: top2 = 0.394 (1992Q2, 2001Q1)
+error de diseño m=1 (C+,U+,C-,U-): 0.043171 0.250703 0.027866 0.136355 
+determinista: ee NW5 0.153721481 0.335737485 0.113365024 0.306359432 | ee NW5-HC3 0.191393275 0.472335444 0.143703223 0.436728501 | s1_lin b, ee -0.799657475 0.061755621 
+(veredictos: confirma, refuta_a, refuta_b, no_concluyente; cobertura: C+, U+, C-, U-)
+[m=1 c=1 hetero=FALSE] NW5: cobertura 0.866 0.870 0.893 0.888; subida 0.075 0.100 0.034 0.791; bajada 0.060 0.076 0.030 0.833
+[m=1 c=1 hetero=FALSE] NW5-HC3: cobertura 0.948 0.940 0.958 0.944; subida 0.030 0.049 0.026 0.894; bajada 0.021 0.035 0.022 0.921
+[m=1 c=1 hetero=FALSE] P(H0 confirma)=0.074; P(H0 y confirma H1+, H1-)= 0.013 0.006
+[m=0 c=1 hetero=FALSE] NW5: cobertura 0.849 0.893 0.882 0.889; subida 0.076 0.123 0.040 0.760; bajada 0.059 0.090 0.033 0.817
+[m=0 c=1 hetero=FALSE] NW5-HC3: cobertura 0.931 0.945 0.961 0.955; subida 0.036 0.066 0.025 0.873; bajada 0.018 0.044 0.022 0.916
+[m=0 c=1 hetero=FALSE] P(H0 confirma)=0.053; P(H0 y confirma H1+, H1-)= 0.007 0.007
+[m=1 c=40 hetero=FALSE] NW5: cobertura 0.940 0.925 0.906 0.949; subida 0.933 0.000 0.000 0.067; bajada 0.985 0.000 0.000 0.015
+[m=1 c=40 hetero=FALSE] NW5-HC3: cobertura 0.983 0.968 0.975 0.975; subida 0.834 0.000 0.000 0.166; bajada 0.907 0.000 0.000 0.093
+[m=1 c=40 hetero=FALSE] P(H0 confirma)=1.000; P(H0 y confirma H1+, H1-)= 0.834 0.907
+[m=1 c=1 hetero=TRUE] NW5: cobertura 0.820 0.904 0.836 0.867; subida 0.087 0.124 0.032 0.756; bajada 0.110 0.080 0.030 0.780
+[m=1 c=1 hetero=TRUE] NW5-HC3: cobertura 0.922 0.950 0.938 0.934; subida 0.033 0.066 0.022 0.879; bajada 0.048 0.036 0.018 0.898
+[m=1 c=1 hetero=TRUE] P(H0 confirma)=0.071; P(H0 y confirma H1+, H1-)= 0.012 0.012

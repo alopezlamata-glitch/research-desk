@@ -173,6 +173,16 @@ def main():
     yd, gd = simulate([bref, bref], [bref, bref], np.random.default_rng(0), sigma0=0.0)
     bd = ols(yd, X_of(gd))[0][2:6]
     print("error de diseño m=1 (C+,U+,C−,U−):", np.round(bd - bref, 6).tolist())
+    # comprobación determinista de los estimadores (y sin ruido): ee y s1_lin, para comparar con el script R
+    Xd = X_of(gd)
+    _, ud, Id = ols(yd, Xd)
+    XLd = np.column_stack([np.ones(n), eps, Xd[:, 6:]])
+    bld, uld, ILd = ols(yd, XLd)
+    print("determinista: ee NW5", [f"{v:.9f}" for v in sandwich(Xd, ud, Id, qd, 5, False)[2:6]],
+          "| ee NW5-HC3", [f"{v:.9f}" for v in sandwich(Xd, ud, Id, qd, 5, True)[2:6]],
+          "| s1_lin b, ee", f"{bld[1]:.9f}", f"{sandwich(XLd, uld, ILd, qd, 5, True)[1]:.9f}")
+    if len(sys.argv) > 2 and sys.argv[2] == "det":
+        return
 
     def run(m, c=1.0, reps=REPS, seed=0, **kw):
         rng = np.random.default_rng(SEED + seed)
@@ -198,6 +208,9 @@ def main():
                   f"{np.round(ver[k][0] / reps, 3).tolist()} bajada {np.round(ver[k][1] / reps, 3).tolist()}")
         print(f"[{tag}] P(H0 confirma, NW5-HC3) = {lin / reps:.3f}; P(H0 y confirma H1^d) = {np.round(joint / reps, 3).tolist()}")
 
+    if len(sys.argv) > 2 and sys.argv[2] == "m1":  # solo m = 1 con otra semilla (comprobación de discrepancias)
+        run(1.0, seed=99)
+        return
     run(1.0, seed=1)
     run(0.0, seed=2)
     run(1.0, c=40, reps=REPS // 2, seed=3)

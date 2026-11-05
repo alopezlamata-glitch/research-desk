@@ -20,7 +20,7 @@ Patrones de error encontrados en la versión previa, que conviene buscar en cual
 ## 2026-11-05 · p01 · R-F4, Monte Carlo de `s1_liq`
 Estado: candidata
 1. **Las probabilidades de veredicto se calculan con el árbol de decisión completo.** F4 dio las de H1 sin la puerta H0 de la
-   SPEC. Con ella, el resultado modal pasa de "no concluyente por potencia" a "H1 no se interpreta" (P ≈ 0,94). Regla:
+   SPEC. Con ella, el resultado modal pasa de "no concluyente por potencia" a "H1 no se interpreta" (P ≈ 0,92). Regla:
    simular todas las especificaciones que condicionan el veredicto (puertas, gating) y dar la probabilidad conjunta.
 2. **Un error estándar "validado" solo vale para el DGP con el que se validó.** Con apalancamiento alto, HC3 es conservador
    con innovaciones homocedásticas, pero cae al borde de la banda si la varianza va ligada a |ε|. Regla: validar una alternativa
@@ -28,3 +28,7 @@ Estado: candidata
 3. **Umbrales relativos a otro coeficiente estimado.** Con δ = 0,146·|β̂_U| y ee(β̂_U) ≫ |β_U|, el umbral es ruido y genera
    falsas refutaciones en cuanto la precisión de β_C mejora. Regla: comprobar E[δ̂] frente al valor verdadero en el MC.
 4. **Diagnósticos triviales.** La media del apalancamiento siempre es k/N; no es evidencia. Mirar el máximo y qué fechas lo producen.
+5. **Antes de atribuir una discrepancia de MC al ruido, comparar un objeto determinista.** Las ee sobre ȳ sin ruido (σ = 0)
+   permitieron comparar F4, Python y R al 9.º decimal. Después, una discrepancia de ≈ 3 errores se repite con otra semilla y
+   más réplicas: aquí, dos casos de 1 sobre ~40 comparaciones, y los dos desaparecieron. Una corrida de 1000 réplicas sola puede
+   mover una probabilidad del 7 % en 0,02.

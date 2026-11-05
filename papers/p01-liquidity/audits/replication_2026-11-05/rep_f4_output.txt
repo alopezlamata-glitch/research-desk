@@ -8,6 +8,7 @@ apalancamiento (diseño real): max=0.404 media=0.157 (k/N=0.157)
   celda C-: top2 Σε² = 0.449; trimestres ['1998Q4', '2001Q2']; h de esos = [0.362, 0.355]
   celda U-: top2 Σε² = 0.394; trimestres ['1992Q2', '2001Q1']; h de esos = [0.391, 0.291]
 error de diseño m=1 (C+,U+,C−,U−): [0.043171, 0.250703, 0.027866, 0.136355]
+determinista: ee NW5 ['0.153721481', '0.335737485', '0.113365024', '0.306359432'] | ee NW5-HC3 ['0.191393275', '0.472335444', '0.143703223', '0.436728501'] | s1_lin b, ee -0.799657475 0.061755621
 [m=1.0 c=1.0 {}] NW5: cobertura [0.865, 0.909, 0.892, 0.873]; veredictos subida [0.073, 0.096, 0.034, 0.797] bajada [0.073, 0.07, 0.038, 0.819]
 [m=1.0 c=1.0 {}] NW5-HC3: cobertura [0.943, 0.957, 0.956, 0.943]; veredictos subida [0.032, 0.05, 0.026, 0.892] bajada [0.032, 0.033, 0.02, 0.915]
 [m=1.0 c=1.0 {}] P(H0 confirma, NW5-HC3) = 0.056; P(H0 y confirma H1^d) = [0.01, 0.005]
