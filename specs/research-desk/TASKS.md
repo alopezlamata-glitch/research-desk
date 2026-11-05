@@ -19,3 +19,4 @@
 - [x] **G4** · Actualizar CLAUDE.md y los prompts de las desks con los guardarraíles.
 - [x] **G5** · R 4.5 con fixest, arrow, sandwich y lmtest (librería de usuario) y TinyTeX con latexmk: un .tex de prueba compila. TinyTeX vive en la ruta virtualizada de la app de Claude (LocalCache), que está en el PATH del usuario.
 - [x] **G6** · Repositorio privado https://github.com/alopezlamata-glitch/research-desk (rama master). Historial revisado antes de subir: sin claves.
+- [x] **G7** · `tools/desk.py`: `session_id` en cada lanzamiento (`.lock` y `RUNS.csv`), `resume <desk>` para continuar una sesión cortada y `usage` con tokens, caché, pico de contexto y duración por sesión. Las ejecuciones anteriores a G7 no tienen `session_id` y quedan fuera de `usage`.

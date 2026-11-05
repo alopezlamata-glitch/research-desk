@@ -89,7 +89,9 @@ Las reglas comprobables no dependen de la memoria de nadie:
   una cifra no generada se marca `% num-ok` con su motivo.
 - **Desks:** se lanzan con `uv run python tools/desk.py launch <desk> <ENCARGO.md>`, que impide dos sesiones
   de la misma desk, más de 2 desks a la vez y lanzar con poca memoria. `tools/desk.py status` muestra qué
-  hay activo. En un clon nuevo, lo primero es `uv run python tools/desk.py setup`, que activa el pre-commit.
+  hay activo. Si una sesión se corta (límite de la suscripción, proceso muerto), se continúa con
+  `tools/desk.py resume <desk>` en vez de escribir un encargo de continuación. `tools/desk.py usage` muestra el
+  consumo de cada sesión (tokens, caché, pico de contexto, duración). En un clon nuevo, lo primero es `uv run python tools/desk.py setup`, que activa el pre-commit.
 - **Modelo por tarea:** cada desk tiene un modelo por defecto (`DEFAULT_MODEL` en `tools/desk.py`):
   - **opus** para Dirección, Teoría, Econometría, Referee y Redacción (juicio, derivaciones e identificación);
   - **sonnet** para Literatura y Datos (trabajo largo y bien especificado).

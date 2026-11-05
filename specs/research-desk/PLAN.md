@@ -20,6 +20,8 @@ Pixel Agents (npx, :3100) ── lee los eventos de Claude Code ── oficina e
 | Un entorno `uv` compartido | Un entorno por paper | Más simple; si un paper necesita fijar versiones distintas, se le da su propio `pyproject` |
 | Hooks en Node | Hooks en Python | Node ya está instalado y Python no; sin dependencias |
 | Subagentes por defecto, Agent Teams solo en sprints | Agent Teams siempre | Agent Teams es experimental y consume mucha cuota de la suscripción |
+| Telemetría de desks leída de la transcripción de Claude Code (`~/.claude/projects/*/<session_id>.jsonl`), con el `session_id` fijado al lanzar | `--output-format json`/`stream-json` en el log | La transcripción ya guarda `usage` por turno y sobrevive a una sesión muerta; `json` solo da el resultado al final y quita el resumen legible del log |
+| `desk.py resume` con `--resume <session_id>` | Escribir un encargo de continuación | Una sesión cortada por el límite de la suscripción sigue con su contexto en vez de releerlo todo (caso del 2026-11-04 23:48) |
 
 ## Riesgos
 - **Límites de la suscripción** con varios agentes en paralelo → por defecto, trabajo secuencial.

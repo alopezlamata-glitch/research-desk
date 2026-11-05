@@ -3,11 +3,14 @@
 Uso:
   uv run python tools/desk.py launch <desk> <ENCARGO.md>   # lanza la desk como proceso independiente
   uv run python tools/desk.py status                       # qué desks están trabajando
+  uv run python tools/desk.py resume <desk> [session_id]   # continúa la última sesión de la desk (p. ej., cortada)
+  uv run python tools/desk.py usage [desk]                 # tokens, caché, pico de contexto y duración por sesión
   uv run python tools/desk.py setup                        # activa el pre-commit en este clon
 
 Cada lanzamiento deja `desks/<desk>/.lock` (PID, encargo, hora) mientras la sesión vive, su salida en
 `desks/<desk>/run_<fecha>.log` y una fila en `desks/RUNS.csv`. Un lock cuyo proceso ya no existe es obsoleto
-y se ignora.
+y se ignora. Cada sesión recibe un `session_id` fijo: con él se reanuda (`resume`) y se lee su consumo de la
+transcripción que Claude Code guarda en `~/.claude/projects/*/<session_id>.jsonl` (`usage`).
 """
 
 from __future__ import annotations
@@ -20,6 +23,7 @@ import re
 import shutil
 import subprocess
 import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -28,6 +32,9 @@ DESKS = ROOT / "desks"
 MAX_CONCURRENT = int(os.environ.get("DESK_MAX_CONCURRENT", "2"))
 # Memoria comprometida disponible (RAM + paginación): agotarla es lo que provoca "bad allocation".
 MIN_FREE_GB = float(os.environ.get("DESK_MIN_COMMIT_GB", "2.0"))
+RUNS = DESKS / "RUNS.csv"
+RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id"]
+TRANSCRIPTS = Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude")) / "projects"
 
 BASE_TOOLS = ["Read", "Write", "Edit", "Glob", "Grep"]
 WEB = ["WebSearch", "WebFetch"]
@@ -150,23 +157,112 @@ def launch(desk: str, encargo: str) -> int:
     if not (desk_dir / encargo).is_file():
         raise LaunchRefused(f"no existe {desk_dir / encargo}")
     model = model_for(desk, (desk_dir / encargo).read_text(encoding="utf-8"))
-    stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     prompt = (f"Lee y ejecuta el encargo de {encargo} (en esta carpeta). Trabaja hasta completar los "
               "entregables. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
-    args = claude_cmd() + ["-p", prompt, "--model", model, "--permission-mode", "acceptEdits",
-                           "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS))]
+    return _start(desk, encargo, model, str(uuid.uuid4()), prompt, resuming=False)
+
+
+def resume(desk: str, session_id: str | None = None) -> int:
+    """Continúa una sesión anterior de la desk con su contexto (por defecto, la última registrada)."""
+    check_can_launch(desk)
+    runs = [r for r in read_runs() if r["desk"] == desk and r.get("session_id")]
+    if session_id:
+        runs = [r for r in runs if r["session_id"] == session_id]
+    if not runs:
+        which = f" con session_id {session_id}" if session_id else " con session_id"
+        raise LaunchRefused(f"no hay en {RUNS.name} ninguna sesión de '{desk}'{which}")
+    last = runs[-1]
+    prompt = (f"La sesión se cortó antes de terminar el encargo de {last['encargo']}. Sigue desde donde lo dejaste, "
+              "sin rehacer lo hecho. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
+    model = last["model"] or DEFAULT_MODEL.get(desk, "sonnet")
+    return _start(desk, last["encargo"], model, last["session_id"], prompt, resuming=True)
+
+
+def _start(desk: str, encargo: str, model: str, session_id: str, prompt: str, *, resuming: bool) -> int:
+    desk_dir = DESKS / desk
+    stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
+    # --resume conserva el session_id y sigue escribiendo en la misma transcripción (comprobado con la CLI 2.1.306).
+    args = claude_cmd() + ["-p", prompt, "--resume" if resuming else "--session-id", session_id, "--model", model,
+                           "--permission-mode", "acceptEdits", "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS))]
     log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
     pid = spawn_detached(args, desk_dir, log, err)
-    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name, "model": model}
+    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name, "model": model, "session_id": session_id}
     (desk_dir / ".lock").write_text(json.dumps(info), encoding="utf-8")
-    runs = DESKS / "RUNS.csv"
-    new = not runs.exists()
-    with runs.open("a", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
-        if new:
-            w.writerow(["started", "desk", "encargo", "pid", "log", "model"])
-        w.writerow([stamp, desk, encargo, pid, info["log"], model])
+    append_run({"desk": desk, **info})
     return pid
+
+
+def read_runs(runs: Path | None = None) -> list[dict]:
+    runs = runs or RUNS
+    if not runs.exists():
+        return []
+    with runs.open(encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def append_run(row: dict, runs: Path | None = None) -> None:
+    """Añade una fila a RUNS.csv. Si el archivo no tiene la cabecera actual (anterior a G7), lo reescribe con ella."""
+    runs = runs or RUNS
+    header = runs.read_text(encoding="utf-8").partition("\n")[0].strip() if runs.exists() else ""
+    current = header == ",".join(RUNS_FIELDS)
+    old_rows = [] if current else read_runs(runs)
+    with runs.open("a" if current else "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=RUNS_FIELDS, restval="", extrasaction="ignore")
+        if not current:
+            w.writeheader()
+            w.writerows(old_rows)
+        w.writerow(row)
+
+
+def session_usage(session_id: str, transcripts: Path | None = None) -> dict | None:
+    """Consumo de una sesión según su transcripción de Claude Code; None si no la encuentra.
+
+    Claude Code parte cada respuesta en varias entradas con el mismo `message.id` y el mismo `usage`: cuenta una vez.
+    """
+    files = sorted((transcripts or TRANSCRIPTS).glob(f"*/{session_id}.jsonl"))
+    if not files:
+        return None
+    usage_by_msg: dict[str, dict] = {}
+    times: list[datetime] = []
+    for line in files[0].read_text(encoding="utf-8").splitlines():
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue  # la última línea puede estar a medio escribir si la sesión sigue viva
+        if ts := entry.get("timestamp"):
+            times.append(datetime.fromisoformat(ts))
+        msg = entry.get("message")
+        if entry.get("type") == "assistant" and isinstance(msg, dict) and msg.get("usage"):
+            usage_by_msg[msg.get("id") or f"sin-id-{len(usage_by_msg)}"] = msg["usage"]
+    out = {"turns": len(usage_by_msg), "input": 0, "cache_write": 0, "cache_read": 0, "output": 0, "peak_ctx": 0}
+    for u in usage_by_msg.values():
+        inp, cw, cr = (u.get(k, 0) for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+        out["input"] += inp
+        out["cache_write"] += cw
+        out["cache_read"] += cr
+        out["output"] += u.get("output_tokens", 0)
+        out["peak_ctx"] = max(out["peak_ctx"], inp + cw + cr)
+    out["minutes"] = round((max(times) - min(times)).total_seconds() / 60, 1) if times else 0.0
+    return out
+
+
+def print_usage(desk: str | None = None) -> None:
+    sessions: dict[str, dict] = {}  # una sesión reanudada tiene varias filas en RUNS.csv y una sola transcripción
+    for r in read_runs():
+        if r.get("session_id") and desk in (None, r["desk"]):
+            sessions.setdefault(r["session_id"], {**r, "launches": 0})["launches"] += 1
+    if not sessions:
+        print("No hay sesiones con session_id en RUNS.csv (las anteriores a G7 no lo registran).")
+        return
+    print(f"{'inicio':16} {'desk':20} {'modelo':6} {'lanz':>4} {'turnos':>6} {'salida':>8} {'caché leída':>12} "
+          f"{'caché escrita':>13} {'pico ctx':>9} {'min':>6}  encargo")
+    for sid, r in sessions.items():
+        head = f"{r['started']:16} {r['desk']:20} {r['model']:6} {r['launches']:>4}"
+        if (u := session_usage(sid)) is None:
+            print(f"{head}  sin transcripción ({sid})")
+            continue
+        print(f"{head} {u['turns']:>6} {u['output']:>8} {u['cache_read']:>12} {u['cache_write']:>13} "
+              f"{u['peak_ctx']:>9} {u['minutes']:>6}  {r['encargo']}")
 
 
 def spawn_detached(args: list[str], cwd: Path, log: Path, err: Path) -> int:
@@ -202,6 +298,11 @@ def main(argv: list[str]) -> int:
         if cmd == "launch" and len(argv) == 3:
             pid = launch(argv[1], argv[2])
             print(f"{argv[1]} lanzada con {read_lock(DESKS / argv[1])['model']}, PID {pid}")
+        elif cmd == "resume" and len(argv) in (2, 3):
+            pid = resume(argv[1], argv[2] if len(argv) == 3 else None)
+            print(f"{argv[1]} reanudada (sesión {read_lock(DESKS / argv[1])['session_id']}), PID {pid}")
+        elif cmd == "usage" and len(argv) in (1, 2):
+            print_usage(argv[1] if len(argv) == 2 else None)
         elif cmd == "status":
             running = active()
             for desk, info in running.items():

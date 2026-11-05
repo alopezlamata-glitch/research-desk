@@ -76,3 +76,66 @@ def test_model_from_encargo_or_desk_default(text, expected):
 def test_invalid_model_is_refused():
     with pytest.raises(desk.LaunchRefused, match="no válido"):
         desk.model_for("datos", "Modelo: gpt5")
+
+
+@pytest.fixture
+def fake_spawn(tmp_path, monkeypatch):
+    """Lanzamientos sin proceso real: DESKS y RUNS en tmp y spawn_detached captura los argumentos."""
+    (tmp_path / "datos").mkdir()
+    (tmp_path / "datos" / "E.md").write_text("Modelo: haiku\n", encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(desk, "DESKS", tmp_path)
+    monkeypatch.setattr(desk, "RUNS", tmp_path / "RUNS.csv")
+    monkeypatch.setattr(desk, "check_can_launch", lambda d: None)
+    monkeypatch.setattr(desk, "claude_cmd", lambda: ["claude"])
+    monkeypatch.setattr(desk, "spawn_detached", lambda args, *a: calls.append(args) or 4242)
+    return calls
+
+
+def test_launch_fixes_session_id_and_resume_reuses_it(fake_spawn):
+    desk.launch("datos", "E.md")
+    sid = fake_spawn[0][fake_spawn[0].index("--session-id") + 1]
+    assert desk.read_runs()[-1]["session_id"] == sid
+    desk.resume("datos")
+    assert fake_spawn[1][fake_spawn[1].index("--resume") + 1] == sid
+    assert "--session-id" not in fake_spawn[1]
+    assert fake_spawn[1][fake_spawn[1].index("--model") + 1] == "haiku"  # el modelo de la sesión original
+    assert [r["session_id"] for r in desk.read_runs()] == [sid, sid]
+
+
+def test_resume_refuses_without_a_recorded_session(fake_spawn):
+    with pytest.raises(desk.LaunchRefused, match="ninguna sesión"):
+        desk.resume("datos")
+    desk.launch("datos", "E.md")
+    with pytest.raises(desk.LaunchRefused, match="ninguna sesión"):
+        desk.resume("datos", "otro-id")
+
+
+def test_append_run_upgrades_old_header_without_losing_rows(tmp_path):
+    runs = tmp_path / "RUNS.csv"
+    runs.write_text("started,desk,encargo,pid,log,model\nA,datos,E.md,1,run.log,\nB,teoria,F.md,2,run.log,opus\n",
+                    encoding="utf-8")
+    desk.append_run({"started": "C", "desk": "datos", "session_id": "s1"}, runs)
+    desk.append_run({"started": "D", "desk": "datos", "session_id": "s2"}, runs)
+    rows = desk.read_runs(runs)
+    assert runs.read_text(encoding="utf-8").splitlines()[0] == ",".join(desk.RUNS_FIELDS)
+    assert [(r["started"], r["model"], r["session_id"]) for r in rows] == [
+        ("A", "", ""), ("B", "opus", ""), ("C", "", "s1"), ("D", "", "s2")]
+
+
+def test_session_usage_counts_each_message_once(tmp_path):
+    def msg(mid, ts, inp, cw, cr, out):
+        return json.dumps({"type": "assistant", "timestamp": ts, "message": {"id": mid, "usage": {
+            "input_tokens": inp, "cache_creation_input_tokens": cw, "cache_read_input_tokens": cr,
+            "output_tokens": out}}})
+    lines = [json.dumps({"type": "user", "timestamp": "2026-11-05T10:00:00Z", "message": {"content": "x"}}),
+             msg("m1", "2026-11-05T10:00:05Z", 2, 50_000, 0, 100),
+             msg("m1", "2026-11-05T10:00:06Z", 2, 50_000, 0, 100),  # misma respuesta partida en dos entradas
+             msg("m2", "2026-11-05T10:30:00Z", 3, 1_000, 50_000, 400),
+             '{"type": "assistant", "message": {"id"']  # línea a medio escribir
+    (tmp_path / "proj").mkdir()
+    (tmp_path / "proj" / "sid.jsonl").write_text("\n".join(lines), encoding="utf-8")
+    u = desk.session_usage("sid", tmp_path)
+    assert u == {"turns": 2, "input": 5, "cache_write": 51_000, "cache_read": 50_000, "output": 500,
+                 "peak_ctx": 51_003, "minutes": 30.0}
+    assert desk.session_usage("otra", tmp_path) is None
