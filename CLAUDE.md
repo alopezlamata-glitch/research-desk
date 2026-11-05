@@ -127,7 +127,9 @@ Las reglas comprobables no dependen de la memoria de nadie:
 
 - Python ≥ 3.12 con `uv` (`pyproject.toml` en la raíz, un entorno compartido por todos los
   papers). Ejecutar con `uv run python ...`.
-- R 4.5 (`C:\Program Files\R\R-4.5.1`) solo para la replicación cruzada (paquete `fixest`).
+- R 4.5 (`C:\Program Files\R\R-4.5.1`) solo para la replicación cruzada (paquete `fixest`). No está en el PATH del
+  sistema: `desk.py` añade al PATH de cada desk la versión más alta instalada (o `DESK_R_BIN`), así que las desks
+  ejecutan `Rscript` a secas.
 - Tests: `uv run pytest`. Linter: `uv run ruff check .`.
 - Las desks se lanzan fuera del contenedor MSIX de la app de Claude (WMI, para que no mueran con la sesión que
   las lanza). Para que vean el Python de uv, `%APPDATA%\uv` es una unión a

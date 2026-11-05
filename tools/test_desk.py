@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 
 import desk
 import pytest
@@ -148,3 +149,16 @@ def test_sessions_load_only_the_desk_builtin_tools(fake_spawn):
     args = fake_spawn[0]
     assert args[args.index("--tools") + 1] == ",".join(desk.builtin_tools("datos"))
     assert {"--strict-mcp-config", "--disable-slash-commands"} <= set(args)
+
+
+@pytest.mark.skipif(os.name != "nt" or desk.r_bin() is None, reason="R solo se añade al PATH en Windows")
+def test_detached_desks_find_rscript_on_path(tmp_path):
+    assert "R-4.5" in desk.r_bin() or os.environ.get("DESK_R_BIN")  # la versión más alta instalada
+    log, err = tmp_path / "run.log", tmp_path / "run.err"
+    args = [sys.executable, "-c", "import shutil; print('rscript=' + str(shutil.which('Rscript')))"]
+    desk.spawn_detached(args, tmp_path, log, err)
+    deadline = time.time() + 30
+    while time.time() < deadline and not (log.exists() and "rscript=" in log.read_text()):
+        time.sleep(0.2)
+    found = log.read_text().strip().removeprefix("rscript=")
+    assert Path(found).parent == Path(desk.r_bin())

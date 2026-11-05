@@ -1,0 +1,5 @@
+id: C0
+sets: [dev, val]
+description: Control. La base sin errores plantados; mide falsos positivos.
+verdicts: [APROBADO, APROBADO CON CAMBIOS]
+locations: []

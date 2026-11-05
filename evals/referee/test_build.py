@@ -1,0 +1,73 @@
+"""Cada caso se construye en un repo temporal sin la clave de respuestas, pasa integrity.py (ningún check determinista
+detecta el error plantado) y su `marker` está en las líneas que declara su case.yaml."""
+
+import shutil
+import subprocess
+import sys
+
+import build
+import pytest
+
+sys.path.insert(0, str(build.ROOT / "tools"))
+import integrity
+
+DRAFT = f"{build.PAPER}/draft/main.tex"
+
+
+def run(repo, *cmd):
+    return subprocess.run(cmd, cwd=repo, env=build.env(), capture_output=True, text=True, check=False)
+
+
+@pytest.fixture(scope="module", params=build.case_ids())
+def built(request, tmp_path_factory):
+    case = request.param
+    return case, build.load_case(case), build.build(case, tmp_path_factory.mktemp(case) / "repo")
+
+
+def test_repo_has_no_answer_key_and_two_neutral_commits(built):
+    case, _, repo = built
+    names = {p.name for p in repo.rglob("*") if ".git" not in p.parts}
+    assert not names & {"case.yaml", "KNOWN_ISSUES.yaml", "evals", "overlay"}
+    assert "evals" not in (repo / "pyproject.toml").read_text(encoding="utf-8")
+    log = build._git(repo, "log", "--format=%s").splitlines()
+    assert len(log) == 2 and not any(w in " ".join(log).lower() for w in ("eval", "caso", "error", case.lower()))
+    assert build._git(repo, "status", "--porcelain") == ""
+
+
+def test_case_passes_integrity(built):
+    _, _, repo = built
+    r = run(repo, "uv", "run", "python", "tools/integrity.py")
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_draft_has_no_typed_numbers_or_unverified_citations(built, tmp_path):
+    """El borrador no está en paper/ (check `gate`): se le aplican igualmente los checks de números y citas."""
+    _, _, repo = built
+    rel = f"{build.PAPER}/paper/main.tex"
+    (tmp_path / rel).parent.mkdir(parents=True)
+    shutil.copy(repo / DRAFT, tmp_path / rel)
+    assert integrity.check_numbers(tmp_path, [rel]) + integrity.check_citations(tmp_path, [rel]) == []
+
+
+def test_markers_are_in_their_lines(built):
+    case, key, repo = built
+    assert key["id"] == case and key["verdicts"]
+    assert (case == "C0") == (not key["locations"])
+    assert build.marker_errors(key, repo) == []
+
+
+def test_base_pytest_passes_in_the_built_repo(built):
+    case, _, repo = built
+    if case != "C0":
+        pytest.skip("los tests del paper se ejecutan una vez, sobre la base")
+    r = run(repo, "uv", "run", "pytest", "-q", "-p", "no:cacheprovider")
+    assert r.returncode == 0, r.stdout[-2000:]
+
+
+def test_marker_errors_detects_a_moved_marker(built):
+    case, key, repo = built
+    if case == "C0":
+        pytest.skip("sin ubicaciones")
+    loc = key["locations"][0]
+    moved = {"locations": [{**loc, "lines": [loc["lines"][1] + 50, loc["lines"][1] + 60]}]}
+    assert build.marker_errors(moved, repo)

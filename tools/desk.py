@@ -278,6 +278,19 @@ def print_usage(desk: str | None = None) -> None:
               f"{u['peak_ctx']:>9} {u['minutes']:>6}  {r['encargo']}")
 
 
+def r_bin() -> str | None:
+    """Carpeta `bin` de R para las desks: `DESK_R_BIN`, la del `Rscript` del PATH o la versión más alta instalada."""
+    if env := os.environ.get("DESK_R_BIN"):
+        return env
+    if found := shutil.which("Rscript"):
+        return str(Path(found).parent)
+    installs = list(Path(os.environ.get("ProgramFiles", r"C:\Program Files"), "R").glob("R-*/bin/Rscript.exe"))
+    if not installs:
+        return None
+    newest = max(installs, key=lambda p: tuple(int(x) for x in re.findall(r"\d+", p.parent.parent.name)))
+    return str(newest.parent)
+
+
 def spawn_detached(args: list[str], cwd: Path, log: Path, err: Path) -> int:
     """Lanza `args` fuera del árbol de procesos de quien llama y devuelve el PID.
 
@@ -289,7 +302,9 @@ def spawn_detached(args: list[str], cwd: Path, log: Path, err: Path) -> int:
         with log.open("w") as out, err.open("w") as e:
             return subprocess.Popen(args, cwd=cwd, stdout=out, stderr=e, stdin=subprocess.DEVNULL,
                                     start_new_session=True).pid
-    cmdline = f'cmd /s /c "{subprocess.list2cmdline(args)} > "{log}" 2> "{err}" < NUL"'
+    # El proceso de WMI no hereda nuestro entorno; R no está en el PATH del sistema y `Bash(Rscript:*)` no casaba.
+    path = f'set "PATH={rbin};%PATH%" && ' if (rbin := r_bin()) else ""
+    cmdline = f'cmd /s /c "{path}{subprocess.list2cmdline(args)} > "{log}" 2> "{err}" < NUL"'
     ps = ("$r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments "
           "@{CommandLine=$env:DESK_CMDLINE; CurrentDirectory=$env:DESK_CWD}; "
           "if ($r.ReturnValue -ne 0) { exit [int]$r.ReturnValue }; $r.ProcessId")
