@@ -34,6 +34,9 @@ MAX_CONCURRENT = int(os.environ.get("DESK_MAX_CONCURRENT", "2"))
 MIN_FREE_GB = float(os.environ.get("DESK_MIN_COMMIT_GB", "2.0"))
 RUNS = DESKS / "RUNS.csv"
 RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id"]
+# Sin servidores MCP ni lista de skills: las desks no usan MCP y leen las skills por ruta (../../.claude/skills/).
+# No se usa --setting-sources: desactivaría los hooks de usuario de Pixel Agents.
+LEAN_CONTEXT = ["--strict-mcp-config", "--disable-slash-commands"]
 TRANSCRIPTS = Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude")) / "projects"
 
 BASE_TOOLS = ["Read", "Write", "Edit", "Glob", "Grep"]
@@ -178,12 +181,22 @@ def resume(desk: str, session_id: str | None = None) -> int:
     return _start(desk, last["encargo"], model, last["session_id"], prompt, resuming=True)
 
 
+def builtin_tools(desk: str) -> list[str]:
+    """Herramientas internas que se cargan en la sesión: las del perfil de la desk, sin patrones (`Bash(uv run:*)` → `Bash`).
+
+    `--allowedTools` solo decide qué se ejecuta sin pedir permiso; sin `--tools` se cargan también las definiciones de
+    todas las demás (Agent, navegador, tareas…), unos 37K tokens que se releen en cada turno (medido el 2026-11-05).
+    """
+    return list(dict.fromkeys(t.split("(")[0] for t in TOOLS.get(desk, BASE_TOOLS)))
+
+
 def _start(desk: str, encargo: str, model: str, session_id: str, prompt: str, *, resuming: bool) -> int:
     desk_dir = DESKS / desk
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     # --resume conserva el session_id y sigue escribiendo en la misma transcripción (comprobado con la CLI 2.1.306).
     args = claude_cmd() + ["-p", prompt, "--resume" if resuming else "--session-id", session_id, "--model", model,
-                           "--permission-mode", "acceptEdits", "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS))]
+                           "--permission-mode", "acceptEdits", "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS)),
+                           *LEAN_CONTEXT, "--tools", ",".join(builtin_tools(desk))]
     log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
     pid = spawn_detached(args, desk_dir, log, err)
     info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name, "model": model, "session_id": session_id}

@@ -139,3 +139,12 @@ def test_session_usage_counts_each_message_once(tmp_path):
     assert u == {"turns": 2, "input": 5, "cache_write": 51_000, "cache_read": 50_000, "output": 500,
                  "peak_ctx": 51_003, "minutes": 30.0}
     assert desk.session_usage("otra", tmp_path) is None
+
+
+def test_sessions_load_only_the_desk_builtin_tools(fake_spawn):
+    assert desk.builtin_tools("econometria") == ["Read", "Write", "Edit", "Glob", "Grep", "Bash"]
+    assert desk.builtin_tools("datos") == ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "WebFetch", "Bash"]
+    desk.launch("datos", "E.md")
+    args = fake_spawn[0]
+    assert args[args.index("--tools") + 1] == ",".join(desk.builtin_tools("datos"))
+    assert {"--strict-mcp-config", "--disable-slash-commands"} <= set(args)
