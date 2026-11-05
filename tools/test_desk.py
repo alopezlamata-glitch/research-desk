@@ -162,3 +162,21 @@ def test_detached_desks_find_rscript_on_path(tmp_path):
         time.sleep(0.2)
     found = log.read_text().strip().removeprefix("rscript=")
     assert Path(found).parent == Path(desk.r_bin())
+
+
+def test_resume_with_a_new_instruction_keeps_the_session(fake_spawn):
+    desk.launch("datos", "E.md")
+    desk.resume("datos", message="Completa ahora la replicación en R.")
+    prompt = fake_spawn[1][fake_spawn[1].index("-p") + 1]
+    assert prompt.startswith("Completa ahora la replicación en R.") and "se cortó" not in prompt
+    assert fake_spawn[1][fake_spawn[1].index("--resume") + 1] == desk.read_runs()[0]["session_id"]
+    with pytest.raises(desk.LaunchRefused, match="%"):
+        desk.resume("datos", message="usa %PATH%")
+
+
+def test_resume_cli_parses_msg(fake_spawn, monkeypatch):
+    desk.launch("datos", "E.md")
+    monkeypatch.setattr(desk, "read_lock", lambda d: {"session_id": "x"})
+    assert desk.main(["resume", "datos", "--msg", "Haz X."]) == 0
+    assert fake_spawn[1][fake_spawn[1].index("-p") + 1].startswith("Haz X.")
+    assert desk.main(["resume", "datos", "--msg"]) == 2  # --msg sin texto

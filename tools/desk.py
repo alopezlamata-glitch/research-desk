@@ -3,7 +3,8 @@
 Uso:
   uv run python tools/desk.py launch <desk> <ENCARGO.md>   # lanza la desk como proceso independiente
   uv run python tools/desk.py status                       # qué desks están trabajando
-  uv run python tools/desk.py resume <desk> [session_id]   # continúa la última sesión de la desk (p. ej., cortada)
+  uv run python tools/desk.py resume <desk> [session_id] [--msg TEXTO]  # continúa la última sesión de la desk
+                                                         # (cortada, o con una instrucción nueva en --msg)
   uv run python tools/desk.py usage [desk]                 # tokens, caché, pico de contexto y duración por sesión
   uv run python tools/desk.py setup                        # activa el pre-commit en este clon
 
@@ -165,8 +166,11 @@ def launch(desk: str, encargo: str) -> int:
     return _start(desk, encargo, model, str(uuid.uuid4()), prompt, resuming=False)
 
 
-def resume(desk: str, session_id: str | None = None) -> int:
-    """Continúa una sesión anterior de la desk con su contexto (por defecto, la última registrada)."""
+def resume(desk: str, session_id: str | None = None, message: str | None = None) -> int:
+    """Continúa una sesión anterior de la desk con su contexto (por defecto, la última registrada).
+
+    Sin `message`, sigue el encargo donde se cortó; con `message`, le da esa instrucción nueva sobre el mismo encargo.
+    """
     check_can_launch(desk)
     runs = [r for r in read_runs() if r["desk"] == desk and r.get("session_id")]
     if session_id:
@@ -175,8 +179,11 @@ def resume(desk: str, session_id: str | None = None) -> int:
         which = f" con session_id {session_id}" if session_id else " con session_id"
         raise LaunchRefused(f"no hay en {RUNS.name} ninguna sesión de '{desk}'{which}")
     last = runs[-1]
-    prompt = (f"La sesión se cortó antes de terminar el encargo de {last['encargo']}. Sigue desde donde lo dejaste, "
-              "sin rehacer lo hecho. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
+    if message and "%" in message:
+        raise LaunchRefused("el mensaje no puede llevar '%': cmd lo expandiría como variable")
+    start = message or (f"La sesión se cortó antes de terminar el encargo de {last['encargo']}. Sigue desde donde lo "
+                        "dejaste, sin rehacer lo hecho.")
+    prompt = f"{start} Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo."
     model = last["model"] or DEFAULT_MODEL.get(desk, "sonnet")
     return _start(desk, last["encargo"], model, last["session_id"], prompt, resuming=True)
 
@@ -326,8 +333,13 @@ def main(argv: list[str]) -> int:
         if cmd == "launch" and len(argv) == 3:
             pid = launch(argv[1], argv[2])
             print(f"{argv[1]} lanzada con {read_lock(DESKS / argv[1])['model']}, PID {pid}")
-        elif cmd == "resume" and len(argv) in (2, 3):
-            pid = resume(argv[1], argv[2] if len(argv) == 3 else None)
+        elif cmd == "resume" and 2 <= len(argv) and ("--msg" not in argv or argv.index("--msg") == len(argv) - 2):
+            message = argv.pop() if "--msg" in argv else None
+            argv = [a for a in argv if a != "--msg"]
+            if len(argv) not in (2, 3):
+                print(__doc__)
+                return 2
+            pid = resume(argv[1], argv[2] if len(argv) == 3 else None, message)
             print(f"{argv[1]} reanudada (sesión {read_lock(DESKS / argv[1])['session_id']}), PID {pid}")
         elif cmd == "usage" and len(argv) in (1, 2):
             print_usage(argv[1] if len(argv) == 2 else None)
