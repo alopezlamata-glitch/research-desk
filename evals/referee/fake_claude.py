@@ -60,7 +60,10 @@ def main(argv: list[str]) -> int:
     transcript = config / "projects" / "fake-project" / f"{sid}.jsonl"
     transcript.parent.mkdir(parents=True, exist_ok=True)
     transcript.write_text("\n".join(map(json.dumps, entries)) + "\n", encoding="utf-8")
-    print(json.dumps({"type": "result", "subtype": "success", "session_id": sid, "result": "Informe escrito."}))
+    # ensure_ascii=False: la salida real de claude lleva UTF-8 (p. ej. "θ"), que cp1252 no decodifica
+    sys.stdout.reconfigure(encoding="utf-8")
+    print(json.dumps({"type": "result", "subtype": "success", "session_id": sid, "result": "Informe escrito: θ ≈ 0,5 ✓ (ÁREA)"},
+                     ensure_ascii=False))
     return 0
 
 

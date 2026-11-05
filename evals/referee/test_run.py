@@ -58,3 +58,13 @@ def test_api_error_stops_the_run_without_recording(tmp_path, monkeypatch):
     assert not (tmp_path / "RESULTS_dry-run.csv").exists()  # ni una fila falsa
     assert run.session_error('{"is_error": false, "result": "ok"}', 0) is None
     assert run.session_error("", 1).startswith("claude salió")
+
+
+def test_rescore_grades_a_finished_session_without_launching(dry, tmp_path, monkeypatch):
+    row = run.run_one("C4", 1, "opus", **dry)  # la salida del falso lleva UTF-8 no representable en cp1252
+    monkeypatch.setattr(run, "RESULTS", tmp_path / "R.csv")
+    monkeypatch.setattr(run.desk, "TRANSCRIPTS", dry["transcripts"])
+    assert run.main(["--case", "C4", "--rescore", row["repo"], row["session_id"]]) == 0
+    (again,) = csv.DictReader((tmp_path / "R.csv").open(encoding="utf-8"))
+    assert again["detected"] == "True" and again["session_id"] == row["session_id"]
+    assert run.main(["--set", "dev", "--rescore", row["repo"], row["session_id"]]) == 2

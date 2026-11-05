@@ -79,7 +79,7 @@ def run_one(case: str, rep: int, model: str, exe: list[str], *, desks_dir: Path,
             extra_env: dict[str, str] | None = None) -> dict:
     """Una ejecución: construye, lanza (ocupando el puesto de la desk referee), recoge y puntúa. Devuelve la fila."""
     desk.check_can_launch("referee", desks_dir)
-    key = build.load_case(case)
+    build.load_case(case)  # falla antes de construir si el caso no existe o su clave está mal
     repo = build.build(case)
     audits = repo / build.PAPER / "audits"
     session_id = str(uuid.uuid4())
@@ -89,12 +89,20 @@ def run_one(case: str, rep: int, model: str, exe: list[str], *, desks_dir: Path,
                     encoding="utf-8")
     try:
         proc = subprocess.run(claude_args(exe, session_id, model, repo), cwd=audits, env={**build.env(), **(extra_env or {})},
-                              capture_output=True, text=True, timeout=TIMEOUT_S, check=False)
+                              capture_output=True, text=True, encoding="utf-8", errors="replace",
+                              timeout=TIMEOUT_S, check=False)  # cp1252 por defecto rompía con caracteres UTF-8
     finally:
         lock.unlink(missing_ok=True)
     (repo.parent / f"{repo.name}.session.json").write_text(proc.stdout or proc.stderr, encoding="utf-8")
     if reason := session_error(proc.stdout or "", proc.returncode):
         raise SessionFailed(f"{case} rep {rep}: {reason}")
+    return score(case, rep, model, repo, session_id, transcripts)
+
+
+def score(case: str, rep: int, model: str, repo: Path, session_id: str, transcripts: Path) -> dict:
+    """Puntúa una sesión ya terminada a partir de su repo temporal y su transcripción. Devuelve la fila."""
+    key = build.load_case(case)
+    audits = repo / build.PAPER / "audits"
     transcript = next(iter(sorted(transcripts.glob(f"*/{session_id}.jsonl"))), None)
     replication = [p.relative_to(repo).as_posix() for p in audits.glob("replication_*/**/*") if p.is_file()]
     known = grade.load_yaml(build.BASE / "KNOWN_ISSUES.yaml").get("issues") or []
@@ -124,7 +132,18 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--model", default=desk.DEFAULT_MODEL["referee"], choices=desk.MODELS)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--rescore", nargs=2, metavar=("REPO", "SESSION_ID"),
+                    help="puntúa una sesión ya hecha (con --case) sin lanzar otra, p. ej. si falló la lectura de su salida")
     a = ap.parse_args(argv)
+    if a.rescore:
+        if not a.case:
+            print("--rescore necesita --case")
+            return 2
+        row = score(a.case, 1, a.model, Path(a.rescore[0]), a.rescore[1], desk.TRANSCRIPTS)
+        append_result(row, RESULTS)
+        print(f"{a.case} puntuado: veredicto {row['verdict']} (ok={row['verdict_ok']}), detectado {row['detected']}, "
+              f"falsos positivos {row['false_positives']}, protocolo {row['protocol_ok']}")
+        return 0
     if a.dry_run:
         scratch = build.WORKDIR / f"dry-run-{uuid.uuid4().hex[:8]}"
         (scratch / "desks" / "referee").mkdir(parents=True)
