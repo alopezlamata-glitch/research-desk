@@ -32,6 +32,7 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 | `referee` | Informes del Referee con cabecera YAML válida y cada hallazgo con evidencia | `papers/*/audits/` |
 | `prereg` | El prerregistro congelado no cambia sin Desviación (ver abajo) | `papers/*/SPEC.md` con bloque `prereg` |
 | `gate` | Un `.tex` que usa resultados (`output/`) exige un informe APROBADO cuyo commit sea antecesor de HEAD | `papers/*/paper/` + `papers/*/audits/` |
+| `rawhash` | Cada archivo de `raw/` tiene fila en su MANIFEST y su sha256 es el de la última; cada vintage coincide con el hash de su nombre | `datalake/raw/`, `papers/*/data/raw/` |
 | `lessons` | Cada lección tiene `Estado: candidata/validada/retirada`; las validadas, quién las validó | `kb/lessons/` |
 
 ## Hook de Claude Code (`guard.js`, sustituye a `protect-raw.js`)
@@ -69,7 +70,21 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
   informe con `verdict: APROBADO` o `APROBADO CON CAMBIOS` cuyo `commit` es antecesor de HEAD (`git merge-base --is-ancestor`).
 - El texto sin resultados (introducción, literatura) no necesita auditoría.
 
+## Datos brutos verificables (`rawhash` y vintages, 2026-11-05)
+- `guard.js` solo intercepta Write/Edit; un script podía modificar `raw/` sin dejar rastro. `rawhash` compara cada
+  archivo con su MANIFEST en cada commit (162 MB en ~1 s), así que cualquier escritura fuera de los scripts de descarga
+  bloquea el commit, venga de la herramienta que venga.
+- Un archivo registrado que falta no es violación: `raw/` no está en git y se regenera.
+- **Vintages:** `datalake/fetch/_common.install()` no sobrescribe un archivo con contenido distinto: el anterior pasa a
+  `raw/<source>/_vintages/<stem>.<sha12><suffix>`. Así se recupera cualquier sha256 del MANIFEST aunque la fuente
+  revise la serie.
+- Al implantarlo aparecieron dos fallos: `us_misc.py` escribía los parquets de Treasury sin registrarlos (corregido y
+  registrados tras comprobar que son `DataFrame` del JSON registrado), y dos xlsx de Bauer-Swanson que no genera ningún
+  script, copias exactas del vintage 2023-12 (uno de ellos con el nombre `…_vintage2025-08.xlsx`).
+
 ## Límites conocidos (aceptados)
+- `rawhash` no impide la escritura, la detecta en el siguiente commit; y quien edite a la vez el archivo y su fila del
+  MANIFEST lo esquiva (el MANIFEST sí está en git, así que el cambio se ve en el diff).
 - Referee: la regla cubre Write/Edit, no un script lanzado con `uv run python` que escriba fuera de `audits/`. La
   barrera completa es auditar en un worktree de solo lectura del commit auditado (pendiente). Un Referee lanzado como
   subagente desde otra carpeta no se reconoce; CLAUDE.md ya exige sesión nueva.

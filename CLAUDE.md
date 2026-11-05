@@ -113,7 +113,9 @@ Las reglas comprobables no dependen de la memoria de nadie:
 
 - `data/raw/` y `datalake/raw/` son **solo lectura**: el hook `guard.js` bloquea Edit/Write. Los datos brutos solo entran
   mediante scripts `code/data/download_*.py` que registran la fuente, la fecha de descarga y el
-  hash en `data/raw/MANIFEST.csv`.
+  hash en `data/raw/MANIFEST.csv`. El check `rawhash` bloquea el commit si un archivo de `raw/` no tiene fila en su
+  MANIFEST o su hash no es el registrado. En el datalake, volver a descargar no pierde datos: la versión anterior
+  queda en `raw/<source>/_vintages/` con su hash en el nombre.
 - `data/raw/` no se sube a git (se regenera con los scripts). `MANIFEST.csv` sí se versiona.
 - **Nunca hay claves de API en el código.** FRED se descarga de `fredgraph.csv` sin clave; si una fuente
   necesita clave, se lee de una variable de entorno.

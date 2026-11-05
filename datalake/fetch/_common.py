@@ -1,8 +1,14 @@
-"""Utilidades comunes: descarga, escritura en raw/ y fila en MANIFEST.csv."""
+"""Utilidades comunes: descarga, escritura en raw/ y fila en MANIFEST.csv.
+
+Un archivo de raw/ nunca se pierde al volver a descargarlo: si el contenido nuevo es distinto, el anterior pasa a
+`raw/<source>/_vintages/<stem>.<sha12><suffix>`, de modo que cualquier sha256 del MANIFEST se puede recuperar.
+`tools/integrity.py` (check `rawhash`) comprueba que raw/ coincide con el MANIFEST y los vintages con su nombre.
+"""
 
 import csv
 import hashlib
 import json
+import os
 from datetime import date
 from pathlib import Path
 
@@ -24,18 +30,42 @@ def get(url, timeout=120, **kw):
     return r
 
 
+def sha256(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def install(p, write):
+    """Escribe `p` con `write(tmp)` sin perder la versión anterior si el contenido cambia (va a _vintages/)."""
+    p = Path(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_name(p.name + ".tmp")
+    write(tmp)
+    if p.exists():
+        old = sha256(p)
+        if old == sha256(tmp):
+            tmp.unlink()
+            return p
+        keep = p.parent / "_vintages" / f"{p.stem}.{old[:12]}{p.suffix}"
+        keep.parent.mkdir(exist_ok=True)
+        if keep.exists():
+            p.unlink()
+        else:
+            os.replace(p, keep)
+    os.replace(tmp, p)
+    return p
+
+
 def save(source, name, content, url, vintage=""):
     """Guarda bytes en raw/<source>/<name> y añade fila al MANIFEST."""
-    p = RAW / source / name
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(content)
-    new = not MANIFEST.exists()
-    with MANIFEST.open("a", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        if new:
-            w.writerow(["path", "url", "downloaded", "sha256", "bytes", "vintage"])
-        w.writerow([p.relative_to(ROOT).as_posix(), url, date.today().isoformat(),
-                    hashlib.sha256(content).hexdigest(), len(content), vintage])
+    p = install(RAW / source / name, lambda tmp: tmp.write_bytes(content))
+    _manifest_row(p, url, vintage)
+    return p
+
+
+def save_frame(source, name, df, url, vintage=""):
+    """Guarda un DataFrame en raw/<source>/<name> (parquet) y añade fila al MANIFEST."""
+    p = install(RAW / source / name, lambda tmp: df.to_parquet(tmp, index=False))
+    _manifest_row(p, url, vintage)
     return p
 
 
@@ -43,10 +73,7 @@ def save_long(source, name, df, url, meta=None, vintage=""):
     """df con columnas date, series_id, value -> parquet largo + meta.json."""
     df = df.dropna(subset=["value"]).copy()
     assert not df.duplicated(["date", "series_id"]).any(), f"duplicados en {source}/{name}"
-    p = RAW / source / f"{name}.parquet"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    df.to_parquet(p, index=False)
-    _manifest_row(p, url, vintage)
+    p = save_frame(source, f"{name}.parquet", df, url, vintage)
     if meta is not None:
         mp = RAW / source / "meta.json"
         old = json.loads(mp.read_text(encoding="utf-8")) if mp.exists() else {}

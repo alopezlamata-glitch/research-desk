@@ -1,5 +1,6 @@
 """Tests de tools/integrity.py: cada comprobación detecta lo que debe y no da falsos positivos."""
 
+import hashlib
 import subprocess
 from pathlib import Path
 
@@ -239,3 +240,25 @@ def test_gate_blocks_results_in_paper_without_an_approved_ancestor_audit(repo):
     assert len(ig.check_gate(repo, [tex, foreign])) == 1  # commit que no está en la historia
     ok = write(repo, "papers/p/audits/r3.md", report("APROBADO CON CAMBIOS", head[:7]))
     assert ig.check_gate(repo, [tex, fig, rejected, ok]) == []
+
+
+# ---------------------------------------------------------------- rawhash
+def sha(b: bytes) -> str:
+    return hashlib.sha256(b).hexdigest()
+
+
+def test_rawhash_detects_edits_unregistered_files_and_fake_vintages(tmp_path):
+    write(tmp_path, "datalake/raw/fred/a.csv", "v1")
+    write(tmp_path, "datalake/raw/fred/meta.json", "{}")
+    write(tmp_path, "datalake/raw/fred/_vintages/a." + sha(b"v0")[:12] + ".csv", "v0")
+    write(tmp_path, "datalake/MANIFEST.csv", f"path,url,downloaded,sha256,bytes,vintage\n"
+          f"raw/fred/a.csv,u,d,{sha(b'v0')},2,\nraw/fred/a.csv,u,d,{sha(b'v1')},2,\nraw/fred/gone.csv,u,d,{sha(b'x')},1,\n")
+    write(tmp_path, "papers/p/data/raw/MANIFEST.csv", f"file,source_url,downloaded_at,sha256,notes\ns/b.csv,u,d,{sha(b'b')},\n")
+    write(tmp_path, "papers/p/data/raw/s/b.csv", "b")
+    write(tmp_path, "papers/p/data/raw/.gitkeep", "")
+    assert ig.check_rawhash(tmp_path, []) == []  # incluye un archivo registrado que falta (raw/ se regenera)
+    write(tmp_path, "datalake/raw/fred/a.csv", "v1 editado")
+    write(tmp_path, "papers/p/data/raw/s/copia.csv", "b")
+    write(tmp_path, "datalake/raw/fred/_vintages/a." + sha(b"v0")[:12] + ".csv", "otro")
+    assert {v.path for v in ig.check_rawhash(tmp_path, [])} == {"datalake/raw/fred/a.csv", "papers/p/data/raw/s/copia.csv",
+                                   "datalake/raw/fred/_vintages/a." + sha(b"v0")[:12] + ".csv"}

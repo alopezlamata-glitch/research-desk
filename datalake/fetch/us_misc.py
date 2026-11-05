@@ -4,7 +4,7 @@ import json
 
 import pandas as pd
 import requests
-from _common import UA, download, run, save, save_long
+from _common import UA, download, run, save, save_frame, save_long
 
 FD = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/"
 FDIC = "https://api.fdic.gov/banks/summary"
@@ -22,13 +22,9 @@ def fiscaldata(name, path):
         page += 1
     assert rows, name
     save("treasury", f"{name}.json", json.dumps(rows).encode(), FD + path, vintage="descarga completa")
-    pd.DataFrame(rows).to_parquet(save_path(name))
-
-
-def save_path(name):
-    from _common import RAW
-    p = RAW / "treasury" / f"{name}.parquet"
-    return p
+    # El parquet se deriva del JSON registrado; antes se escribía sin fila en el MANIFEST.
+    save_frame("treasury", f"{name}.parquet", pd.DataFrame(rows), FD + path,
+               vintage=f"derivado de raw/treasury/{name}.json")
 
 
 def fdic():

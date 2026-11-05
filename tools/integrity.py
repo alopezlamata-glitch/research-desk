@@ -365,6 +365,48 @@ def check_gate(root: Path, files: list[str]) -> list[Violation]:
     return out
 
 
+# ---------------------------------------------------------------- rawhash
+RAW_SKIP = {"MANIFEST.csv", ".gitkeep", "meta.json"}  # meta.json: metadatos de save_long, no datos
+VINTAGE = re.compile(r"\.([0-9a-f]{12})(\.[^./]*)?$")  # _vintages/<stem>.<sha12><suffix>
+
+
+def _sha256(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def raw_manifests(root: Path) -> list[tuple[Path, str, Path]]:
+    """(MANIFEST, columna de la ruta, carpeta a la que es relativa) del datalake y de cada paper."""
+    out = [(root / "datalake" / "MANIFEST.csv", "path", root / "datalake")]
+    out += [(m, "file", m.parent) for m in sorted(root.glob("papers/*/data/raw/MANIFEST.csv"))]
+    return [t for t in out if t[0].exists()]
+
+
+def check_rawhash(root: Path, files: list[str]) -> list[Violation]:
+    """Cada archivo de raw/ coincide con la última fila de su MANIFEST; los vintages, con el hash de su nombre.
+
+    raw/ no está en git: un archivo que falta no es violación (se regenera con los scripts de descarga).
+    """
+    out = []
+    for manifest, col, base in raw_manifests(root):
+        last = {r[col]: r["sha256"] for r in _read_csv(manifest)}
+        raw_dir = base / "raw" if col == "path" else base
+        for p in sorted(raw_dir.rglob("*")):
+            if not p.is_file() or p.name in RAW_SKIP or "__pycache__" in p.parts:
+                continue
+            rel, shown = p.relative_to(base).as_posix(), p.relative_to(root).as_posix()
+            if "_vintages" in p.parts:
+                m = VINTAGE.search(p.name)
+                if not m or not _sha256(p).startswith(m.group(1)):
+                    out.append(Violation("rawhash", shown, 0, "vintage cuyo contenido no coincide con el hash de su nombre"))
+            elif rel not in last:
+                out.append(Violation("rawhash", shown, 0, f"sin fila en {manifest.relative_to(root).as_posix()}: "
+                                     "los datos brutos solo entran con un script de descarga"))
+            elif _sha256(p) != last[rel]:
+                out.append(Violation("rawhash", shown, 0, "su sha256 no es el de la última descarga registrada: "
+                                     "se modificó fuera de los scripts de descarga"))
+    return out
+
+
 # ---------------------------------------------------------------- lessons
 def check_lessons(root: Path, files: list[str]) -> list[Violation]:
     out = []
@@ -385,7 +427,8 @@ def check_lessons(root: Path, files: list[str]) -> list[Violation]:
 CHECKS = {
     "secrets": check_secrets, "hygiene": check_hygiene, "citations": check_citations,
     "numbers": check_numbers, "parity": check_parity, "speclog": check_speclog,
-    "prereg": check_prereg, "referee": check_referee, "gate": check_gate, "lessons": check_lessons,
+    "prereg": check_prereg, "referee": check_referee, "gate": check_gate, "rawhash": check_rawhash,
+    "lessons": check_lessons,
 }
 
 
