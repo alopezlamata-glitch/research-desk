@@ -105,3 +105,30 @@ def test_repo_does_not_reveal_the_eval(built):
              and any(s in p.read_text(encoding="utf-8", errors="ignore")
                      for s in ("evals/referee", "error plantado", "errores plantados", "KNOWN_ISSUES"))]
     assert leaks == []
+
+
+def test_copy_raw_recovers_a_historical_version_from_vintages(tmp_path, monkeypatch):
+    """Si la serie se volvió a descargar, el sha256 antiguo se copia desde _vintages/, no desde la ruta viva."""
+    lake = tmp_path / "lake"
+    (lake / "raw/fred/_vintages").mkdir(parents=True)
+    (lake / "raw/fred/a.csv").write_bytes(b"v1")
+    old = build.hashlib.sha256(b"v0").hexdigest()
+    new = build.hashlib.sha256(b"v1").hexdigest()
+    (lake / f"raw/fred/_vintages/a.{old[:12]}.csv").write_bytes(b"v0")
+    lake_header = "path,url,downloaded,sha256,bytes,vintage\n"
+    (lake / "MANIFEST.csv").write_text(f"{lake_header}raw/fred/a.csv,u,d,{old},2,\nraw/fred/a.csv,u,d,{new},2,\n",
+                                       encoding="utf-8")
+    raw = tmp_path / "repo" / build.PAPER / "data" / "raw"
+    raw.mkdir(parents=True)
+    monkeypatch.setattr(build, "LAKE", lake)
+
+    def request(sha):
+        (raw / "MANIFEST.csv").write_text(f"file,source_url,downloaded_at,sha256,notes\na.csv,u,d,{sha},\n", encoding="utf-8")
+        build.copy_raw(tmp_path / "repo")
+        return (raw / "a.csv").read_bytes()
+
+    assert request(old) == b"v0"
+    assert request(new) == b"v1"
+    (lake / f"raw/fred/_vintages/a.{old[:12]}.csv").write_bytes(b"corrupto")
+    with pytest.raises(SystemExit, match="sha256"):
+        request(old)

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import csv
 import filecmp
+import hashlib
 import os
 import re
 import shutil
@@ -123,9 +124,23 @@ def copy_raw(dest: Path) -> None:
         by_sha = {r["sha256"]: LAKE / r["path"] for r in csv.DictReader(f)}
     with manifest.open(encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
-            if row["sha256"] not in by_sha:
+            sha = row["sha256"]
+            if sha not in by_sha:
                 raise SystemExit(f"{row['file']}: su sha256 no está en datalake/MANIFEST.csv")
-            shutil.copy2(by_sha[row["sha256"]], manifest.parent / row["file"])
+            # El MANIFEST del datalake solo añade filas: la de una versión antigua sigue apuntando a la ruta viva, que tras
+            # volver a descargar tiene otro contenido. Esa versión está en _vintages/ (datalake/fetch/_common.py::install).
+            live = by_sha[sha]
+            src = live if live.is_file() and sha256(live) == sha else live.parent / "_vintages" / f"{live.stem}.{sha[:12]}{live.suffix}"
+            target = manifest.parent / row["file"]
+            if not src.is_file():
+                raise SystemExit(f"{row['file']}: no encuentro en el datalake la versión con sha256 {sha[:12]}")
+            shutil.copy2(src, target)
+            if sha256(target) != sha:
+                raise SystemExit(f"{row['file']}: la copia no tiene el sha256 del MANIFEST")
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def build(case: str, dest: Path | None = None) -> Path:
