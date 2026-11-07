@@ -100,6 +100,8 @@ Panel `papers/p01-liquidity/data/clean/stage1_us.parquet`; definiciones en su `D
 |---|---|---|---|
 | Romer-Romer, extensión Coibion/Wieland (`Ramey_HOM_monetary.zip`, hoja `Wieland`) | Choque mensual 1969m1–2007m12 en pp de fed funds, `resid_full` = `Monthly` `RRSHOCK` | **probada** | El zip ya estaba en el lago (2026-11-04). La hoja trae `resid_romer` (RR 2004) y `resid_full`; `Monthly` trae además `rrshock83`/`83b` (1983–2007). No he comprobado extensiones posteriores a 2007 |
 | Census QFR (`www2.census.gov/econ/qfr/xls/qfr<aa>q<t>f.xlsx`) | Balance e ingresos trimestrales por industria NAICS y tamaño (<50 M / ≥50 M; 8 clases solo en agregados); 2006Q3– | **probada** (2026Q2 y 2025Q4 abiertos; 2010Q1 `.xls` descargado, no abierto: falta `xlrd`) | Gratuita. Deuda corto/largo con desglose banco/otros, **sin tipo variable**; muestra ≥ 5 M (manufacturas) / ≥ 50 M. Fetch: `datalake/fetch/qfr.py`. FRED replica series sueltas (`QFR…USNO`), varias discontinuadas |
+| Romer-Romer actualizado (Wieland), openICPSR 135741 (DOI 10.3886/E135741V1) | Choques R&R mensual/trimestral/anual; un buscador da 1969–2007 | sin probar | F8 (Literatura): la página dio 403, cobertura y autoría **no verificadas**; el contenido ya está en el lago vía `Ramey_HOM_monetary.zip`. Ver `papers/p01-liquidity/exploration/F8_CITAS_2026-11-07.md` |
+| Romer-Romer con datos revisados (Andersson-Kilman, Lund WP 2021:19) y Aruoba-Drechsel (NBER w32417, datos en econweb.umd.edu) | Otras reconstrucciones de choques tipo R&R | sin probar | F8: no leídos; no hay extensión posterior a 2007 verificada |
 
 ## Repositorios de replicación
 openICPSR (AEA), Zenodo, Harvard Dataverse: buscar ahí el paquete de replicación del paper de
