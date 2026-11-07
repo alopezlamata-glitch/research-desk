@@ -8,3 +8,4 @@ date,commit,case,set,rep,model,verdict,verdict_ok,detected,false_positives,proto
 2026-11-07 17:44,2c2a50b,C5,val,1,opus,RECHAZADO,True,True,,True,True,True,True,True,1074134,19371,65243,3.7,be1aa264-a587-4048-a623-973cabcad57d,C:\Users\alope\AppData\Local\Temp\referee-eval\C5-484371a0
 2026-11-07 17:49,2c2a50b,C6,val,1,opus,RECHAZADO,True,True,,True,True,True,True,True,1012066,18921,61301,5.6,bb18db03-af45-4214-b06f-b3bb5be43771,C:\Users\alope\AppData\Local\Temp\referee-eval\C6-515d5348
 2026-11-07 17:54,2c2a50b,C0,dev+val,1,opus,APROBADO CON CAMBIOS,True,,0,True,True,True,True,True,942810,21147,62952,5.1,98591172-8650-4ef8-a5b5-c731e6729064,C:\Users\alope\AppData\Local\Temp\referee-eval\C0-821011ec
+2026-11-07 18:06,0144315,C6,val,1,opus,RECHAZADO,True,True,,True,True,True,True,True,1269359,24573,67910,5.7,a72690fd-61ba-4819-9412-7b34c8a26870,C:\Users\alope\AppData\Local\Temp\referee-eval\C6-c96c5947

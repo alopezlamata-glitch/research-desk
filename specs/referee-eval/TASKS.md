@@ -28,8 +28,10 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   error (el Referee lo marcó como hallazgo mayor aparte). Hecho: `pytest` pasa en cada caso construido (añadir esa
   comprobación a `test_build.py`, como la de `integrity.py`) y C6 se vuelve a medir.
   Hecho el 2026-11-07: el autor de C6 actualiza también el test del estimador (White en lugar de HC3); el error
-  plantado no cambia. `test_case_passes_pytest` ejecuta `pytest` en los 7 casos (solo fallaba C6). Falta volver a
-  medir C6 con Opus (`run.py --case C6`), que hace la sesión principal.
+  plantado no cambia. `test_case_passes_pytest` ejecuta `pytest` en los 7 casos (solo fallaba C6).
+  Vuelto a medir el 2026-11-07 (fila de C6 con commit 0144315): RECHAZADO, detectado sin la pista de `pytest` (hallazgo
+  1: cobertura fuera de banda y el borrador dice que está dentro), protocolo cumplido, 24,6K tokens de salida, 5,7 min.
+  La fila anterior de C6 (commit 2c2a50b) queda como registro de la versión con el defecto.
 - [ ] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
   antes y después; criterio duro de la SPEC. Número de repeticiones fijado con el coste medido en RE6–RE7.
 
