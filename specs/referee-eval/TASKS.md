@@ -24,9 +24,12 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   - 2026-11-07 · Hecho. 4/4 veredictos aceptados, 3/3 errores plantados detectados, 0 falsos positivos tras aceptar K2
     (la base no cita nada), protocolo cumplido en todos. Coste por caso: 19–21K tokens de salida, pico de contexto 61–65K,
     4–8 min. Con dev: 8/8 veredictos y 6/6 errores detectados.
-- [ ] **RE7b** · Arreglar C6: su overlay cambia `lp.py` a HC0 sin actualizar el test, así que `pytest` falla y delata el
+- [x] **RE7b** · Arreglar C6: su overlay cambia `lp.py` a HC0 sin actualizar el test, así que `pytest` falla y delata el
   error (el Referee lo marcó como hallazgo mayor aparte). Hecho: `pytest` pasa en cada caso construido (añadir esa
   comprobación a `test_build.py`, como la de `integrity.py`) y C6 se vuelve a medir.
+  Hecho el 2026-11-07: el autor de C6 actualiza también el test del estimador (White en lugar de HC3); el error
+  plantado no cambia. `test_case_passes_pytest` ejecuta `pytest` en los 7 casos (solo fallaba C6). Falta volver a
+  medir C6 con Opus (`run.py --case C6`), que hace la sesión principal.
 - [ ] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
   antes y después; criterio duro de la SPEC. Número de repeticiones fijado con el coste medido en RE6–RE7.
 

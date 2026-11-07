@@ -58,10 +58,9 @@ def test_markers_are_in_their_lines(built):
     assert build.marker_errors(key, repo) == []
 
 
-def test_base_pytest_passes_in_the_built_repo(built):
-    case, _, repo = built
-    if case != "C0":
-        pytest.skip("los tests del paper se ejecutan una vez, sobre la base")
+def test_case_passes_pytest(built):
+    """Como integrity.py: un test del paper que falla sería una señal determinista que delata el error plantado."""
+    _, _, repo = built
     r = run(repo, "uv", "run", "pytest", "-q", "-p", "no:cacheprovider")
     assert r.returncode == 0, r.stdout[-2000:]
 
