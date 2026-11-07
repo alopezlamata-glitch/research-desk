@@ -150,3 +150,25 @@ congelado: cambiarlo exige una Desviación con su huella (`tools/integrity.py`, 
   3. **Umbral de refutación: 0,146 = ω_min de TFG2**, no un 10 % fijo.
   4. **El estado DSR pasa de secundario confirmatorio a robustez (`r_dsr`)**, porque sus celdas tienen 11–18 observaciones. Por eso
      desaparece `s1_dsr` del borrador.
+- 2026-11-07 · **Los autores deciden rediseñar la etapa 1** sobre la propuesta del Director científico
+  (`exploration/REDESIGN_POWER_2026-11-04.md`) y la auditoría R-F4 (`audits/2026-11-05_F4_mc.md`, APROBADO CON CAMBIOS).
+  Resumen de la decisión en `exploration/DECISIONES_AUTORES_2026-11-07.md`. Aceptan las 7 recomendaciones:
+  1. **`s1_liq` no se estima tal como está**: frente a β_ref su potencia ≈ tamaño (F4), y con la condición de H0 el 92 % de
+     los resultados serían "H1 no se interpreta" (R-F4).
+  2. **Romer-Romer pasa a ser el choque principal** (sustituye a la decisión 1 del 2026-11-04); `mps_bs23_orth` queda como
+     réplica posterior a 1984. La robustez sin 1979Q4–1982Q4 es obligatoria.
+  3. **H1 con subidas y bajadas juntas**; la asimetría pasa a exploratoria. Revierte en parte el diseño F ("subidas y bajadas
+     separadas") porque separarlas no tiene potencia en ningún diseño agregado de EE. UU.
+  4. **Estadístico: media de h = 4..12**, en vez de h = 0..4.
+  5. **Errores estándar: la Desviación de F4 (NW(5) con residuos HC3) no se registra todavía.** Primero el MC nuevo la valida
+     también con ruido heterocedástico ligado a los trimestres de alto apalancamiento; se registra con ese resultado, y si no
+     pasa se elige otro error antes de estimar. (Postura de la Coordinación; el Director proponía registrarla ya.)
+  6. **Se abre la etapa 1b transversal** (gradiente de exposición ∂I_u/∂g = 1 − ω > 0, panel con efectos fijos de tiempo),
+     condicionada a datos (G ≥ 40) y a un MC con potencia ≥ 0,8. Pendiente: si los autores tienen acceso a WRDS; mientras
+     tanto, Datos busca una fuente gratuita (QFR).
+  7. **Se acepta prerregistrar una H1 con potencia esperada ≈ 0,2–0,4**, como medición acotada, con el MDE escrito ex ante,
+     las probabilidades de veredicto calculadas con la condición de H0 y el umbral de refutación (b) revisado para que no
+     dependa de un β̂_U ruidoso.
+  - **Qué no cambia todavía:** el bloque ```prereg``` y su texto congelado (`prereg_commit: af1c346`). El prerregistro nuevo
+    (`s1r_*`) se escribe con los resultados del MC nuevo y antes de ver la respuesta de la inversión; al cambiar el texto
+    congelado, su Desviación llevará la huella `prereg <hash>` y un `prereg_commit` nuevo cuando lo aprueben los autores.
