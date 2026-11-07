@@ -53,3 +53,15 @@ regla: En una LP con estados, escribir por separado (i) el signo de la respuesta
 - Una predicción con signo fijo puede ser poco exigente (H1 casi cualquier modelo la cumple): decirlo a los autores en vez de venderla como prueba del mecanismo.
 - Antes de definir un estado, mirar su figura: la liquidez de Z.1 tiene una tendencia secular fuerte; una mediana en niveles habría confundido el estado con la época (y con el ZLB).
 - Comprobar la página contra el marcador `<!-- p. N -->` de cada cita al final: en este borrador corregí 4 páginas desplazadas por saltos de página dentro de un párrafo.
+
+## 2026-11-05 · p01 F6 · Medir la información del choque antes de prerregistrarlo
+Estado: candidata
+estado: candidata
+evidencia: papers/p01-liquidity/exploration/REDESIGN_POWER_2026-11-04.md §1 (F = 4,2 de `mps_bs23_orth` sobre Δffr; BS p. 41 ya avisaba con F = 2,44; F4 tuvo que descubrirlo con un MC de 8 min)
+alcance: Dirección, elección del choque y de la muestra en cualquier SPEC con LP o SVAR
+caduca: 2027-05-05
+regla: Antes de prerregistrar un choque, calcular en la muestra exacta su primera etapa sobre el tipo oficial (π, F), N·π²·var(ε) y el % de Σε² en los 4 mayores, y una cota de oráculo del MDE con el ruido univariante de la variable de resultado; si c = MDE/|β_ref| > 3, no se prerregistra sin escalar.
+
+- Cuando la LP está a ×1,2–1,4 del oráculo con el DGP conocido, cambiar de estimador (VAR, suavizado, bayesiano) no arregla la potencia: solo la arreglan más información del choque, más N o menos ruido.
+- Leer en la fuente la advertencia de relevancia de la propia serie (aquí, la versión de BS sin discursos) antes de elegirla.
+- En un panel con efectos fijos de tiempo, buscar una predicción con signo fijado por la teoría sobre la *diferencia* (aquí ∂I_u/∂g = 1 − ω); el nivel deja de estar identificado.
