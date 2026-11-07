@@ -172,3 +172,9 @@ congelado: cambiarlo exige una Desviación con su huella (`tools/integrity.py`, 
   - **Qué no cambia todavía:** el bloque ```prereg``` y su texto congelado (`prereg_commit: af1c346`). El prerregistro nuevo
     (`s1r_*`) se escribe con los resultados del MC nuevo y antes de ver la respuesta de la inversión; al cambiar el texto
     congelado, su Desviación llevará la huella `prereg <hash>` y un `prereg_commit` nuevo cuando lo aprueben los autores.
+- 2026-11-07 · **Volcker en la etapa 1 rediseñada (aviso de F7).** 11 de los 13 trimestres de 1979Q4–1982Q4 caen en el estado
+  restringido (59 % de Σ|ε| con Volcker; equilibrado sin él, `data/clean/SAMPLE_COUNTS_S1R.md`). Los autores deciden que el
+  MC de F9 compare tres variantes y que la principal se elija en el prerregistro nuevo (F11), antes de ver la respuesta de la
+  inversión: (V1) muestra completa con la robustez sin Volcker como comprobación; (V2) principal sin Volcker; (V3) muestra
+  completa, y H1 solo se confirma si también se sostiene sin Volcker. El estado sigue definido como en el prerregistro
+  (mediana de `s_{t−1}` en la muestra completa de cada choque); quitar Volcker no lo redefine.
