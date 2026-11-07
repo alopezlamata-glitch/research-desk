@@ -10,3 +10,12 @@ issues:
       sin 2008-09 – 2009-06, c_12 pasa de −0,105 a +0,237. Es una propiedad real de los datos públicos, no un error
       plantado. Lo señaló el Referee en la línea base dev de C0 (2026-11-05, APROBADO CON CAMBIOS).
     accepted: 2026-11-07, autores (decisión en la sesión de Coordinación)
+  - id: K2
+    file: papers/p07-credit/draft/main.tex
+    lines: [15, 17]
+    marker: Jarociński y Karadi
+    description: >
+      El borrador no tiene ni un \cite ni un .bib: nombra los choques de Jarociński y Karadi y justifica HC3 sin corrección
+      por solape sin citar las fuentes, y el check `citations` pasa porque no hay nada que comprobar. La eval no mide
+      citas. Lo señaló el Referee en C0 (menor en la línea base dev; mayor en la val, 2026-11-07, APROBADO CON CAMBIOS).
+    accepted: 2026-11-07, autores (decisión en la sesión de Coordinación)

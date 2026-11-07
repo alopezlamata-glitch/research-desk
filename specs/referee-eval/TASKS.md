@@ -20,7 +20,13 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
     contexto 65–76K, 5–12 min (los minutos de C4 incluyen una suspensión del equipo). Por el camino se corrigieron tres
     fallos del runner y del puntuador (límite de la suscripción anotado como resultado, lectura cp1252, Evidencia en
     varias líneas) y se rehízo la base con datos reales.
-- [ ] **RE7** · Línea base val (C0, C2, C5, C6; 1 rep). Mismo visto bueno.
+- [x] **RE7** · Línea base val (C0, C2, C5, C6; 1 rep). Mismo visto bueno.
+  - 2026-11-07 · Hecho. 4/4 veredictos aceptados, 3/3 errores plantados detectados, 0 falsos positivos tras aceptar K2
+    (la base no cita nada), protocolo cumplido en todos. Coste por caso: 19–21K tokens de salida, pico de contexto 61–65K,
+    4–8 min. Con dev: 8/8 veredictos y 6/6 errores detectados.
+- [ ] **RE7b** · Arreglar C6: su overlay cambia `lp.py` a HC0 sin actualizar el test, así que `pytest` falla y delata el
+  error (el Referee lo marcó como hallazgo mayor aparte). Hecho: `pytest` pasa en cada caso construido (añadir esa
+  comprobación a `test_build.py`, como la de `integrity.py`) y C6 se vuelve a medir.
 - [ ] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
   antes y después; criterio duro de la SPEC. Número de repeticiones fijado con el coste medido en RE6–RE7.
 
