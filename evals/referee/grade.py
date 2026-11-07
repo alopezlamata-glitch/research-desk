@@ -48,8 +48,13 @@ def citations(evidence: str) -> list[tuple[list[str], int | None, int | None]]:
 
 def findings(text: str) -> list[dict]:
     """Hallazgos `### título` con su gravedad y sus citas. Mayor: el título lo dice o cuelga de un `##` de mayores."""
-    out, section, current = [], "", None
+    out, section, current, in_evidence = [], "", None, False
     for line in text.splitlines():
+        # La Evidencia sigue en las líneas siguientes hasta una línea en blanco o un encabezado (caso real de C1).
+        if in_evidence and line.strip() and not line.startswith("#"):
+            current["cites"] += citations(line)
+            continue
+        in_evidence = False
         if line.startswith("### "):
             title = line[4:].strip()
             low = title.lower()
@@ -60,6 +65,7 @@ def findings(text: str) -> list[dict]:
             section, current = line.lower(), None
         elif current is not None and line.startswith("Evidencia:"):
             current["cites"] += citations(line)
+            in_evidence = True
     return out
 
 

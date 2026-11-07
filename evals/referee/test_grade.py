@@ -93,3 +93,15 @@ def test_bash_commands_from_transcript(tmp_path):
     t.write_text("\n".join(map(json.dumps, lines)) + "\n{roto", encoding="utf-8")
     assert grade.bash_commands(t) == ["uv run pytest"]
     assert grade.bash_commands(tmp_path / "no.jsonl") == []
+
+
+def test_evidence_continues_on_following_lines_until_blank():
+    text = ("### El test es circular (mayor)\n"
+            "Texto.\n"
+            "Evidencia: `uv run python replicate.py` (bloque y\n"
+            "placebo); papers/p07-credit/code/analysis/nonlinearity.py:23-32; draft/main.tex:57-60\n"
+            "\n"
+            "No es evidencia: papers/x.py:1\n")
+    (f,) = grade.findings(text)
+    assert grade.hits(f, [{"file": "papers/p07-credit/code/analysis/nonlinearity.py", "lines": [22, 25]}])
+    assert not grade.hits(f, [{"file": "papers/x.py", "lines": [1, 1]}])  # tras la línea en blanco ya no cuenta
