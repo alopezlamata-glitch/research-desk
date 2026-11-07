@@ -232,7 +232,10 @@ def _start(desk: str, encargo: str, model: str, session_id: str, prompt: str, *,
                            *LEAN_CONTEXT, "--tools", ",".join(builtin_tools(desk))]
     log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
     pid = spawn_detached(args, desk_dir, log, err)
-    info = {"pid": pid, "encargo": encargo, "started": stamp, "log": log.name, "model": model, "session_id": session_id}
+    # La hora del lock se toma después de lanzar: si el lanzamiento se retrasa (el equipo se suspendió a medias, 2026-11-07),
+    # el proceso nacería después de `stamp` y read_lock lo tomaría por un PID reutilizado.
+    started = datetime.now().strftime("%Y-%m-%d_%H%M")
+    info = {"pid": pid, "encargo": encargo, "started": started, "log": log.name, "model": model, "session_id": session_id}
     (desk_dir / ".lock").write_text(json.dumps(info), encoding="utf-8")
     append_run({"desk": desk, **info})
     return pid

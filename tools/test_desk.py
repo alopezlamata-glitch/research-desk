@@ -192,3 +192,27 @@ def test_lock_with_a_reused_pid_is_stale(desks):
     assert desk.read_lock(desks / "datos") is None  # el PID vive, pero nació mucho después del lanzamiento
     (desks / "datos" / ".lock").write_text(json.dumps({**info, "started": me.strftime("%Y-%m-%d_%H%M")}))
     assert desk.read_lock(desks / "datos") is not None
+
+
+def test_lock_time_is_taken_after_a_slow_launch(fake_spawn, monkeypatch):
+    """Caso real del 2026-11-07: el lanzamiento tardó 11 min y el lock quedó con una hora anterior al proceso."""
+    from datetime import datetime as real_dt
+    from datetime import timedelta
+
+    clock = {"t": real_dt(2026, 11, 7, 23, 30)}
+
+    class FakeDateTime(real_dt):
+        @classmethod
+        def now(cls, tz=None):
+            return clock["t"]
+
+    def slow_spawn(args, *a):
+        clock["t"] += timedelta(minutes=11)  # el proceso nace 11 minutos después de empezar
+        return 4242
+
+    monkeypatch.setattr(desk, "datetime", FakeDateTime)
+    monkeypatch.setattr(desk, "spawn_detached", slow_spawn)
+    monkeypatch.setattr(desk, "pid_alive", lambda pid: True)
+    monkeypatch.setattr(desk, "process_created", lambda pid: real_dt(2026, 11, 7, 23, 41, 43))
+    desk.launch("datos", "E.md")
+    assert desk.read_lock(desk.DESKS / "datos")["started"] == "2026-11-07_2341"
