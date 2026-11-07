@@ -79,11 +79,27 @@ def _git(dest: Path, *args: str, date: str | None = None) -> str:
     return r.stdout.strip()
 
 
+def strip_eval_rule(text: str) -> str:
+    """Quita del CLAUDE.md la viñeta «Eval del Referee» (hasta la siguiente viñeta, línea en blanco o encabezado)."""
+    out, skipping = [], False
+    for line in text.splitlines(keepends=True):
+        if line.startswith("- **Eval del Referee**"):
+            skipping = True
+            continue
+        if skipping and (line.startswith(("- ", "#")) or not line.strip()):
+            skipping = False
+        if not skipping:
+            out.append(line)
+    return "".join(out)
+
+
 def tree(case: str, dest: Path) -> None:
     """Copia infraestructura, base y overlay en `dest` (sin git)."""
     for rel in INFRA:
         (dest / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / rel, dest / rel)
+    claude_md = dest / "CLAUDE.md"  # el Referee no debe saber que existe la eval (regla RE8 del CLAUDE.md real)
+    claude_md.write_text(strip_eval_rule(claude_md.read_text(encoding="utf-8")), encoding="utf-8")
     pyproject = dest / "pyproject.toml"  # evals/ no existe en el repo temporal
     pyproject.write_text(pyproject.read_text(encoding="utf-8").replace(', "evals"', ""), encoding="utf-8")
     shutil.copytree(BASE / "papers", dest / "papers", dirs_exist_ok=True)

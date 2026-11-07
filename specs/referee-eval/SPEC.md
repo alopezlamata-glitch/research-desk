@@ -79,11 +79,18 @@ errores salen de patrones reales de `kb/lessons/referee.md` y del rol del Refere
 - Una ejecución de línea base del conjunto dev con el prompt actual, revisada por los autores (sobre todo los
   falsos positivos de C0).
 
-## Cómo se usa después (regla para CLAUDE.md, una vez implantada)
+## Cómo se usa después (en `CLAUDE.md` desde el 2026-11-07, RE8)
 - Cualquier cambio en `.claude/agents/referee.md`, en sus skills, en una lección promovida a su prompt o en su
   modelo por defecto se evalúa **antes y después** con el conjunto val.
 - **Criterio duro:** el cambio no se acepta si deja sin detectar un error de val que antes se detectaba, o si
   aparece un falso positivo nuevo en C0. Los autores deciden; la eval propone.
+- **Repeticiones: 3 por caso de val** (12 sesiones). Coste medido en RE6–RE7: 19–28K tokens de salida y 4–12 min por
+  sesión, así que una evaluación son unas 1,5 h de Opus. Con 1 repetición ya se vio variación de un caso a otro (la falta
+  de citas salió menor en dev y mayor en val), por eso una sola no basta para decidir.
+- La regla **no** se escribe en `.claude/agents/referee.md` (como preveía RE8): el prompt del Referee no debe revelar
+  que existe una eval, porque eso podría cambiar su conducta en ella.
+- Pendiente de automatizar: hoy es una regla de proceso. Un check que exija filas de val con el commit del cambio no
+  es directo, porque ese commit no existe aún cuando corre el pre-commit.
 
 ## Supuestos y trade-offs (explícitos)
 - **Un error por caso** en vez de un paper con tres: cuesta más sesiones, pero cada detección es atribuible y un

@@ -32,8 +32,10 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   Vuelto a medir el 2026-11-07 (fila de C6 con commit 0144315): RECHAZADO, detectado sin la pista de `pytest` (hallazgo
   1: cobertura fuera de banda y el borrador dice que está dentro), protocolo cumplido, 24,6K tokens de salida, 5,7 min.
   La fila anterior de C6 (commit 2c2a50b) queda como registro de la versión con el defecto.
-- [ ] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
+- [x] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
   antes y después; criterio duro de la SPEC. Número de repeticiones fijado con el coste medido en RE6–RE7.
+  - 2026-11-07 · Hecho en `CLAUDE.md` (sección Guardarraíles) con 3 repeticiones por caso de val. Desviación: no se
+    escribe en el prompt del Referee, para que no sepa que existe la eval (ver SPEC, "Cómo se usa después").
 
 ## Notas de implementación (2026-11-05, para revisión de los autores)
 - **Dos commits, no uno.** El check `prereg` exige `prereg_commit: <sha>` de un commit que ya contenga el SPEC, así

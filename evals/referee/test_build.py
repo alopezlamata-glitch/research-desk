@@ -92,3 +92,16 @@ def test_known_issue_markers_are_in_the_base():
     """Los problemas conocidos se declaran por ubicación, como los errores plantados: si la base cambia, este test falla."""
     known = {"locations": grade.load_yaml(build.BASE / "KNOWN_ISSUES.yaml").get("issues") or []}
     assert build.marker_errors(known, build.BASE) == []
+
+
+def test_repo_does_not_reveal_the_eval(built):
+    """Nada del repo temporal menciona la eval: ni la regla de CLAUDE.md ni rutas de evals/."""
+    _, _, repo = built
+    claude_md = (repo / "CLAUDE.md").read_text(encoding="utf-8")
+    assert "Eval del Referee" in (build.ROOT / "CLAUDE.md").read_text(encoding="utf-8")  # el test no es vacuo
+    assert "Eval del Referee" not in claude_md and "Guardarraíles" in claude_md
+    leaks = [p.relative_to(repo).as_posix() for p in repo.rglob("*")
+             if p.is_file() and ".git" not in p.parts and p.suffix in {".md", ".py", ".tex", ".R", ".json", ".yaml"}
+             and any(s in p.read_text(encoding="utf-8", errors="ignore")
+                     for s in ("evals/referee", "error plantado", "errores plantados", "KNOWN_ISSUES"))]
+    assert leaks == []

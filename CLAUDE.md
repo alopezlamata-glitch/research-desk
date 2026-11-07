@@ -108,6 +108,14 @@ Las reglas comprobables no dependen de la memoria de nadie:
   `standup`, `new-paper`. Las desks las leen en `../../.claude/skills/<nombre>/SKILL.md`.
 - **Lecciones:** cada una lleva `Estado: candidata|validada|retirada`. Solo los autores las pasan a
   `validada` (con `Validada por:`), y solo las validadas pueden promoverse al prompt de una desk.
+- **Eval del Referee** (`evals/referee/`, diseño en `specs/referee-eval/`): todo cambio en `.claude/agents/referee.md`,
+  en las skills que usa (`referee-report`, `sympy-check`, `mc-validate`), en una lección promovida a su prompt o en su
+  modelo por defecto se mide con el conjunto **val** antes de darlo por bueno:
+  `uv run python evals/referee/run.py --set val --reps 3` (12 sesiones de Opus, unas 1,5 h; lánzalo como proceso
+  independiente con `desk.spawn_detached`, como las desks). El cambio **no se acepta** si deja sin detectar, en alguna
+  repetición, un error de val que la línea base detectaba (`evals/referee/RESULTS.csv`), o si aparece un falso positivo
+  en C0 que no esté en `base/KNOWN_ISSUES.yaml`. La eval propone; deciden los autores. La regla no está en el prompt del
+  Referee a propósito, para que no sepa que existe la eval.
 
 ## Datos
 
