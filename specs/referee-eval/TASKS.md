@@ -12,9 +12,14 @@ Cada tarea es un commit atómico y se cierra con `uv run ruff check .` y `uv run
   lo detecta un check determinista) y el test de `marker` pasa.
 - [x] **RE5** · `run.py` con `--dry-run` (un ejecutable falso en lugar de `claude`) + test del flujo completo:
   construir, lanzar, recoger informe y transcripción, puntuar y escribir `RESULTS.csv`. Respeta `desk.active()`.
-- [ ] **RE6** · Línea base dev (C0, C1, C3, C4; 1 rep, Opus). Entregable: filas en `RESULTS.csv` y una nota con
+- [x] **RE6** · Línea base dev (C0, C1, C3, C4; 1 rep, Opus). Entregable: filas en `RESULTS.csv` y una nota con
   coste medido y falsos positivos para que los autores los revisen. **Requiere el visto bueno de los autores** (gasta
   cuota de la suscripción).
+  - 2026-11-07 · Hecho (commit 0df385c). 4/4 veredictos aceptados, 3/3 errores plantados detectados, 0 falsos positivos
+    tras aceptar K1 en `KNOWN_ISSUES.yaml`, protocolo cumplido en todos. Coste por caso: 20–28K tokens de salida, pico de
+    contexto 65–76K, 5–12 min (los minutos de C4 incluyen una suspensión del equipo). Por el camino se corrigieron tres
+    fallos del runner y del puntuador (límite de la suscripción anotado como resultado, lectura cp1252, Evidencia en
+    varias líneas) y se rehízo la base con datos reales.
 - [ ] **RE7** · Línea base val (C0, C2, C5, C6; 1 rep). Mismo visto bueno.
 - [ ] **RE8** · Regla de uso en `CLAUDE.md` y en `.claude/agents/referee.md`: cambios al Referee se evalúan con val
   antes y después; criterio duro de la SPEC. Número de repeticiones fijado con el coste medido en RE6–RE7.
