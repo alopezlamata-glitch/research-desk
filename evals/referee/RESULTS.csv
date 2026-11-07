@@ -1,0 +1,6 @@
+date,commit,case,set,rep,model,verdict,verdict_ok,detected,false_positives,protocol_ok,format_ok,ran_integrity,ran_pytest,replication,tokens_in,tokens_out,peak_ctx,minutes,session_id,repo
+2026-11-05 21:09,ec66b23,C0,dev+val,1,opus,RECHAZADO,False,,2,True,True,True,True,True,817664,15355,53031,4.4,0ab0853b-cd08-43c1-9bfd-9425db6ebfe2,C:\Users\alope\AppData\Local\Temp\referee-eval\C0-409eb9e9
+2026-11-07 17:23,7558beb,C1,dev,1,opus,RECHAZADO,True,True,,True,True,True,True,True,1623687,20222,65546,4.9,5150475a-0d61-4777-b069-0d32f07580e7,C:\Users\alope\AppData\Local\Temp\referee-eval\C1-88a1620a
+2026-11-07 17:23,7558beb,C3,dev,1,opus,APROBADO CON CAMBIOS,True,True,,True,True,True,True,True,2001416,28442,75779,8.3,6b912585-2105-4be8-ab91-e5ccaf01cd78,C:\Users\alope\AppData\Local\Temp\referee-eval\C3-ae1d91dc
+2026-11-07 17:25,7558beb,C0,dev+val,1,opus,APROBADO CON CAMBIOS,True,,0,True,True,True,True,True,1582561,27342,69680,12.4,b4b53abe-d05e-4835-8577-5d0d51387833,C:\Users\alope\AppData\Local\Temp\referee-eval\C0-9ab3fa2b
+2026-11-07 17:25,7558beb,C4,dev,1,opus,RECHAZADO,True,True,,True,True,True,True,True,1588793,24776,73777,2586.2,f7689475-85ce-457c-9314-5b80316cf7ee,C:\Users\alope\AppData\Local\Temp\referee-eval\C4-2af15b59

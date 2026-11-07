@@ -1,1 +1,12 @@
-issues: []
+# Problemas reales de la base, aceptados por los autores: un hallazgo mayor del control C0 que cite estas ubicaciones
+# no cuenta como falso positivo. Cada entrada lleva su motivo, la fecha y quién lo aceptó.
+issues:
+  - id: K1
+    file: papers/p07-credit/draft/main.tex
+    lines: [49, 50]
+    marker: '$c_h$ (choque $\times$ crédito)'
+    description: >
+      El signo de c_h lo fijan unos pocos meses de alto apalancamiento de la crisis de 2008-09 (h_ii de hasta 0,72):
+      sin 2008-09 – 2009-06, c_12 pasa de −0,105 a +0,237. Es una propiedad real de los datos públicos, no un error
+      plantado. Lo señaló el Referee en la línea base dev de C0 (2026-11-05, APROBADO CON CAMBIOS).
+    accepted: 2026-11-07, autores (decisión en la sesión de Coordinación)

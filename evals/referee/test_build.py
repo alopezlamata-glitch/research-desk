@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 import build
+import grade
 import pandas as pd
 import pytest
 
@@ -86,3 +87,9 @@ def test_clean_data_come_from_raw_by_code(built):
     r = run(repo, "uv", "run", "python", f"{build.PAPER}/code/data/build_panel.py")
     assert r.returncode == 0, r.stderr
     pd.testing.assert_frame_equal(pd.read_parquet(clean), before)
+
+
+def test_known_issue_markers_are_in_the_base():
+    """Los problemas conocidos se declaran por ubicación, como los errores plantados: si la base cambia, este test falla."""
+    known = {"locations": grade.load_yaml(build.BASE / "KNOWN_ISSUES.yaml").get("issues") or []}
+    assert build.marker_errors(known, build.BASE) == []
