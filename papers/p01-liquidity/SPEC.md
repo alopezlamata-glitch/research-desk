@@ -164,8 +164,8 @@ congelado: cambiarlo exige una Desviación con su huella (`tools/integrity.py`, 
      también con ruido heterocedástico ligado a los trimestres de alto apalancamiento; se registra con ese resultado, y si no
      pasa se elige otro error antes de estimar. (Postura de la Coordinación; el Director proponía registrarla ya.)
   6. **Se abre la etapa 1b transversal** (gradiente de exposición ∂I_u/∂g = 1 − ω > 0, panel con efectos fijos de tiempo),
-     condicionada a datos (G ≥ 40) y a un MC con potencia ≥ 0,8. Pendiente: si los autores tienen acceso a WRDS; mientras
-     tanto, Datos busca una fuente gratuita (QFR).
+     condicionada a datos (G ≥ 40) y a un MC con potencia ≥ 0,8. **Los autores no tienen acceso a WRDS** (confirmado el
+     2026-11-07): la etapa 1b depende de una fuente gratuita (QFR del Census u otra), que busca Datos en F7.
   7. **Se acepta prerregistrar una H1 con potencia esperada ≈ 0,2–0,4**, como medición acotada, con el MDE escrito ex ante,
      las probabilidades de veredicto calculadas con la condición de H0 y el umbral de refutación (b) revisado para que no
      dependa de un β̂_U ruidoso.
