@@ -56,3 +56,12 @@ Estado: candidata
 5. **El DDP de la Fed ofrece el paquete completo en un zip** (`Output.aspx?rel=<REL>&filetype=zip`, sin clave): evita construir URLs de series. Los TIME_PERIOD son fin de trimestre natural aunque la encuesta sea de mitad de trimestre.
 6. **`print` de texto con `−`/`ε` falla en consola cp1252 de Windows**: escribir el fichero y no imprimir el contenido (o `PYTHONUTF8=1`).
 7. **Los recuentos por celda se hacen con el código del estimador, no a mano**: el borrador estimaba ≈ 25 por celda estado×signo; el recuento exacto da 22–29 (liquidez) y 11–18 (DSR). Regla: reutilizar `sample_counts.py` para F4.
+
+## 2026-11-07 · p01 · F7 (Romer-Romer y etapa 1b)
+Estado: candidata
+1. **Antes de descargar, mirar si el lago ya lo tiene**: el catálogo decía Romer-Romer "sin probar" y el zip del Handbook de Ramey llevaba tres días en `datalake/raw/narrative/`. Regla: grep del nombre de la fuente en `datalake/MANIFEST.csv` y en `datalake/fetch/` antes de escribir un fetch.
+2. **Una hoja del Handbook puede duplicar otra con distinto nombre**: `Wieland!resid_full` = `Monthly!RRSHOCK`. Regla: comprobar la identidad entre hojas con un `assert` en el build, y dejar escrito cuál de las variantes (`resid_romer`, `resid_full`) se usa.
+3. **El estado de un contraste puede concentrar un episodio extremo**: Volcker (13 trimestres) cae 11/13 en "restringido" y aporta 41 % de su Σ|ε|. Regla: tabular siempre el episodio dominante por estado antes de que Econometría diseñe el MC.
+4. **Un ajuste del recorte de la muestra no debe rehacer el panel anterior**: `START=1985Q1` en `build_stage1_us.py` impedía el estado desde 1969; se construyó `stage1r_us.parquet` aparte, reutilizando las funciones, para no tocar los tests ni la muestra congelada de la etapa 1.
+5. **El Excel del QFR no trae clases de tamaño por industria**: las 8 clases solo existen en agregados; por industria solo hay <50 M y ≥50 M. Regla: contar celdas hoja sin solape (no etiquetas) antes de declarar G, y verificar el recuento con el diccionario de tablas.
+6. **`.xls` antiguos no se leen sin `xlrd`** (pandas de este entorno usa calamine): anotar el archivo como "descargado, no abierto" en vez de añadir una dependencia sin pedirla.

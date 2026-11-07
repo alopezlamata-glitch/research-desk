@@ -111,3 +111,20 @@ agregada incluye a las grandes empresas, que concentran los saldos.
 4. 2026Q4 incompleto en shocks BS-2025 (`bs25_quarter_partial`); SLOOS 2026Q4 ya publicada pero PIB, tipos y EBP no.
 5. Datos en **última revisión** (Z.1 2026-09-11, FRED 2026-11-04): no son de tiempo real; Z.1 y NIPA se revisan.
 6. SLOOS se publica con retraso dentro del trimestre de la encuesta; el dato de un trimestre usa información posterior al FOMC de ese trimestre: alinear en la estimación (tarea de Econometría).
+
+## Etapa 1 rediseñada (F7): `stage1r_us.parquet`
+Generado por `code/data/build_stage1r_us.py` (tests en `test_stage1r_us.py`). Una fila por trimestre, **1960Q1–2008Q4** (196 filas); no
+rellena huecos. No reemplaza a `stage1_us.parquet` (la etapa 1 original sigue intacta). Recuentos por estado en `SAMPLE_COUNTS_S1R.md`.
+
+| Variable | Definición | Unidad | Cobertura | Fuente / transformación |
+|---|---|---|---|---|
+| `rr_shock` | **Romer-Romer** (extensión Coibion, reestimada por Wieland, `resid_full`), **suma de los 3 meses** del trimestre | pp de fed funds | 1969Q1–2007Q4 (156); 1969Q1 = marzo de 1969 | `Ramey_HOM_monetary.zip` → `Monetarydat.xlsx`, hoja `Wieland` (= `Monthly` `RRSHOCK`, comprobado) |
+| `rr_months_nonzero` | Meses del trimestre con choque ≠ 0 | cuenta (0–3) | ídem | ídem |
+| `liq_broad_debt`, `s`, `s_lag` | Como en la etapa 1, con Z.1 desde 1945 (sin el recorte START); `s_lag` = `s_{t−1}` | ratio / log | 1960Q1– (la media usa 12 trimestres previos de Z.1) | Z.1 2026-09-11 |
+| `ffr` | Fed funds, media trimestral (3 meses completos) | % | 1960Q1– | FRED `FEDFUNDS` |
+| `mps_bs23_orth` | Bauer-Swanson ortogonalizado (réplica), como en `stage1_us` | pp | 1988Q1–2008Q4 | `stage1_us.parquet` |
+| `in_rr_sample` | `True` en 1969Q1–**2005Q2** | bool | 146 trimestres | último t con t + 12 < 2008Q3 |
+
+**Regla de agregación del choque:** suma de los choques mensuales del trimestre (la fuente construye el mensual sumando las reuniones del
+mes y no indica otra regla). Todos los trimestres tienen sus 3 meses; ene–feb de 1969 son 0 en la fuente (la primera reunión de RR es marzo de 1969).
+Muestra de la réplica con `mps_bs23_orth`: 1988Q1–2005Q2 (70 trimestres). Aviso: 11 de los 13 trimestres de Volcker caen en el estado «restringido».

@@ -26,7 +26,7 @@ OCDE SDMX directo, JK 2020 (AEA/openICPSR), Aruoba-Drechsel (sin URL).
 
 | Fuente | Qué | Estado | Notas |
 |---|---|---|---|
-| Romer-Romer (extendidos, p. ej., Wieland-Yang) | Shocks monetarios narrativos, EE. UU. | sin probar | Verificar URL y cobertura |
+| Romer-Romer (extendidos, Coibion/Wieland) | Shocks monetarios narrativos, EE. UU. | **probada** (F7, 2026-11-07) | Ver «F7 de p01» al final |
 | Bauer-Swanson (2023) | Shocks monetarios de alta frecuencia, EE. UU. | **probada** (p01, 2026-11-04) | Dos vintages **distintas**, no una actualización de la otra: ver sección «Etapa 1 de p01» |
 | Ramey (2011), Ramey-Zubairy (2018) | Shocks fiscales: noticias de gasto militar, EE. UU. 1889– | sin probar | Web de Valerie Ramey |
 | Romer-Romer (2010) | Shocks narrativos de impuestos, EE. UU. | sin probar | |
@@ -94,6 +94,12 @@ Panel `papers/p01-liquidity/data/clean/stage1_us.parquet`; definiciones en su `D
 | FRED `A008RA3Q086SBEA` | Inversión fija privada no residencial real, índice de cantidad (2017=100) | **probada, larga** | 1947Q1–2026Q3 (319 obs.), en el lago desde F2b (2026-11-04). Δlog con `PNFIC1` desde 2007: ρ≈1. Serie de inversión por defecto |
 | FRED SLOOS `DRTSCILM`, `DRTSCIS`, `DRSDCILM` | Estándares y demanda de C&I, trimestral | **probada** | `DRTSCI*` desde 1990Q2, `DRSDCILM` desde 1991Q4; 'DRTSCILM' = grandes y medianas |
 | Fed Board EBP | `ebp`, `gz_spread` mensuales 1973-01 – 2026-09 | **probada** | Se agrega a trimestre solo con 3 meses |
+
+## F7 de p01 (rediseño de la etapa 1), probadas el 2026-11-07
+| Fuente | Qué | Estado | Notas |
+|---|---|---|---|
+| Romer-Romer, extensión Coibion/Wieland (`Ramey_HOM_monetary.zip`, hoja `Wieland`) | Choque mensual 1969m1–2007m12 en pp de fed funds, `resid_full` = `Monthly` `RRSHOCK` | **probada** | El zip ya estaba en el lago (2026-11-04). La hoja trae `resid_romer` (RR 2004) y `resid_full`; `Monthly` trae además `rrshock83`/`83b` (1983–2007). No he comprobado extensiones posteriores a 2007 |
+| Census QFR (`www2.census.gov/econ/qfr/xls/qfr<aa>q<t>f.xlsx`) | Balance e ingresos trimestrales por industria NAICS y tamaño (<50 M / ≥50 M; 8 clases solo en agregados); 2006Q3– | **probada** (2026Q2 y 2025Q4 abiertos; 2010Q1 `.xls` descargado, no abierto: falta `xlrd`) | Gratuita. Deuda corto/largo con desglose banco/otros, **sin tipo variable**; muestra ≥ 5 M (manufacturas) / ≥ 50 M. Fetch: `datalake/fetch/qfr.py`. FRED replica series sueltas (`QFR…USNO`), varias discontinuadas |
 
 ## Repositorios de replicación
 openICPSR (AEA), Zenodo, Harvard Dataverse: buscar ahí el paquete de replicación del paper de

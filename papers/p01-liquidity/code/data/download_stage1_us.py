@@ -25,6 +25,8 @@ FILES = [
     ("fed_z1/z1_csv_files_20260911.zip", "Z.1 release 2026-09-11; se usa csv/S11_1_b.csv y S11_1_t.csv"),
     ("fed_board/ebp_csv.csv", "Excess bond premium (Gilchrist-Zakrajsek), mensual"),
     ("fed_board/e2_stbl_ddp.zip", "E.2 Survey of Terms of Business Lending (DDP), 1997Q2-2017Q2: medida de g"),
+    ("narrative/ramey/Ramey_HOM_monetary.zip",
+     "Handbook de Ramey (2016), Monetarydat.xlsx: hoja Wieland = Romer-Romer 1969m1–2007m12 (extensión Coibion/Wieland); F7"),
 ] + [(f"fred/csv/{s}.csv", "FRED") for s in
      ["GDPC1", "GDPDEF", "A008RA3Q086SBEA", "PNFIC1", "GPDIC1", "FEDFUNDS", "DGS2", "DRTSCILM", "DRTSCIS", "DRSDCILM"]]
 
