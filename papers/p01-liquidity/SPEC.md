@@ -1,7 +1,9 @@
 # p01-liquidity — SPEC
 
-Estado: **Diseño F; prerregistro de la etapa 1 aprobado por los autores (2026-11-04).** Siguiente paso: F4
-(Monte Carlo de la especificación exacta) **antes** de estimar con la inversión.
+Estado: **Diseño F; etapa 1 rediseñada por los autores (2026-11-07) para ganar potencia** (Romer-Romer, h = 4..12, tres
+variantes de Volcker; ver Desviaciones). Datos (F7) y citas (F8) hechos; **en curso: F9**, Monte Carlo de `s1r_*`
+(Econometría). Después, F10 (auditoría del Referee) y F11 (prerregistro nuevo, que aprueban los autores), **antes** de
+estimar con la inversión.
 
 ## Intuición de partida (de los autores)
 Hay una serie de factores que afectan a la liquidez, con **regímenes no lineales**: el mismo impulso
