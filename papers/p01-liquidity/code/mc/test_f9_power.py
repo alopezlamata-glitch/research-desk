@@ -36,10 +36,11 @@ def test_design_adds_shock_lags_and_leads():
 
 def test_h1_verdict_and_decision_tree():
     dof = 100
-    assert s1r_lp.h1_verdict(-3.0, 1.0, dof, 0.1) == "confirma"
-    assert s1r_lp.h1_verdict(3.0, 1.0, dof, 0.1) == "refuta_a"
-    assert s1r_lp.h1_verdict(0.0, 0.01, dof, 0.1) == "refuta_b"  # IC90 = ±0,017 dentro de (−0,1, ∞)
-    assert s1r_lp.h1_verdict(-0.5, 1.0, dof, 0.1) == "no_concluyente"
+    v = f9_power.h1_verdict_b  # la regla (b) de F9; s1r_lp.h1_verdict ya no la tiene (test_s1r_estimate.py)
+    assert v(-3.0, 1.0, dof, 0.1) == "confirma"
+    assert v(3.0, 1.0, dof, 0.1) == "refuta_a"
+    assert v(0.0, 0.01, dof, 0.1) == "refuta_b"  # IC90 = ±0,017 dentro de (−0,1, ∞)
+    assert v(-0.5, 1.0, dof, 0.1) == "no_concluyente"
     assert s1r_lp.h0_confirms(-2.0, 1.0, dof) and not s1r_lp.h0_confirms(-1.0, 1.0, dof)
     d = s1r_lp.decide
     assert d("V1", False, "confirma") == "h0_falla"

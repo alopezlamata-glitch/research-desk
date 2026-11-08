@@ -143,12 +143,16 @@ class DGP:
         r = self.rec[self.df.index.get_indexer(rr_rows)]
         return float(res[r].var() / res[~r].var())
 
-    def draw(self, rng: np.random.Generator) -> tuple[pd.Series, dict[tuple[str, str], pd.DataFrame]]:
-        """Una réplica: ȳ y las matrices de regresores de cada (especificación, modelo) en todas las filas de las muestras."""
+    def level(self, rng: np.random.Generator) -> pd.Series:
+        """100·log I simulado en el calendario."""
         n = len(self.df)
         e = np.r_[rng.choice(self.pool, self.burn), self.sigma * rng.choice(self.pool, n)]
         g = lfilter([1.0], [1.0, -self.phi1, -self.phi2], self.mu + e)[self.burn:]
-        level = pd.Series(np.cumsum(g) + self.signal, index=self.df.index)
+        return pd.Series(np.cumsum(g) + self.signal, index=self.df.index)
+
+    def draw(self, rng: np.random.Generator) -> tuple[pd.Series, dict[tuple[str, str], pd.DataFrame]]:
+        """Una réplica: ȳ y las matrices de regresores de cada (especificación, modelo) en todas las filas de las muestras."""
+        level = self.level(rng)
         ctrl = self.ctrl.assign(dlinv=level.diff())
         X = {(sp, m): s1r_lp.design(self.eps, self.D, ctrl, self.all_rows, m, *SPECS[sp])
              for sp in self.specs for m in ("lin", "liq")}
@@ -225,11 +229,20 @@ def delta(rule: str, A: np.ndarray, bref: float) -> np.ndarray:
     return OMEGA * (np.abs(A[:, 4]) if rule == "spec" else np.full(len(A), abs(bref)))
 
 
+def h1_verdict_b(b_C: float, se_C: float, dof: int, delta: float) -> str:
+    """Veredicto de H1 con la regla (b) que estudió F9 ('refuta_b': IC al 90 % dentro de (−δ, ∞), tras confirma y refuta_a). La SPEC
+    de `s1r_*` la retira; se mantiene aquí para reproducir las tablas de F9 y F13."""
+    v = s1r_lp.h1_verdict(b_C, se_C, dof)
+    if v == "no_concluyente" and b_C - stats.t.ppf(0.95, dof) * se_C > -delta:
+        return "refuta_b"
+    return v
+
+
 def branches(A: np.ndarray, rule: str, bref: float) -> tuple[np.ndarray, np.ndarray]:
-    """(H0 confirma, veredicto de H1) por réplica, con las funciones del análisis (s1r_lp)."""
+    """(H0 confirma, veredicto de H1 con la regla (b)) por réplica, con las funciones del análisis (s1r_lp)."""
     dl = delta(rule, A, bref)
     h0 = np.array([s1r_lp.h0_confirms(a[0], a[1], int(a[6])) for a in A])
-    h1 = np.array([s1r_lp.h1_verdict(a[2], a[3], int(a[7]), d) for a, d in zip(A, dl, strict=True)])
+    h1 = np.array([h1_verdict_b(a[2], a[3], int(a[7]), d) for a, d in zip(A, dl, strict=True)])
     return h0, h1
 
 

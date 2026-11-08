@@ -46,3 +46,16 @@ Estado: candidata
    V1; en V3s el cruce estaba entre 5 y 7. Simula también en el punto del MDE, no solo en el que se pidió.
 3. **Para reproducir las celdas de un MC anterior, haz que la semilla sea una función pura de la celda** (ruido, m, índice de c) y
    da a las celdas nuevas índices libres. Así F13 reprodujo F9 exactamente sin volver a correrlo entero.
+
+## 2026-11-08 · p01 · F15: requisitos previos a estimar `s1r_*`
+Estado: candidata
+1. **Al retirar una regla de decisión, no la borres del MC que la estudió: muévela allí.** `s1r_lp.h1_verdict` pierde la (b), pero
+   F9 y F13 la necesitan para reproducir sus tablas; vive como `f9_power.h1_verdict_b`, y el test antiguo se reapunta a ella en vez
+   de borrarse.
+2. **El test de paridad Python–R debe correr sobre la misma inversión simulada que el MC, no sobre la real.** Se sustituye `inv` en
+   el panel real por exp(nivel simulado / 100) y se pasa a los dos scripts. Además se comprueba que el script de análisis da lo mismo
+   que el estimador del MC (rel. 1e-10): así lo que se va a estimar es exactamente lo que validó el MC.
+3. **En R, `pmax(0, M)` devuelve un vector: toma los atributos del primer argumento y se pierde la dimensión.** Para recortar una
+   matriz de pesos HAC, `pmax(M, 0)`.
+4. **Un script de análisis no debe depender de columnas que no usa.** `sample_counts_s1r.samples` necesita `mps_bs23_orth`; el panel
+   simulado para R no la tiene. Define la muestra con lo mínimo y comprueba en un test que coincide con los recuentos publicados.
