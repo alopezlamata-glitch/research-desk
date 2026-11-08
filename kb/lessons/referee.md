@@ -32,3 +32,22 @@ Estado: candidata
    permitieron comparar F4, Python y R al 9.º decimal. Después, una discrepancia de ≈ 3 errores se repite con otra semilla y
    más réplicas: aquí, dos casos de 1 sobre ~40 comparaciones, y los dos desaparecieron. Una corrida de 1000 réplicas sola puede
    mover una probabilidad del 7 % en 0,02.
+
+## 2026-11-08 · p01 · R-F10, Monte Carlo de `s1r_*` (F9)
+Estado: candidata
+1. **Un sesgo "corregido exactamente" en el MC puede ser una tautología del DGP.** Con β_C = β_U, ȳ_t es lineal exacta en
+   ε_{t−9..t+12} y `aum` controla justo por esos choques: error 0 por construcción. Regla: probar la corrección con otra forma de
+   IRF (más corta, con joroba que revierte) y con efectos heterogéneos (β_C ≠ β_U), que es donde queda el resto.
+2. **Tamaño del contraste frente a la hipótesis rival, no solo frente a β = 0.** El contraste de H1 tenía tamaño 0,01–0,04 con
+   β_C = β_U = 0, pero confirmaba en falso un 10–14 % con β_C = 0 y β_U grande. Regla: simular siempre el rival relevante de la
+   SPEC y dar P(confirma) en una rejilla de su parámetro.
+3. **Las cifras en "múltiplos de β_ref" heredan la normalización de β_ref.** Con π del fed funds en h = 0 o en h = 1, la
+   potencia frente a β_ref pasa de 0,04–0,10 a ≈ 0,1–0,3. Regla: dar el MDE en unidades del choque (invariante) y la potencia con
+   cada normalización defendible; no comparar con una expectativa fijada con otra normalización.
+4. **Una sobrecobertura no se juzga sola: hay que ver qué hacen las alternativas en la celda difícil.** Las ee que cubren bien
+   en la muestra completa (NW con corrección de g.l., EWC) caen a 0,79–0,85 en b_C sin Volcker; solo las que usan residuos HC3
+   aguantan. La que se acerca más a 0,95 (EWC+HC3) infla el tamaño sin Volcker. Regla: tabular las alternativas por celda y medir
+   también el tamaño (β = 0) y la potencia del árbol completo, no solo la cobertura.
+5. **Controlar por adelantos del choque cambia el estimando si el choque está autocorrelado en la población.** Regla: con
+   adelantos como controles, contrastar la autocorrelación del choque (Ljung-Box) y escribir en la SPEC que se estima la respuesta a
+   un choque aislado.

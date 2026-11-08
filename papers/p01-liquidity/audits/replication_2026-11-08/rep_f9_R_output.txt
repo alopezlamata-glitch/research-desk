@@ -1,0 +1,266 @@
+The tzdb package is not installed. Timezones will not be available to Arrow compute functions. If you get errors when using Arrow on datetimes, try running `install.packages('tzdb')` and trying again.
+N: RR 146, RR_noV 133, BS 70
+m_W = 0.766667
+pi(h=0): RR 0.949440  RR_noV 0.942979  BS 2.214847  -> beta_ref RR -1.819760
+pi(h=1): RR 1.668574  RR_noV 1.862266  BS 3.543058  -> beta_ref RR -3.198099
+pi(h=2): RR 1.013652  RR_noV 1.858821  BS 4.869413  -> beta_ref RR -1.942834
+pi(h=3): RR 1.030475  RR_noV 1.248447  BS 5.597003  -> beta_ref RR -1.975076
+pi(h=4): RR 0.763488  RR_noV 1.038973  BS 5.351929  -> beta_ref RR -1.463353
+
+beta_ref RR = -1.819760 ; BS = -4.245124
+
+## Error de diseño relativo (sin ruido, T = N): (b - beta)/beta_ref
+ramp  m=1 base RR      b_lin -0.068372  b_C -0.321730  b_U +0.827195
+ramp  m=1 base RR_noV  b_lin +0.659325  b_C +0.295952  b_U +1.094941
+ramp  m=1 aum  RR      b_lin -0.000000  b_C +0.000000  b_U -0.000000
+ramp  m=1 aum  RR_noV  b_lin -0.000000  b_C +0.000000  b_U -0.000000
+ramp  m=1 aumi RR      b_lin -0.000000  b_C +0.000000  b_U +0.000000
+ramp  m=1 aumi RR_noV  b_lin -0.000000  b_C -0.000000  b_U -0.000000
+ramp  m=0 base RR      b_lin NA  b_C +0.158384  b_U +0.621431
+ramp  m=0 base RR_noV  b_lin NA  b_C +0.250818  b_U +0.745862
+ramp  m=0 aum  RR      b_lin NA  b_C +0.233533  b_U +0.236562
+ramp  m=0 aum  RR_noV  b_lin NA  b_C -0.026911  b_U +0.184975
+ramp  m=0 aumi RR      b_lin NA  b_C -0.000000  b_U -0.000000
+ramp  m=0 aumi RR_noV  b_lin NA  b_C -0.000000  b_U -0.000000
+fast  m=1 base RR      b_lin -0.194238  b_C -0.461891  b_U +0.739396
+fast  m=1 base RR_noV  b_lin +0.479647  b_C +0.119879  b_U +0.918283
+fast  m=1 aum  RR      b_lin -0.000000  b_C -0.000000  b_U +0.000000
+fast  m=1 aum  RR_noV  b_lin +0.000000  b_C +0.000000  b_U -0.000000
+fast  m=1 aumi RR      b_lin -0.000000  b_C -0.000000  b_U -0.000000
+fast  m=1 aumi RR_noV  b_lin +0.000000  b_C -0.000000  b_U +0.000000
+fast  m=0 base RR      b_lin NA  b_C +0.135676  b_U +0.716336
+fast  m=0 base RR_noV  b_lin NA  b_C +0.119022  b_U +0.833170
+fast  m=0 aum  RR      b_lin NA  b_C +0.240403  b_U +0.334643
+fast  m=0 aum  RR_noV  b_lin NA  b_C -0.058905  b_U +0.293738
+fast  m=0 aumi RR      b_lin NA  b_C +0.000000  b_U -0.000000
+fast  m=0 aumi RR_noV  b_lin NA  b_C -0.000000  b_U +0.000000
+hump  m=1 base RR      b_lin -0.160937  b_C -0.373080  b_U +0.552214
+hump  m=1 base RR_noV  b_lin +0.600952  b_C +0.347689  b_U +0.895836
+hump  m=1 aum  RR      b_lin -0.000044  b_C -0.000072  b_U +0.000084
+hump  m=1 aum  RR_noV  b_lin -0.000016  b_C -0.000090  b_U +0.000061
+hump  m=1 aumi RR      b_lin -0.000044  b_C -0.000157  b_U +0.000198
+hump  m=1 aumi RR_noV  b_lin -0.000016  b_C -0.000180  b_U +0.000242
+hump  m=0 base RR      b_lin NA  b_C +0.171012  b_U +0.830315
+hump  m=0 base RR_noV  b_lin NA  b_C +0.318913  b_U +0.980624
+hump  m=0 aum  RR      b_lin NA  b_C +0.287742  b_U +0.558049
+hump  m=0 aum  RR_noV  b_lin NA  b_C +0.034701  b_U +0.462759
+hump  m=0 aumi RR      b_lin NA  b_C -0.000092  b_U +0.000023
+hump  m=0 aumi RR_noV  b_lin NA  b_C -0.000040  b_U -0.000061
+ramp  m=1 base BS      b_lin -0.674947  b_C -0.819463  b_U -0.818273
+
+## Autocorrelación de RR y Ljung-Box (12 retardos)
+RR: rho1..4 = -0.152 -0.109 0.128 -0.105 ; LB(12) = 16.78, p = 0.158
+RR_noV: rho1..4 = 0.195 -0.021 0.097 0.168 ; LB(12) = 22.86, p = 0.029
+## ¿Predicen el PIB, el deflactor y el fed funds pasados el choque RR? (F de Wald HC1, 4 retardos)
+RR: F(12, 133) = 1.07, p = 0.391
+RR_noV: F(12, 120) = 1.66, p = 0.085
+
+### A · aum · homo · m=1 c=1 · 2000 réplicas
+  RR     b_lin sesgo -0.039  sd 1.626  cobertura NW5_HC3=0.981 NW5=0.907 NW5_df=0.934 NW12_df=0.917 NW12_HC2=0.926 NW5_HC2=0.947 EWC=0.935 EWC_HC3=0.975
+  RR     b_C   sesgo +0.021  sd 2.062  cobertura NW5_HC3=0.982 NW5=0.853 NW5_df=0.904 NW12_df=0.873 NW12_HC2=0.903 NW5_HC2=0.933 EWC=0.897 EWC_HC3=0.960
+  RR     b_U   sesgo -0.168  sd 3.322  cobertura NW5_HC3=0.977 NW5=0.892 NW5_df=0.936 NW12_df=0.921 NW12_HC2=0.924 NW5_HC2=0.940 EWC=0.949 EWC_HC3=0.979
+  RR_noV b_lin sesgo -0.059  sd 1.880  cobertura NW5_HC3=0.982 NW5=0.929 NW5_df=0.951 NW12_df=0.936 NW12_HC2=0.942 NW5_HC2=0.958 EWC=0.950 EWC_HC3=0.980
+  RR_noV b_C   sesgo +0.049  sd 3.535  cobertura NW5_HC3=0.966 NW5=0.777 NW5_df=0.851 NW12_df=0.789 NW12_HC2=0.822 NW5_HC2=0.889 EWC=0.821 EWC_HC3=0.934
+  RR_noV b_U   sesgo -0.157  sd 3.255  cobertura NW5_HC3=0.983 NW5=0.889 NW5_df=0.936 NW12_df=0.915 NW12_HC2=0.927 NW5_HC2=0.945 EWC=0.951 EWC_HC3=0.984
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.130  RR_noV 0.117
+  [NW5_HC3] V1   h0_falla 0.835 · confirma 0.093 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.072
+  [NW5_HC3] V2   h0_falla 0.879 · confirma 0.056 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.064
+  [NW5_HC3] V3s  h0_falla 0.835 · confirma 0.043 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.121
+  [NW5_HC3] V3l  h0_falla 0.835 · confirma 0.093 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.072
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.169  RR_noV 0.154
+  [EWC_HC3] V1   h0_falla 0.828 · confirma 0.103 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.070
+  [EWC_HC3] V2   h0_falla 0.870 · confirma 0.060 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.070
+  [EWC_HC3] V3s  h0_falla 0.828 · confirma 0.050 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.122
+  [EWC_HC3] V3l  h0_falla 0.828 · confirma 0.103 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.070
+
+### A · base · homo · m=1 c=1 · 2000 réplicas
+  RR     b_lin sesgo +0.032  sd 1.457  cobertura NW5_HC3=0.950 NW5=0.921 NW5_df=0.932 NW12_df=0.926 NW12_HC2=0.930 NW5_HC2=0.937 EWC=0.948 EWC_HC3=0.959
+  RR     b_C   sesgo +0.686  sd 1.358  cobertura NW5_HC3=0.912 NW5=0.833 NW5_df=0.849 NW12_df=0.832 NW12_HC2=0.845 NW5_HC2=0.868 EWC=0.841 EWC_HC3=0.880
+  RR     b_U   sesgo -2.284  sd 4.006  cobertura NW5_HC3=0.870 NW5=0.811 NW5_df=0.827 NW12_df=0.822 NW12_HC2=0.835 NW5_HC2=0.838 EWC=0.898 EWC_HC3=0.926
+  RR_noV b_lin sesgo -1.362  sd 2.658  cobertura NW5_HC3=0.902 NW5=0.864 NW5_df=0.879 NW12_df=0.875 NW12_HC2=0.879 NW5_HC2=0.885 EWC=0.915 EWC_HC3=0.931
+  RR_noV b_C   sesgo -0.439  sd 3.067  cobertura NW5_HC3=0.907 NW5=0.844 NW5_df=0.863 NW12_df=0.814 NW12_HC2=0.829 NW5_HC2=0.878 EWC=0.837 EWC_HC3=0.868
+  RR_noV b_U   sesgo -2.458  sd 4.444  cobertura NW5_HC3=0.896 NW5=0.811 NW5_df=0.838 NW12_df=0.827 NW12_HC2=0.845 NW5_HC2=0.853 EWC=0.901 EWC_HC3=0.939
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.032  RR_noV 0.238
+  [NW5_HC3] V1   h0_falla 0.885 · confirma 0.025 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.089
+  [NW5_HC3] V2   h0_falla 0.628 · confirma 0.175 · refuta_a 0.000 · refuta_b 0.002 · no_concluyente 0.194
+  [NW5_HC3] V3s  h0_falla 0.885 · confirma 0.013 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.102
+  [NW5_HC3] V3l  h0_falla 0.885 · confirma 0.025 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.089
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.089  RR_noV 0.278
+  [EWC_HC3] V1   h0_falla 0.876 · confirma 0.051 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.073
+  [EWC_HC3] V2   h0_falla 0.710 · confirma 0.176 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.113
+  [EWC_HC3] V3s  h0_falla 0.876 · confirma 0.026 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.098
+  [EWC_HC3] V3l  h0_falla 0.876 · confirma 0.050 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.073
+
+### C · aum · homo · m=1 c=3 · 2000 réplicas
+  RR     b_lin sesgo +0.060  sd 1.639  cobertura NW5_HC3=0.977 NW5=0.891 NW5_df=0.926 NW12_df=0.897 NW12_HC2=0.917 NW5_HC2=0.944 EWC=0.928 EWC_HC3=0.973
+  RR     b_C   sesgo +0.124  sd 2.104  cobertura NW5_HC3=0.978 NW5=0.839 NW5_df=0.888 NW12_df=0.861 NW12_HC2=0.885 NW5_HC2=0.924 EWC=0.888 EWC_HC3=0.953
+  RR     b_U   sesgo -0.090  sd 3.448  cobertura NW5_HC3=0.977 NW5=0.887 NW5_df=0.933 NW12_df=0.913 NW12_HC2=0.927 NW5_HC2=0.941 EWC=0.945 EWC_HC3=0.981
+  RR_noV b_lin sesgo +0.047  sd 1.918  cobertura NW5_HC3=0.977 NW5=0.913 NW5_df=0.946 NW12_df=0.925 NW12_HC2=0.933 NW5_HC2=0.951 EWC=0.944 EWC_HC3=0.975
+  RR_noV b_C   sesgo +0.130  sd 3.566  cobertura NW5_HC3=0.968 NW5=0.782 NW5_df=0.861 NW12_df=0.795 NW12_HC2=0.832 NW5_HC2=0.892 EWC=0.829 EWC_HC3=0.933
+  RR_noV b_U   sesgo -0.032  sd 3.382  cobertura NW5_HC3=0.978 NW5=0.887 NW5_df=0.940 NW12_df=0.923 NW12_HC2=0.932 NW5_HC2=0.948 EWC=0.946 EWC_HC3=0.982
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.650  RR_noV 0.411
+  [NW5_HC3] V1   h0_falla 0.191 · confirma 0.626 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.183
+  [NW5_HC3] V2   h0_falla 0.307 · confirma 0.370 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.323
+  [NW5_HC3] V3s  h0_falla 0.191 · confirma 0.360 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.449
+  [NW5_HC3] V3l  h0_falla 0.191 · confirma 0.626 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.183
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.689  RR_noV 0.446
+  [EWC_HC3] V1   h0_falla 0.210 · confirma 0.646 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.143
+  [EWC_HC3] V2   h0_falla 0.325 · confirma 0.381 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.294
+  [EWC_HC3] V3s  h0_falla 0.210 · confirma 0.386 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.404
+  [EWC_HC3] V3l  h0_falla 0.210 · confirma 0.646 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.143
+
+### C · aumi · homo · m=1 c=3 · 2000 réplicas
+  RR     b_lin sesgo +0.060  sd 1.639  cobertura NW5_HC3=0.977 NW5=0.891 NW5_df=0.926 NW12_df=0.897 NW12_HC2=0.917 NW5_HC2=0.944 EWC=0.928 EWC_HC3=0.973
+  RR     b_C   sesgo +0.155  sd 3.073  cobertura NW5_HC3=0.958 NW5=0.696 NW5_df=0.790 NW12_df=0.779 NW12_HC2=0.814 NW5_HC2=0.834 EWC=0.833 EWC_HC3=0.950
+  RR     b_U   sesgo -0.176  sd 2.868  cobertura NW5_HC3=0.987 NW5=0.876 NW5_df=0.938 NW12_df=0.918 NW12_HC2=0.922 NW5_HC2=0.942 EWC=0.935 EWC_HC3=0.981
+  RR_noV b_lin sesgo +0.047  sd 1.918  cobertura NW5_HC3=0.977 NW5=0.913 NW5_df=0.946 NW12_df=0.925 NW12_HC2=0.933 NW5_HC2=0.951 EWC=0.944 EWC_HC3=0.975
+  RR_noV b_C   sesgo +0.148  sd 3.467  cobertura NW5_HC3=0.976 NW5=0.743 NW5_df=0.856 NW12_df=0.809 NW12_HC2=0.841 NW5_HC2=0.881 EWC=0.844 EWC_HC3=0.962
+  RR_noV b_U   sesgo -0.120  sd 2.880  cobertura NW5_HC3=0.995 NW5=0.883 NW5_df=0.941 NW12_df=0.924 NW12_HC2=0.931 NW5_HC2=0.946 EWC=0.941 EWC_HC3=0.990
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.375  RR_noV 0.290
+  [NW5_HC3] V1   h0_falla 0.191 · confirma 0.356 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.453
+  [NW5_HC3] V2   h0_falla 0.307 · confirma 0.263 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.429
+  [NW5_HC3] V3s  h0_falla 0.191 · confirma 0.214 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.594
+  [NW5_HC3] V3l  h0_falla 0.191 · confirma 0.356 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.453
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.391  RR_noV 0.333
+  [EWC_HC3] V1   h0_falla 0.210 · confirma 0.360 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.429
+  [EWC_HC3] V2   h0_falla 0.325 · confirma 0.290 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.386
+  [EWC_HC3] V3s  h0_falla 0.210 · confirma 0.240 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.549
+  [EWC_HC3] V3l  h0_falla 0.210 · confirma 0.360 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.429
+
+### D · aum · homo · m=0 c=3 · 2000 réplicas
+  RR     b_C   sesgo -1.499  sd 2.159  cobertura NW5_HC3=0.936 NW5=0.758 NW5_df=0.816 NW12_df=0.784 NW12_HC2=0.818 NW5_HC2=0.851 EWC=0.823 EWC_HC3=0.907
+  RR     b_U   sesgo -1.158  sd 3.319  cobertura NW5_HC3=0.985 NW5=0.908 NW5_df=0.955 NW12_df=0.936 NW12_HC2=0.944 NW5_HC2=0.956 EWC=0.956 EWC_HC3=0.984
+  RR_noV b_C   sesgo +0.371  sd 3.629  cobertura NW5_HC3=0.972 NW5=0.825 NW5_df=0.878 NW12_df=0.838 NW12_HC2=0.864 NW5_HC2=0.906 EWC=0.863 EWC_HC3=0.939
+  RR_noV b_U   sesgo -1.082  sd 3.263  cobertura NW5_HC3=0.988 NW5=0.909 NW5_df=0.956 NW12_df=0.936 NW12_HC2=0.943 NW5_HC2=0.960 EWC=0.956 EWC_HC3=0.986
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.117  RR_noV 0.051
+  [NW5_HC3] V1   h0_falla 0.731 · confirma 0.106 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.164
+  [NW5_HC3] V2   h0_falla 0.771 · confirma 0.042 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.186
+  [NW5_HC3] V3s  h0_falla 0.731 · confirma 0.034 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.235
+  [NW5_HC3] V3l  h0_falla 0.731 · confirma 0.106 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.164
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.146  RR_noV 0.059
+  [EWC_HC3] V1   h0_falla 0.736 · confirma 0.129 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.136
+  [EWC_HC3] V2   h0_falla 0.772 · confirma 0.049 · refuta_a 0.000 · refuta_b 0.001 · no_concluyente 0.177
+  [EWC_HC3] V3s  h0_falla 0.736 · confirma 0.040 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.225
+  [EWC_HC3] V3l  h0_falla 0.736 · confirma 0.128 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.136
+
+### D · aumi · homo · m=0 c=3 · 2000 réplicas
+  RR     b_C   sesgo -0.060  sd 3.115  cobertura NW5_HC3=0.959 NW5=0.688 NW5_df=0.799 NW12_df=0.789 NW12_HC2=0.827 NW5_HC2=0.847 EWC=0.848 EWC_HC3=0.954
+  RR     b_U   sesgo -0.026  sd 2.787  cobertura NW5_HC3=0.992 NW5=0.878 NW5_df=0.946 NW12_df=0.921 NW12_HC2=0.926 NW5_HC2=0.948 EWC=0.945 EWC_HC3=0.984
+  RR_noV b_C   sesgo -0.189  sd 3.577  cobertura NW5_HC3=0.975 NW5=0.742 NW5_df=0.854 NW12_df=0.816 NW12_HC2=0.840 NW5_HC2=0.874 EWC=0.852 EWC_HC3=0.963
+  RR_noV b_U   sesgo +0.012  sd 2.820  cobertura NW5_HC3=0.995 NW5=0.879 NW5_df=0.956 NW12_df=0.942 NW12_HC2=0.945 NW5_HC2=0.959 EWC=0.955 EWC_HC3=0.991
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.037  RR_noV 0.028
+  [NW5_HC3] V1   h0_falla 0.731 · confirma 0.032 · refuta_a 0.000 · refuta_b 0.002 · no_concluyente 0.236
+  [NW5_HC3] V2   h0_falla 0.771 · confirma 0.025 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.204
+  [NW5_HC3] V3s  h0_falla 0.731 · confirma 0.011 · refuta_a 0.000 · refuta_b 0.002 · no_concluyente 0.257
+  [NW5_HC3] V3l  h0_falla 0.731 · confirma 0.032 · refuta_a 0.000 · refuta_b 0.002 · no_concluyente 0.236
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.046  RR_noV 0.038
+  [EWC_HC3] V1   h0_falla 0.736 · confirma 0.036 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.228
+  [EWC_HC3] V2   h0_falla 0.772 · confirma 0.032 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.195
+  [EWC_HC3] V3s  h0_falla 0.736 · confirma 0.012 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.252
+  [EWC_HC3] V3l  h0_falla 0.736 · confirma 0.036 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.228
+
+### E · aum · homo · m=1 c=1.76 · 2000 réplicas
+  RR     b_lin sesgo -0.067  sd 1.623  cobertura NW5_HC3=0.980 NW5=0.905 NW5_df=0.939 NW12_df=0.913 NW12_HC2=0.932 NW5_HC2=0.958 EWC=0.949 EWC_HC3=0.981
+  RR     b_C   sesgo -0.050  sd 2.028  cobertura NW5_HC3=0.983 NW5=0.855 NW5_df=0.899 NW12_df=0.876 NW12_HC2=0.900 NW5_HC2=0.936 EWC=0.905 EWC_HC3=0.959
+  RR     b_U   sesgo -0.029  sd 3.317  cobertura NW5_HC3=0.975 NW5=0.892 NW5_df=0.933 NW12_df=0.917 NW12_HC2=0.925 NW5_HC2=0.940 EWC=0.946 EWC_HC3=0.980
+  RR_noV b_lin sesgo -0.079  sd 1.917  cobertura NW5_HC3=0.984 NW5=0.917 NW5_df=0.956 NW12_df=0.930 NW12_HC2=0.934 NW5_HC2=0.959 EWC=0.950 EWC_HC3=0.979
+  RR_noV b_C   sesgo -0.141  sd 3.473  cobertura NW5_HC3=0.968 NW5=0.805 NW5_df=0.857 NW12_df=0.818 NW12_HC2=0.844 NW5_HC2=0.893 EWC=0.844 EWC_HC3=0.935
+  RR_noV b_U   sesgo +0.007  sd 3.247  cobertura NW5_HC3=0.984 NW5=0.878 NW5_df=0.930 NW12_df=0.910 NW12_HC2=0.919 NW5_HC2=0.942 EWC=0.943 EWC_HC3=0.986
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.311  RR_noV 0.220
+  [NW5_HC3] V1   h0_falla 0.588 · confirma 0.268 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.144
+  [NW5_HC3] V2   h0_falla 0.661 · confirma 0.149 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.189
+  [NW5_HC3] V3s  h0_falla 0.588 · confirma 0.136 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.277
+  [NW5_HC3] V3l  h0_falla 0.588 · confirma 0.268 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.144
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.363  RR_noV 0.256
+  [EWC_HC3] V1   h0_falla 0.585 · confirma 0.288 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.127
+  [EWC_HC3] V2   h0_falla 0.671 · confirma 0.151 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.177
+  [EWC_HC3] V3s  h0_falla 0.585 · confirma 0.146 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.269
+  [EWC_HC3] V3l  h0_falla 0.585 · confirma 0.288 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.127
+
+### F · aum · het_eps · m=1 c=1 · 2000 réplicas
+  RR     b_lin sesgo +0.001  sd 1.799  cobertura NW5_HC3=0.980 NW5=0.870 NW5_df=0.915 NW12_df=0.879 NW12_HC2=0.912 NW5_HC2=0.942 EWC=0.907 EWC_HC3=0.973
+  RR     b_C   sesgo +0.015  sd 2.270  cobertura NW5_HC3=0.984 NW5=0.801 NW5_df=0.859 NW12_df=0.818 NW12_HC2=0.865 NW5_HC2=0.913 EWC=0.845 EWC_HC3=0.945
+  RR     b_U   sesgo -0.038  sd 3.058  cobertura NW5_HC3=0.982 NW5=0.889 NW5_df=0.934 NW12_df=0.918 NW12_HC2=0.930 NW5_HC2=0.947 EWC=0.945 EWC_HC3=0.984
+  RR_noV b_lin sesgo -0.068  sd 1.798  cobertura NW5_HC3=0.977 NW5=0.901 NW5_df=0.936 NW12_df=0.913 NW12_HC2=0.928 NW5_HC2=0.947 EWC=0.939 EWC_HC3=0.980
+  RR_noV b_C   sesgo -0.108  sd 3.461  cobertura NW5_HC3=0.952 NW5=0.747 NW5_df=0.818 NW12_df=0.762 NW12_HC2=0.804 NW5_HC2=0.856 EWC=0.792 EWC_HC3=0.918
+  RR_noV b_U   sesgo -0.021  sd 2.902  cobertura NW5_HC3=0.981 NW5=0.884 NW5_df=0.928 NW12_df=0.915 NW12_HC2=0.929 NW5_HC2=0.941 EWC=0.948 EWC_HC3=0.981
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.121  RR_noV 0.141
+  [NW5_HC3] V1   h0_falla 0.863 · confirma 0.092 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.045
+  [NW5_HC3] V2   h0_falla 0.837 · confirma 0.078 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.085
+  [NW5_HC3] V3s  h0_falla 0.863 · confirma 0.051 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.086
+  [NW5_HC3] V3l  h0_falla 0.863 · confirma 0.092 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.045
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.190  RR_noV 0.179
+  [EWC_HC3] V1   h0_falla 0.828 · confirma 0.119 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.053
+  [EWC_HC3] V2   h0_falla 0.837 · confirma 0.086 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.076
+  [EWC_HC3] V3s  h0_falla 0.828 · confirma 0.066 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.107
+  [EWC_HC3] V3l  h0_falla 0.828 · confirma 0.119 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.053
+
+### G · aum · homo · m=0 c=5 · 2000 réplicas
+  RR     b_C   sesgo -2.310  sd 2.089  cobertura NW5_HC3=0.934 NW5=0.740 NW5_df=0.806 NW12_df=0.788 NW12_HC2=0.820 NW5_HC2=0.840 EWC=0.823 EWC_HC3=0.906
+  RR     b_U   sesgo -2.020  sd 3.396  cobertura NW5_HC3=0.992 NW5=0.936 NW5_df=0.967 NW12_df=0.958 NW12_HC2=0.964 NW5_HC2=0.972 EWC=0.974 EWC_HC3=0.993
+  RR_noV b_C   sesgo +0.756  sd 3.572  cobertura NW5_HC3=0.981 NW5=0.880 NW5_df=0.925 NW12_df=0.875 NW12_HC2=0.905 NW5_HC2=0.949 EWC=0.877 EWC_HC3=0.961
+  RR_noV b_U   sesgo -1.913  sd 3.343  cobertura NW5_HC3=0.991 NW5=0.931 NW5_df=0.970 NW12_df=0.959 NW12_HC2=0.968 NW5_HC2=0.976 EWC=0.972 EWC_HC3=0.992
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.112  RR_noV 0.032
+  [NW5_HC3] V1   h0_falla 0.548 · confirma 0.110 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.342
+  [NW5_HC3] V2   h0_falla 0.567 · confirma 0.032 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.401
+  [NW5_HC3] V3s  h0_falla 0.548 · confirma 0.028 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.423
+  [NW5_HC3] V3l  h0_falla 0.548 · confirma 0.110 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.342
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.152  RR_noV 0.048
+  [EWC_HC3] V1   h0_falla 0.611 · confirma 0.145 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.244
+  [EWC_HC3] V2   h0_falla 0.624 · confirma 0.048 · refuta_a 0.000 · refuta_b 0.004 · no_concluyente 0.325
+  [EWC_HC3] V3s  h0_falla 0.611 · confirma 0.044 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.345
+  [EWC_HC3] V3l  h0_falla 0.611 · confirma 0.144 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.245
+
+### G · aumi · homo · m=0 c=5 · 2000 réplicas
+  RR     b_C   sesgo +0.103  sd 3.056  cobertura NW5_HC3=0.961 NW5=0.707 NW5_df=0.802 NW12_df=0.795 NW12_HC2=0.829 NW5_HC2=0.842 EWC=0.850 EWC_HC3=0.959
+  RR     b_U   sesgo +0.090  sd 2.820  cobertura NW5_HC3=0.992 NW5=0.867 NW5_df=0.946 NW12_df=0.918 NW12_HC2=0.921 NW5_HC2=0.948 EWC=0.932 EWC_HC3=0.983
+  RR_noV b_C   sesgo -0.114  sd 3.609  cobertura NW5_HC3=0.974 NW5=0.724 NW5_df=0.842 NW12_df=0.806 NW12_HC2=0.827 NW5_HC2=0.871 EWC=0.844 EWC_HC3=0.964
+  RR_noV b_U   sesgo +0.119  sd 2.827  cobertura NW5_HC3=0.992 NW5=0.877 NW5_df=0.952 NW12_df=0.929 NW12_HC2=0.938 NW5_HC2=0.956 EWC=0.942 EWC_HC3=0.991
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.031  RR_noV 0.029
+  [NW5_HC3] V1   h0_falla 0.548 · confirma 0.030 · refuta_a 0.002 · refuta_b 0.008 · no_concluyente 0.411
+  [NW5_HC3] V2   h0_falla 0.567 · confirma 0.029 · refuta_a 0.000 · refuta_b 0.004 · no_concluyente 0.401
+  [NW5_HC3] V3s  h0_falla 0.548 · confirma 0.012 · refuta_a 0.002 · refuta_b 0.008 · no_concluyente 0.429
+  [NW5_HC3] V3l  h0_falla 0.548 · confirma 0.030 · refuta_a 0.002 · refuta_b 0.008 · no_concluyente 0.411
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.035  RR_noV 0.042
+  [EWC_HC3] V1   h0_falla 0.611 · confirma 0.035 · refuta_a 0.001 · refuta_b 0.005 · no_concluyente 0.348
+  [EWC_HC3] V2   h0_falla 0.624 · confirma 0.041 · refuta_a 0.001 · refuta_b 0.002 · no_concluyente 0.332
+  [EWC_HC3] V3s  h0_falla 0.611 · confirma 0.015 · refuta_a 0.001 · refuta_b 0.005 · no_concluyente 0.368
+  [EWC_HC3] V3l  h0_falla 0.611 · confirma 0.035 · refuta_a 0.001 · refuta_b 0.005 · no_concluyente 0.348
+
+### H · aum · homo · m=1 c=0 · 2000 réplicas
+  RR     b_lin sesgo -0.006  sd 1.667  cobertura NW5_HC3=0.974 NW5=0.883 NW5_df=0.922 NW12_df=0.894 NW12_HC2=0.908 NW5_HC2=0.933 EWC=0.931 EWC_HC3=0.972
+  RR     b_C   sesgo -0.033  sd 2.108  cobertura NW5_HC3=0.975 NW5=0.846 NW5_df=0.892 NW12_df=0.860 NW12_HC2=0.886 NW5_HC2=0.923 EWC=0.897 EWC_HC3=0.956
+  RR     b_U   sesgo +0.056  sd 3.376  cobertura NW5_HC3=0.979 NW5=0.886 NW5_df=0.930 NW12_df=0.913 NW12_HC2=0.919 NW5_HC2=0.941 EWC=0.946 EWC_HC3=0.982
+  RR_noV b_lin sesgo +0.005  sd 1.965  cobertura NW5_HC3=0.974 NW5=0.903 NW5_df=0.941 NW12_df=0.916 NW12_HC2=0.927 NW5_HC2=0.946 EWC=0.945 EWC_HC3=0.976
+  RR_noV b_C   sesgo -0.043  sd 3.625  cobertura NW5_HC3=0.971 NW5=0.774 NW5_df=0.837 NW12_df=0.793 NW12_HC2=0.821 NW5_HC2=0.876 EWC=0.823 EWC_HC3=0.929
+  RR_noV b_U   sesgo +0.047  sd 3.329  cobertura NW5_HC3=0.979 NW5=0.881 NW5_df=0.933 NW12_df=0.914 NW12_HC2=0.924 NW5_HC2=0.943 EWC=0.939 EWC_HC3=0.981
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.034  RR_noV 0.040
+  [NW5_HC3] V1   h0_falla 0.970 · confirma 0.018 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.012
+  [NW5_HC3] V2   h0_falla 0.970 · confirma 0.013 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.017
+  [NW5_HC3] V3s  h0_falla 0.970 · confirma 0.012 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.018
+  [NW5_HC3] V3l  h0_falla 0.970 · confirma 0.018 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.012
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.051  RR_noV 0.064
+  [EWC_HC3] V1   h0_falla 0.968 · confirma 0.021 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.011
+  [EWC_HC3] V2   h0_falla 0.968 · confirma 0.014 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.018
+  [EWC_HC3] V3s  h0_falla 0.968 · confirma 0.011 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.021
+  [EWC_HC3] V3l  h0_falla 0.968 · confirma 0.020 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.012
+
+### I · aum · het_eps · m=1 c=0 · 2000 réplicas
+  RR     b_lin sesgo -0.038  sd 1.849  cobertura NW5_HC3=0.978 NW5=0.863 NW5_df=0.901 NW12_df=0.873 NW12_HC2=0.903 NW5_HC2=0.933 EWC=0.900 EWC_HC3=0.966
+  RR     b_C   sesgo -0.059  sd 2.321  cobertura NW5_HC3=0.976 NW5=0.808 NW5_df=0.859 NW12_df=0.820 NW12_HC2=0.870 NW5_HC2=0.905 EWC=0.840 EWC_HC3=0.938
+  RR     b_U   sesgo -0.018  sd 3.020  cobertura NW5_HC3=0.988 NW5=0.901 NW5_df=0.941 NW12_df=0.921 NW12_HC2=0.938 NW5_HC2=0.955 EWC=0.950 EWC_HC3=0.987
+  RR_noV b_lin sesgo -0.009  sd 1.861  cobertura NW5_HC3=0.978 NW5=0.890 NW5_df=0.929 NW12_df=0.903 NW12_HC2=0.917 NW5_HC2=0.941 EWC=0.936 EWC_HC3=0.981
+  RR_noV b_C   sesgo -0.048  sd 3.574  cobertura NW5_HC3=0.957 NW5=0.733 NW5_df=0.812 NW12_df=0.745 NW12_HC2=0.792 NW5_HC2=0.858 EWC=0.790 EWC_HC3=0.919
+  RR_noV b_U   sesgo +0.025  sd 2.874  cobertura NW5_HC3=0.987 NW5=0.888 NW5_df=0.940 NW12_df=0.912 NW12_HC2=0.922 NW5_HC2=0.950 EWC=0.943 EWC_HC3=0.981
+  [NW5_HC3] potencia H1 sin condicionar: RR 0.027  RR_noV 0.050
+  [NW5_HC3] V1   h0_falla 0.980 · confirma 0.015 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.004
+  [NW5_HC3] V2   h0_falla 0.973 · confirma 0.012 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.015
+  [NW5_HC3] V3s  h0_falla 0.980 · confirma 0.009 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.011
+  [NW5_HC3] V3l  h0_falla 0.980 · confirma 0.015 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.004
+  [EWC_HC3] potencia H1 sin condicionar: RR 0.060  RR_noV 0.076
+  [EWC_HC3] V1   h0_falla 0.968 · confirma 0.022 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.010
+  [EWC_HC3] V2   h0_falla 0.972 · confirma 0.015 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.012
+  [EWC_HC3] V3s  h0_falla 0.968 · confirma 0.010 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.022
+  [EWC_HC3] V3l  h0_falla 0.968 · confirma 0.022 · refuta_a 0.000 · refuta_b 0.000 · no_concluyente 0.010
+
+tiempo: 9.1 min
