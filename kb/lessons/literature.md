@@ -25,3 +25,10 @@ Estado: candidata
 - **Los capítulos de Handbook de pago:** el WP de NBER es el «original» accesible; sus páginas no son las del libro. Decirlo en la `note`.
 - **openICPSR e ICPSR devuelven 403 a WebFetch:** la cobertura de un depósito solo sale de buscadores/espejos y queda NO VERIFICADA hasta abrirlo en un navegador.
 - **IOPO y el tamaño:** una referencia que usa el tamaño solo como control no respalda usarlo como proxy de exposición; Kirti (IMF WP 2017/003, §2.1) sí. Pedir el PDF completo para fijar página.
+
+## 2026-11-08 · p01 · F12 (normalización de Tenreyro-Thwaites y Teulings-Zubanov)
+Estado: candidata
+- **Una cifra citada puede agrupar varias variables:** el «−2,5 %» de TT (pp. 11–12) es una sola frase para gasto duradero de hogares *y* inversión empresarial en el modelo lineal; leer qué agregados abarca antes de tomarla como la de la inversión.
+- **Distinguir «el texto no lo dice» de «no lo encontré»:** el horizonte del −2,5 % no está en el texto y las figuras no se leen sin `pdftoppm`; se declara como ambiguo y se pasa a Econometría, no se rellena con «pico» por plausibilidad.
+- **Un resultado de panel con efectos fijos no se traslada solo a una serie temporal:** el sesgo de la LP en Teulings-Zubanov viene del efecto fijo y de choques independientes (p. 6); anotar el supuesto en la `note` antes de usarlo como respaldo.
+- **Los enlaces de CESifo/«DocDL» pueden devolver HTML:** comprobar el tipo de contenido con `curl -w "%{content_type}"` y probar el WP del Tinbergen Institute (`papers.tinbergen.nl/<nnnnn>.pdf`).
