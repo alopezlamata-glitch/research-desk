@@ -128,3 +128,28 @@ rellena huecos. No reemplaza a `stage1_us.parquet` (la etapa 1 original sigue in
 **Regla de agregación del choque:** suma de los choques mensuales del trimestre (la fuente construye el mensual sumando las reuniones del
 mes y no indica otra regla). Todos los trimestres tienen sus 3 meses; ene–feb de 1969 son 0 en la fuente (la primera reunión de RR es marzo de 1969).
 Muestra de la réplica con `mps_bs23_orth`: 1988Q1–2005Q2 (70 trimestres). Aviso: 11 de los 13 trimestres de Volcker caen en el estado «restringido».
+
+## F14a · `qfr_cells.parquet` (QFR del Census, celdas industria × tamaño; etapa 1b)
+
+Construido por `code/data/build_qfr_f14a.py` desde `datalake/raw/census_qfr/` (23 vintages `qfr<aa>q<t>f.xls[x]`, cada una con 5 trimestres; sha256 comprobado contra
+`datalake/MANIFEST.csv`). Los `.xls` (hasta 2022Q2) se leen con `qfr_read.py` (BIFF8 mínimo; `xlrd` no está en el entorno). Empalme: para cada (celda, trimestre) gana la
+vintage más reciente. Una fila por celda × trimestre; 2005Q3–2026Q2. No se ha estimado nada con la inversión. Datos no versionados; se regeneran con el build.
+
+| Variable | Definición | Unidad | Frecuencia | Transformación / fuente (tabla del QFR) |
+|---|---|---|---|---|
+| `ind` | Industria NAICS hoja (26 de manufacturas, 15 de no manufacturas); nombres de 2024 unidos con los previos (`RENAME`) | — | — | cabecera de columna de la tabla |
+| `size` | `ALL` todos los tamaños · `LT25`/`GE25` activos < / ≥ 25 M (hasta 2019Q2) · `LT50`/`GE50` < / ≥ 50 M (desde 2019Q2; no manufacturas solo `GE50`) | — | — | cabecera o título de la tabla (en 2006–07 el tamaño va en el título) |
+| `total_assets` | Total Assets (balance) | M$ | trimestral, fin de periodo | Tabla *.1 |
+| `net_ppe` | Net property, plant, and equipment | M$ | ídem | Tabla *.1 |
+| `equity`, `cash_sec` | Stockholders' equity; Total cash, U.S. Government and other securities | M$ | ídem | Tabla *.1 |
+| `bank_debt` | Deuda bancaria = Loans from banks a corto + parte corriente de la deuda a largo («Installments…» hasta 2008, «Current portion…» después) + a largo | M$ | ídem | Tabla *.1 |
+| `debt` | `bank_debt` + resto de deuda (otros préstamos a corto, papel comercial, bonos y otros a largo, parte corriente no bancaria). **Excluye** pasivos por arrendamiento y «otros pasivos no corrientes» | M$ | ídem | Tabla *.1 |
+| `bank_share` | `bank_debt / debt` | 0–1 | ídem | cociente de las anteriores |
+| `dep`, `interest_exp`, `sales` | Depreciación; gasto por intereses; ventas netas | M$ | flujo trimestral | Tabla *.0 |
+| `inv_proxy` | **Proxy de inversión** (el QFR no trae capex): `(ΔPPE neto + dep) / PPE neto_{t−1}`. Calculado dentro de cada vintage (no mezcla niveles revisados) y solo con trimestres consecutivos | fracción trimestral | trimestral | incluye M&A, ventas de activos y reclasificaciones: es una medida ruidosa, no capex |
+| `cell` | `ind \| size` | — | — | clave |
+
+Partidas con nombre distinto según la vintage (se unen por patrón en `ITEMS`/`BANK`/`DEBT_NONBANK` del build): `Installments…`/`Current portion…`, `b Commercial paper`/`b Other short-term loans`,
+`b Bonds and debentures` + `c Other…`/`b Other long-term loans`, `Plant and equipment`/`Property, plant, and equipment`.
+Rupturas de empalme (`output/F14A_SEAMS.csv`, `F14A_G_TABLE.csv`): |Δlog activos| > 0,15 entre dos vintages en el trimestre solapado (mediana de revisión 0,01; p99 0,12).
+Aviso: la columna `bank_share` de las celdas pequeñas es volátil (Foundries, Textiles, ver `output/figures/data_qfr_bank_share.png`).

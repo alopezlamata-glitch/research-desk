@@ -1,0 +1,7 @@
+scenario,start,end,T,G_cobertura,G_sin_rupturas,G_mfg,G_nonmfg
+S1 literal: continuas 2006Q3–2026Q2 (cualquier tamaño fijo),2006Q3,2026Q2,80,32,28,24,4
+S2 manuf. todos los tamaños + no manuf. ≥50 M,2007Q2,2026Q2,77,32,30,26,4
+"S3 igual que S2, desde 2010Q2 (entran información y servicios profesionales)",2010Q2,2026Q2,65,41,36,26,10
+S4a manuf. por tamaño <25/≥25 M + no manuf. ≥50 M,2006Q3,2019Q2,52,58,49,43,6
+"S4b igual que S4a, desde 2010Q2 (entran información y servicios profesionales)",2010Q2,2019Q2,37,67,65,51,14
+S5 manuf. por tamaño <50/≥50 M + no manuf. ≥50 M,2019Q2,2026Q2,29,67,61,50,11

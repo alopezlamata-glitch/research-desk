@@ -65,3 +65,14 @@ Estado: candidata
 4. **Un ajuste del recorte de la muestra no debe rehacer el panel anterior**: `START=1985Q1` en `build_stage1_us.py` impedía el estado desde 1969; se construyó `stage1r_us.parquet` aparte, reutilizando las funciones, para no tocar los tests ni la muestra congelada de la etapa 1.
 5. **El Excel del QFR no trae clases de tamaño por industria**: las 8 clases solo existen en agregados; por industria solo hay <50 M y ≥50 M. Regla: contar celdas hoja sin solape (no etiquetas) antes de declarar G, y verificar el recuento con el diccionario de tablas.
 6. **`.xls` antiguos no se leen sin `xlrd`** (pandas de este entorno usa calamine): anotar el archivo como "descargado, no abierto" en vez de añadir una dependencia sin pedirla.
+
+## 2026-11-08 · p01 · F14a (QFR: G y proxy de exposición)
+Estado: candidata
+1. **Una definición de grupo que cambia a mitad de la serie no da un panel continuo**: el QFR pasó de <25/≥25 M a <50/≥50 M en 2019Q2. Regla: antes de contar G, listar para cada (industria, tamaño) los trimestres con datos *y su etiqueta* en cada vintage; contar solo celdas con la misma definición en toda la ventana.
+2. **El tamaño o la muestra pueden ir en el título de la tabla y no en la cabecera de columna** (QFR 2006–07): se mezclaban «Paper ≥25 M» y «Paper todos los tamaños» y se duplicaban sumas. Regla: parsear título y cabecera, y comprobar con un test que un subgrupo no supera a su total.
+3. **Una partida cambia de nombre entre vintages** («Installments…» frente a «Current portion…»): una suma con un componente NaN da NaN en silencio. Regla: tras unir partidas, comprobar que la variable derivada no tiene NaN en la ventana (test).
+4. **Medir las rupturas de empalme en el trimestre solapado entre vintages** (|Δlog| mediana 0,01; las reclasificaciones NAICS dan 0,3–0,5) y declarar el umbral. El umbral es una decisión: dar G con y sin excluir rupturas.
+5. **`.xls` sin `xlrd`**: la lección de F7 decía que pandas usaba calamine; no es cierto en este entorno (`python-calamine` no está). Un lector BIFF8 mínimo (OLE2 + SST + NUMBER/RK/MULRK) basta para estas tablas; validarlo contra un trimestre que salga también en un `.xlsx`.
+6. **Los descargables de un mismo año de la Census no son el mismo diseño**: antes de fijar la ventana, abrir una vintage de cada régimen (2006, 2008, 2011, 2019, 2023, 2025).
+7. **El QFR no trae capex**: la proxy ΔPPE neto + depreciación mezcla fusiones y ventas de activos; calcularla dentro de cada vintage para no mezclar niveles revisados.
+
