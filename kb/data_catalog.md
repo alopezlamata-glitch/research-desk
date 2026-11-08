@@ -106,3 +106,17 @@ Panel `papers/p01-liquidity/data/clean/stage1_us.parquet`; definiciones en su `D
 ## Repositorios de replicación
 openICPSR (AEA), Zenodo, Harvard Dataverse: buscar ahí el paquete de replicación del paper de
 referencia **antes** de construir los datos desde cero.
+
+## Trucos de acceso por fuente
+Trasladados de `kb/lessons/data.md` y `literature.md` el 2026-11-08 (curación de los autores).
+
+- **Wayback** fija vintages (`web.archive.org/web/<ts>id_/<url>`), pero devuelve 429 si se abusa: reintentos con espera.
+- **imf.org, cbo.gov, API SDMX de la OCDE, openICPSR/ICPSR** devuelven 403 a scripts: usar espejos (DBnomics, JST, WDI) o marcar «manual / no verificado».
+- **BIS bulk (`WS_*_csv_flat.zip`)**: las dimensiones van entre `ACTION` y `TIME_PERIOD`; no hay columna `KEY`. Un CSV puede pesar 500 MB descomprimido (CBPOL): leer por bloques.
+- **FRED `GDPPOT`** llega a 2036 (proyección CBO): no estimar sobre ella. `fredgraph.csv` puede dar timeout: construir desde el datalake con sha256 comprobado, no redescargar en el build.
+- **FRED corta → índice de cantidad NIPA**: probar `A###RA3Q086SBEA` (p. ej. `A008RA3Q086SBEA` desde 1947 frente a `PNFIC1` desde 2007) y validar con Δlog en el solape; los niveles no son comparables.
+- **Añadir una serie a FRED del lago**: `fred.py` reescribe y re-hashea todo; llamar a `one()`/`save()` solo con la nueva y añadirla a `SERIES`.
+- **Fed Z.1** no tiene vencimiento ni tipo de la deuda (buscar en E.2 o micro-datos); sus CSV usan `ND` y fechas `1945:Q4`.
+- **Fed DDP**: paquete completo en zip (`Output.aspx?rel=<REL>&filetype=zip`, sin clave). Los `TIME_PERIOD` son fin de trimestre natural aunque la encuesta sea de mitad de trimestre.
+- **Census QFR**: por industria solo hay dos clases de tamaño (las 8 clases solo en agregados); contar celdas hoja sin solape. Los archivos de un mismo año no siguen el mismo diseño: abrir una vintage de cada régimen (2006, 2008, 2011, 2019, 2023, 2025). No trae capex: la proxy ΔPPE neto + depreciación se calcula dentro de cada vintage.
+- **CESifo / «DocDL»** puede devolver HTML: comprobar `curl -w "%{content_type}"` y probar el WP del Tinbergen Institute (`papers.tinbergen.nl/<nnnnn>.pdf`).

@@ -25,3 +25,8 @@ Formato de una lección:
 ## 2026-11-03 · p01 · <título corto>
 Qué pasó. Por qué. Regla para la próxima vez.
 ```
+
+**Descargar papers** (trasladado de `lessons/theory.md`, 2026-11-08):
+- Funcionan: NBER `nber.org/system/files/working_papers/w<N>/w<N>.pdf`; Fed Board `federalreserve.gov/econres/feds/files/<año><nº>pap.pdf`; BIS, BoE, BCE, FRBSF, Philadelphia Fed; OpenAlex `oa_url` por DOI. Si no, buscar el WP equivalente (NBER/CEPR/Fed).
+- Trampas: OpenAlex a veces da la landing HTML (comprobar `%PDF`); WP antiguos de NBER escaneados sin texto (usar el capítulo del Handbook); `CERTIFICATE_VERIFY_FAILED` en ecb.europa.eu y bancaditalia.it (usar `curl` y comprobar PDF y título); editoriales (AEA, Elsevier) dan 403 a scripts.
+- No guardar copias de carpetas de curso o de terceros aunque sean PDF válidos: no hay garantía de legalidad.

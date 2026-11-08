@@ -1,7 +1,8 @@
 # Lecciones — Econometría
 
 ## 2026-11-04 · p01 · F4: Monte Carlo de una LP con choques de alta frecuencia y N ≈ 100
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Con choques HF agregados por trimestre, unos pocos trimestres dominan cada celda** (en p01, dos trimestres suman el 36–45 %
    de Σε² por celda estado × signo). Newey-West estándar infracubre (0,86–0,90) por **apalancamiento**, no por el solape: HC1
    cubre bien los términos U, pero no el más apalancado. Regla: antes de fijar los ee, mira el apalancamiento máximo y el peso de
@@ -19,7 +20,8 @@ Estado: candidata
    concluyente" es ruido. Haz esta cuenta en la fase de diseño, no después del prerregistro.
 
 ## 2026-11-08 · p01 · F9: Monte Carlo de una LP con ventana larga (h = 4..12) y choques narrativos
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Con una ventana larga y una IRF persistente, ȳ_t contiene la respuesta a los choques reales de t−10..t+12.** Si la serie de
    choques está autocorrelada en la muestra (Romer-Romer sin Volcker: ρ1 = 0,20, ρ4 = 0,17), la LP sesga β̂ de forma proporcional a
    β (en p01, +66 % en `s1r_lin` sin Volcker y −67 % en la réplica BS). No es un problema del error estándar: ningún HAC lo arregla.
@@ -38,17 +40,23 @@ Estado: candidata
    de alto apalancamiento.
 
 ## 2026-11-08 · p01 · F13: comprobaciones del prerregistro `s1r_*`
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Antes de discutir si una normalización «cambia la potencia», comprueba si es un reescalado del regresor.** La potencia de una
    MCO no cambia al reescalar ε, y β_ref escala con π. Que la media de 3 meses sea la suma/3 lo demuestran los t idénticos en
    las mismas réplicas (|Δt| ≈ 1e-12). Lo que sí cambia es la unidad del MDE «por pp de ε»: fija esa unidad por escrito.
-2. **Cuando te piden el MDE «en c = k», mira primero dónde cruza 0,8 la variante que importa.** En F9 el intervalo 3–5 era el de
-   V1; en V3s el cruce estaba entre 5 y 7. Simula también en el punto del MDE, no solo en el que se pidió.
-3. **Para reproducir las celdas de un MC anterior, haz que la semilla sea una función pura de la celda** (ruido, m, índice de c) y
+2. **Para reproducir las celdas de un MC anterior, haz que la semilla sea una función pura de la celda** (ruido, m, índice de c) y
    da a las celdas nuevas índices libres. Así F13 reprodujo F9 exactamente sin volver a correrlo entero.
 
+## 2026-11-08 · p01 · F13: comprobaciones del prerregistro `s1r_*` — puntos retirados
+Estado: retirada
+2. **Cuando te piden el MDE «en c = k», mira primero dónde cruza 0,8 la variante que importa.** En F9 el intervalo 3–5 era el de
+   V1; en V3s el cruce estaba entre 5 y 7. Simula también en el punto del MDE, no solo en el que se pidió.
+   *Motivo:* demasiado ligado a F9/F13
+
 ## 2026-11-08 · p01 · F15: requisitos previos a estimar `s1r_*`
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Al retirar una regla de decisión, no la borres del MC que la estudió: muévela allí.** `s1r_lp.h1_verdict` pierde la (b), pero
    F9 y F13 la necesitan para reproducir sus tablas; vive como `f9_power.h1_verdict_b`, y el test antiguo se reapunta a ella en vez
    de borrarse.
@@ -57,15 +65,24 @@ Estado: candidata
    que el estimador del MC (rel. 1e-10): así lo que se va a estimar es exactamente lo que validó el MC.
 3. **En R, `pmax(0, M)` devuelve un vector: toma los atributos del primer argumento y se pierde la dimensión.** Para recortar una
    matriz de pesos HAC, `pmax(M, 0)`.
+
+## 2026-11-08 · p01 · F15: requisitos previos a estimar `s1r_*` — puntos retirados
+Estado: retirada
 4. **Un script de análisis no debe depender de columnas que no usa.** `sample_counts_s1r.samples` necesita `mps_bs23_orth`; el panel
    simulado para R no la tiene. Define la muestra con lo mínimo y comprueba en un test que coincide con los recuentos publicados.
+   *Motivo:* regla genérica de higiene de código, poco específica
 
 ## 2026-11-08 · p01 · F16: estimación de `s1r_*` con la inversión real
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Antes de ejecutar un análisis prerregistrado, comprueba con `git diff <commit> -- code/` que el código es el revisado.** Así el
    informe puede afirmar «tal como en bd4f7bc» con evidencia, no de memoria.
 2. **Cuando la puerta H0 falla, el informe no debe leer la medición de H1 como si fuera un veredicto, aunque sus p pasen de 0,05.**
    Se publica como medición y se deja anotado en «pendiente de decidir», para que lo vea quien decide. Así no se esconde, pero tampoco
    se interpreta.
+
+## 2026-11-08 · p01 · F16: estimación de `s1r_*` con la inversión real — puntos retirados
+Estado: retirada
 3. **Si los tests de paridad y de equivalencia con el MC se dejan escritos antes de ver los datos (F15), la estimación real es un
    solo comando, sin nada que ajustar.** La paridad con los datos reales salió a 1e-12 a la primera.
+   *Motivo:* constatación, no regla

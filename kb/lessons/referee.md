@@ -1,7 +1,8 @@
 # Lecciones — Referee
 
 ## 2026-11-03 · p01 · Diagnóstico de v22 (Transmission Capacity)
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 Patrones de error encontrados en la versión previa, que conviene buscar en cualquier paper:
 1. **Tests "model-free" calculados sobre objetos construidos con el modelo.** La varianza de
    interacción, el "excess collapse" y las cross-partials se calculan sobre $\widehat{TE}_t$, que se
@@ -18,7 +19,8 @@ Patrones de error encontrados en la versión previa, que conviene buscar en cual
    Regla: todas las cifras salen del mismo run de código.
 
 ## 2026-11-05 · p01 · R-F4, Monte Carlo de `s1_liq`
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Las probabilidades de veredicto se calculan con el árbol de decisión completo.** F4 dio las de H1 sin la puerta H0 de la
    SPEC. Con ella, el resultado modal pasa de "no concluyente por potencia" a "H1 no se interpreta" (P ≈ 0,92). Regla:
    simular todas las especificaciones que condicionan el veredicto (puertas, gating) y dar la probabilidad conjunta.
@@ -34,7 +36,8 @@ Estado: candidata
    mover una probabilidad del 7 % en 0,02.
 
 ## 2026-11-08 · p01 · R-F10, Monte Carlo de `s1r_*` (F9)
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Un sesgo "corregido exactamente" en el MC puede ser una tautología del DGP.** Con β_C = β_U, ȳ_t es lineal exacta en
    ε_{t−9..t+12} y `aum` controla justo por esos choques: error 0 por construcción. Regla: probar la corrección con otra forma de
    IRF (más corta, con joroba que revierte) y con efectos heterogéneos (β_C ≠ β_U), que es donde queda el resto.
@@ -53,7 +56,8 @@ Estado: candidata
    un choque aislado.
 
 ## 2026-11-08 · p01 · R-F17, estimación de `s1r_*` (F16)
-Estado: candidata
+Estado: validada
+Validada por: Adrián López Lamata (2026-11-08)
 1. **Cuando la puerta falla, se audita el resumen que se escala, no solo las cifras.** Las estimaciones y el veredicto eran
    exactos, pero el HANDOFF daba el p < 0,05 de β̂_C en las dos muestras principales y se callaba las dos robusteces en las que no
    pasa (p = 0,15 y 0,08). Regla: si un coeficiente sin veredicto "llama la atención", exigir que el resumen lleve todas sus filas
@@ -68,3 +72,14 @@ Estado: candidata
 4. **Comprobar que no hay ejecuciones escondidas con el historial del spec_log.** Un log de solo-añadir con una sola marca de
    tiempo y un único commit es la prueba disponible; no detecta un log borrado a mano antes del commit. Regla: citar ese límite en
    el informe.
+
+## 2026-11-08 · p01 · R-F22, macros del paper A (F21)
+Estado: candidata
+1. **Las macros se auditan con una correspondencia macro → celda escrita a mano, sin importar el script del autor.** Si se reutilizan
+   su parser y sus diccionarios, el mismo error de mapeo aparece en los dos lados. Con archivo:línea:columna fijos se detectan a la vez
+   las macros sin fuente, las ausentes y las distintas. Regla: comparar cadenas exactas, no floats.
+2. **Que una macro sea fiel a su tabla no basta: mira también cómo se calculó la celda de origen.** El MDE de f13 multiplica un c
+   redondeado a un decimal (10,01 frente a ≈ 10,05). Es irrelevante aquí, pero solo se ve leyendo la línea que escribe la tabla. Regla:
+   para las cifras derivadas (MDE, umbrales), leer la línea que las genera.
+3. **Comprobar que la fuente "auditada" tiene de verdad un informe en `audits/`.** F13 no lo tenía; su respaldo era el prerregistro
+   aprobado. Regla: citar la cadena de aprobación real en el informe.
