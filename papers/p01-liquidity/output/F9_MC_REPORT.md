@@ -105,7 +105,9 @@ solo entra el AR(2) univariante de su crecimiento, sin choques, y la varianza de
 - **Con h = 1**: π = 1,669 y β_ref = −3,198, es decir, ×1,76. R-F4 vio ×1,36 con BS.
 - Sin Volcker, π(h=0) = 0,943, prácticamente igual.
 - Elijo h = 0 por continuidad con F4 [criterio propio]. **Con h = 1, todos los c de este informe se dividen por 1,76** (MDE de V3s:
-  c ≈ 3,1). El MDE en unidades absolutas no cambia: ≈ 10 pp de ȳ por pp de fed funds en V2/V3s, frente a 1,92 en la referencia.
+  c ≈ 3,1). Lo que no cambia es el MDE **por pp de choque** (ε sumado por trimestre): ≈ 10 pp de ȳ por pp de ε en V2/V3s
+  (5,5 × 1,820). Por pp de fed funds el MDE es c × 1,92 y sí depende del horizonte: ≈ 10,6 con h = 0 y ≈ 6,0 con h = 1
+  (corrección de F13, por F10 hallazgo 5; ver `output/F13_COMPROBACIONES.md`).
 
 ## 3. La composición de pérdidas del Director (§5)
 

@@ -36,3 +36,13 @@ Estado: candidata
 5. **Calibra la heterocedasticidad del DGP en una muestra con suficientes episodios** (ρ de recesiones con 4 trimestres sale 0,2:
    ruido). Y liga la varianza a la ventana del error (e_t..e_{t+h}), no solo al choque contemporáneo, si quieres estresar las filas
    de alto apalancamiento.
+
+## 2026-11-08 · p01 · F13: comprobaciones del prerregistro `s1r_*`
+Estado: candidata
+1. **Antes de discutir si una normalización «cambia la potencia», comprueba si es un reescalado del regresor.** La potencia de una
+   MCO no cambia al reescalar ε, y β_ref escala con π. Que la media de 3 meses sea la suma/3 lo demuestran los t idénticos en
+   las mismas réplicas (|Δt| ≈ 1e-12). Lo que sí cambia es la unidad del MDE «por pp de ε»: fija esa unidad por escrito.
+2. **Cuando te piden el MDE «en c = k», mira primero dónde cruza 0,8 la variante que importa.** En F9 el intervalo 3–5 era el de
+   V1; en V3s el cruce estaba entre 5 y 7. Simula también en el punto del MDE, no solo en el que se pidió.
+3. **Para reproducir las celdas de un MC anterior, haz que la semilla sea una función pura de la celda** (ruido, m, índice de c) y
+   da a las celdas nuevas índices libres. Así F13 reprodujo F9 exactamente sin volver a correrlo entero.
