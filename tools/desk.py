@@ -6,6 +6,8 @@ Uso:
   uv run python tools/desk.py resume <desk> [session_id] [--msg TEXTO]  # continúa la última sesión de la desk
                                                          # (cortada, o con una instrucción nueva en --msg)
   uv run python tools/desk.py usage [desk]                 # tokens, caché, pico de contexto y duración por sesión
+  uv run python tools/desk.py estado <desk> <estado>       # la Coordinación marca la última sesión al revisarla
+                                                         # (aceptada, rechazada, bloqueada o incompleta)
   uv run python tools/desk.py setup                        # activa el pre-commit en este clon
 
 Cada lanzamiento deja `desks/<desk>/.lock` (PID, encargo, hora) mientras la sesión vive, su salida en
@@ -34,7 +36,7 @@ MAX_CONCURRENT = int(os.environ.get("DESK_MAX_CONCURRENT", "2"))
 # Memoria comprometida disponible (RAM + paginación): agotarla es lo que provoca "bad allocation".
 MIN_FREE_GB = float(os.environ.get("DESK_MIN_COMMIT_GB", "2.0"))
 RUNS = DESKS / "RUNS.csv"
-RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id", "effort"]
+RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id", "effort", "estado"]
 # Sin servidores MCP ni lista de skills: las desks no usan MCP y leen las skills por ruta (../../.claude/skills/).
 # No se usa --setting-sources: desactivaría los hooks de usuario de Pixel Agents.
 LEAN_CONTEXT = ["--strict-mcp-config", "--disable-slash-commands"]
@@ -72,6 +74,10 @@ DEFAULT_MODEL = {
 # Esfuerzo de razonamiento (`--effort` de la CLI). Sin línea `Esfuerzo: <nivel>` en el encargo, el de la CLI: el alto solo
 # donde lo justifique la tarea. Se fija al lanzar y no cambia en la sesión (cambiarlo a mitad puede invalidar la caché).
 EFFORTS = ("low", "medium", "high", "xhigh", "max")
+
+
+# Resultado de la revisión de la Coordinación. La métrica de eficiencia es el consumo por sesión aceptada, no por sesión.
+ESTADOS = ("aceptada", "rechazada", "bloqueada", "incompleta")
 
 
 class LaunchRefused(RuntimeError):
@@ -275,6 +281,25 @@ def append_run(row: dict, runs: Path | None = None) -> None:
         w.writerow(row)
 
 
+def set_estado(desk: str, estado: str, runs: Path | None = None) -> str:
+    """Marca con `estado` la última sesión de la desk (todas sus filas, si se reanudó). Devuelve su session_id."""
+    if estado not in ESTADOS:
+        raise LaunchRefused(f"estado '{estado}' no válido; usa uno de {', '.join(ESTADOS)}")
+    runs = runs or RUNS
+    rows = read_runs(runs)
+    sids = [r["session_id"] for r in rows if r["desk"] == desk and r.get("session_id")]
+    if not sids:
+        raise LaunchRefused(f"no hay en {runs.name} ninguna sesión de '{desk}' con session_id")
+    for r in rows:
+        if r.get("session_id") == sids[-1]:
+            r["estado"] = estado
+    with runs.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=RUNS_FIELDS, restval="", extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows)
+    return sids[-1]
+
+
 def session_usage(session_id: str, transcripts: Path | None = None) -> dict | None:
     """Consumo de una sesión según su transcripción de Claude Code; None si no la encuentra.
 
@@ -311,19 +336,38 @@ def print_usage(desk: str | None = None) -> None:
     sessions: dict[str, dict] = {}  # una sesión reanudada tiene varias filas en RUNS.csv y una sola transcripción
     for r in read_runs():
         if r.get("session_id") and desk in (None, r["desk"]):
-            sessions.setdefault(r["session_id"], {**r, "launches": 0})["launches"] += 1
+            s = sessions.setdefault(r["session_id"], {**r, "launches": 0})
+            s["launches"] += 1
+            s["estado"] = r.get("estado", "")  # el de la última fila: una reanudación vuelve a quedar sin revisar
     if not sessions:
         print("No hay sesiones con session_id en RUNS.csv (las anteriores a G7 no lo registran).")
         return
     print(f"{'inicio':16} {'desk':20} {'modelo':6} {'lanz':>4} {'turnos':>6} {'salida':>8} {'caché leída':>12} "
-          f"{'caché escrita':>13} {'pico ctx':>9} {'min':>6}  encargo")
+          f"{'caché escrita':>13} {'pico ctx':>9} {'min':>6} {'estado':10}  encargo")
+    by_desk: dict[str, dict] = {}
     for sid, r in sessions.items():
         head = f"{r['started']:16} {r['desk']:20} {r['model']:6} {r['launches']:>4}"
         if (u := session_usage(sid)) is None:
             print(f"{head}  sin transcripción ({sid})")
             continue
         print(f"{head} {u['turns']:>6} {u['output']:>8} {u['cache_read']:>12} {u['cache_write']:>13} "
-              f"{u['peak_ctx']:>9} {u['minutes']:>6}  {r['encargo']}")
+              f"{u['peak_ctx']:>9} {u['minutes']:>6} {r['estado'] or '-':10}  {r['encargo']}")
+        if r["estado"]:  # solo las revisadas: una sesión sin revisar no es ni coste perdido ni entregable aceptado
+            d = by_desk.setdefault(r["desk"], {"revisadas": 0, "aceptadas": 0, "cache_read": 0, "cache_write": 0,
+                                               "output": 0})
+            d["revisadas"] += 1
+            d["aceptadas"] += r["estado"] == "aceptada"
+            for k in ("cache_read", "cache_write", "output"):
+                d[k] += u[k]
+    if by_desk:
+        print("\nPor sesión aceptada (el consumo de las rechazadas, bloqueadas o incompletas también cuenta):")
+        for name, d in by_desk.items():
+            if not d["aceptadas"]:
+                print(f"  {name:20} {d['revisadas']} revisadas, ninguna aceptada")
+                continue
+            per = {k: d[k] // d["aceptadas"] for k in ("cache_read", "cache_write", "output")}
+            print(f"  {name:20} {d['aceptadas']}/{d['revisadas']} aceptadas · caché leída {per['cache_read']} · "
+                  f"caché escrita {per['cache_write']} · salida {per['output']}")
 
 
 def r_bin() -> str | None:
@@ -382,6 +426,8 @@ def main(argv: list[str]) -> int:
                 return 2
             pid = resume(argv[1], argv[2] if len(argv) == 3 else None, message)
             print(f"{argv[1]} reanudada (sesión {read_lock(DESKS / argv[1])['session_id']}), PID {pid}")
+        elif cmd == "estado" and len(argv) == 3:
+            print(f"{argv[1]}: sesión {set_estado(argv[1], argv[2])} marcada como {argv[2]}")
         elif cmd == "usage" and len(argv) in (1, 2):
             print_usage(argv[1] if len(argv) == 2 else None)
         elif cmd == "status":

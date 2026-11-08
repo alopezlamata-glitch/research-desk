@@ -232,3 +232,21 @@ def test_effort_from_encargo_goes_to_the_cli_and_resume_keeps_it(fake_spawn, tmp
     assert desk.read_runs()[-1]["effort"] == "high"
     desk.resume("datos")
     assert fake_spawn[2][fake_spawn[2].index("--effort") + 1] == "high"
+
+
+def test_estado_marks_the_last_session_and_usage_reports_cost_per_accepted(fake_spawn, monkeypatch, capsys):
+    with pytest.raises(desk.LaunchRefused, match="no válido"):
+        desk.set_estado("datos", "genial")
+    desk.launch("datos", "E.md")
+    first = desk.read_runs()[-1]["session_id"]
+    desk.set_estado("datos", "rechazada")
+    desk.launch("datos", "E.md")
+    desk.resume("datos")  # dos filas de la misma sesión: se marcan las dos
+    second = desk.set_estado("datos", "aceptada")
+    assert [(r["session_id"], r["estado"]) for r in desk.read_runs()] == [
+        (first, "rechazada"), (second, "aceptada"), (second, "aceptada")]
+    usage = {"turns": 1, "input": 0, "cache_write": 10, "cache_read": 100, "output": 1, "peak_ctx": 0, "minutes": 0}
+    monkeypatch.setattr(desk, "session_usage", lambda sid: usage)
+    desk.print_usage()
+    # el coste de la rechazada se carga a la única aceptada
+    assert "1/2 aceptadas · caché leída 200 · caché escrita 20 · salida 2" in capsys.readouterr().out
