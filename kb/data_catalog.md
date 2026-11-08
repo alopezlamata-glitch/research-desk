@@ -51,7 +51,8 @@ OCDE SDMX directo, JK 2020 (AEA/openICPSR), Aruoba-Drechsel (sin URL).
 | BIS statistics | Crédito, deuda por sector, tipos de política, trimestral | sin probar | API SDMX |
 | IMF WEO / Historical Public Debt Database | Deuda pública larga | sin probar | |
 | OECD | Confianza del consumidor y de las empresas | sin probar | Proxy de confianza en panel |
-| ECB Data Portal | Zona euro: tipos, balance, crédito | sin probar | API SDMX |
+| ECB Data Portal | Zona euro: tipos, balance, crédito | **probada (F5a, 2026-11-08)** | API SDMX sin clave, `?format=csvdata`. MIR/BSI por país en `datalake/raw/ecb_country/`. MIR por país: tipos por fijación sí, **volúmenes por fijación no** (solo `U2`); desde 2003Q1 en la mayoría (BSI y MIR de volumen). Claves con comodines (`M.DE.B.A2A....2240.EUR.N`) para listar series |
+| Eurostat `namq_10_gdp` | FBCF (P51G) trimestral por país | **probada (F5a)** | SDMX-CSV sin clave, una petición por país (la lista con `+` dio 400 por `GR`: Grecia es `EL`). 1999Q1– para 20 países, Malta desde 2000Q1 |
 
 ## Microestructura / liquidez de mercado (para futuros papers)
 

@@ -116,3 +116,10 @@ Estado: retirada
    *Motivo:* trasladado a kb/data_catalog.md («Trucos de acceso por fuente»)
 7. **El QFR no trae capex**: la proxy ΔPPE neto + depreciación mezcla fusiones y ventas de activos; calcularla dentro de cada vintage para no mezclar niveles revisados.
    *Motivo:* trasladado a kb/data_catalog.md («Trucos de acceso por fuente»)
+
+## 2026-11-08 · p01 · F5a (zona euro: datos de la puerta de la etapa 2)
+Estado: candidata
+1. **Antes de comprometer una exposición por país en un diseño, comprobar que la fuente publica el desglose por país.** El MIR del BCE da los volúmenes por periodo de fijación solo para `U2`; por país hay tipos por fijación, pero no cuotas. Regla: listar las series con comodines (`M.<c>.B.A2A....2240.EUR.N`) y contar las de volumen por país antes de prerregistrar la puerta.
+2. **Una muestra "sin ZLB" que empieza en 1999 no sirve para datos de préstamos por país**: el MIR y el BSI por país empiezan en 2003Q1 (muchos países, después y con huecos). Regla: calcular la ventana efectiva como la intersección de las series, no la del ejemplo del encargo.
+3. **Códigos de país distintos entre fuentes** (Eurostat usa `EL`, el BCE `GR`): una petición con la lista entera devuelve 400 sin decir cuál falla. Regla: pedir país a país y registrar los que fallan.
+4. **`_common.save` añade fila al MANIFEST en cada ejecución**, aunque el contenido no cambie: repetir un fetch al depurar duplica filas (mismo hash). Regla: depurar con una sola fuente o dedupicar el MANIFEST antes de cerrar.

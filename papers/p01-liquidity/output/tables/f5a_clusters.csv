@@ -1,0 +1,57 @@
+mro_min,muestra,n_trimestres,serie,clusters_completos,paises
+1.0,1999-2008 + 2022-23,45,inversion,19,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV NL PT SI SK
+1.0,1999-2008 + 2022-23,45,saldo_BSI,0,
+1.0,1999-2008 + 2022-23,45,MIR_tipo_nuevo_total,0,
+1.0,1999-2008 + 2022-23,45,MIR_volumen_nuevo_cat0,0,
+1.0,1999-2008 + 2022-23,45,MIR_volumen_por_fijacion,0,
+1.0,1999-2008 + 2022-23,45,MIR_tipo_saldos_total,0,
+1.0,1999-2008 + 2022-23,45,inversion+saldo+volumen_cat0,0,
+1.0,2003-2008 + 2022-23 (desde el MIR),29,inversion,20,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK
+1.0,2003-2008 + 2022-23 (desde el MIR),29,saldo_BSI,12,AT BE DE ES FI FR GR IE IT LU NL PT
+1.0,2003-2008 + 2022-23 (desde el MIR),29,MIR_tipo_nuevo_total,9,AT BE DE ES FR IE IT NL PT
+1.0,2003-2008 + 2022-23 (desde el MIR),29,MIR_volumen_nuevo_cat0,10,AT BE DE ES FI FR IE IT NL PT
+1.0,2003-2008 + 2022-23 (desde el MIR),29,MIR_volumen_por_fijacion,0,
+1.0,2003-2008 + 2022-23 (desde el MIR),29,MIR_tipo_saldos_total,12,AT BE DE ES FI FR GR IE IT LU NL PT
+1.0,2003-2008 + 2022-23 (desde el MIR),29,inversion+saldo+volumen_cat0,10,AT BE DE ES FI FR IE IT NL PT
+1.0,2003-2008 (desde el MIR),24,inversion,20,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK
+1.0,2003-2008 (desde el MIR),24,saldo_BSI,12,AT BE DE ES FI FR GR IE IT LU NL PT
+1.0,2003-2008 (desde el MIR),24,MIR_tipo_nuevo_total,10,AT BE DE ES FI FR IE IT NL PT
+1.0,2003-2008 (desde el MIR),24,MIR_volumen_nuevo_cat0,11,AT BE DE ES FI FR GR IE IT NL PT
+1.0,2003-2008 (desde el MIR),24,MIR_volumen_por_fijacion,0,
+1.0,2003-2008 (desde el MIR),24,MIR_tipo_saldos_total,12,AT BE DE ES FI FR GR IE IT LU NL PT
+1.0,2003-2008 (desde el MIR),24,inversion+saldo+volumen_cat0,11,AT BE DE ES FI FR GR IE IT NL PT
+1.0,todo sin ZLB,59,inversion,19,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV NL PT SI SK
+1.0,todo sin ZLB,59,saldo_BSI,0,
+1.0,todo sin ZLB,59,MIR_tipo_nuevo_total,0,
+1.0,todo sin ZLB,59,MIR_volumen_nuevo_cat0,0,
+1.0,todo sin ZLB,59,MIR_volumen_por_fijacion,0,
+1.0,todo sin ZLB,59,MIR_tipo_saldos_total,0,
+1.0,todo sin ZLB,59,inversion+saldo+volumen_cat0,0,
+0.5,1999-2008 + 2022-23,45,inversion,19,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV NL PT SI SK
+0.5,1999-2008 + 2022-23,45,saldo_BSI,0,
+0.5,1999-2008 + 2022-23,45,MIR_tipo_nuevo_total,0,
+0.5,1999-2008 + 2022-23,45,MIR_volumen_nuevo_cat0,0,
+0.5,1999-2008 + 2022-23,45,MIR_volumen_por_fijacion,0,
+0.5,1999-2008 + 2022-23,45,MIR_tipo_saldos_total,0,
+0.5,1999-2008 + 2022-23,45,inversion+saldo+volumen_cat0,0,
+0.5,2003-2008 + 2022-23 (desde el MIR),29,inversion,20,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK
+0.5,2003-2008 + 2022-23 (desde el MIR),29,saldo_BSI,12,AT BE DE ES FI FR GR IE IT LU NL PT
+0.5,2003-2008 + 2022-23 (desde el MIR),29,MIR_tipo_nuevo_total,9,AT BE DE ES FR IE IT NL PT
+0.5,2003-2008 + 2022-23 (desde el MIR),29,MIR_volumen_nuevo_cat0,10,AT BE DE ES FI FR IE IT NL PT
+0.5,2003-2008 + 2022-23 (desde el MIR),29,MIR_volumen_por_fijacion,0,
+0.5,2003-2008 + 2022-23 (desde el MIR),29,MIR_tipo_saldos_total,12,AT BE DE ES FI FR GR IE IT LU NL PT
+0.5,2003-2008 + 2022-23 (desde el MIR),29,inversion+saldo+volumen_cat0,10,AT BE DE ES FI FR IE IT NL PT
+0.5,2003-2008 (desde el MIR),24,inversion,20,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK
+0.5,2003-2008 (desde el MIR),24,saldo_BSI,12,AT BE DE ES FI FR GR IE IT LU NL PT
+0.5,2003-2008 (desde el MIR),24,MIR_tipo_nuevo_total,10,AT BE DE ES FI FR IE IT NL PT
+0.5,2003-2008 (desde el MIR),24,MIR_volumen_nuevo_cat0,11,AT BE DE ES FI FR GR IE IT NL PT
+0.5,2003-2008 (desde el MIR),24,MIR_volumen_por_fijacion,0,
+0.5,2003-2008 (desde el MIR),24,MIR_tipo_saldos_total,12,AT BE DE ES FI FR GR IE IT LU NL PT
+0.5,2003-2008 (desde el MIR),24,inversion+saldo+volumen_cat0,11,AT BE DE ES FI FR GR IE IT NL PT
+0.5,todo sin ZLB,64,inversion,19,AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV NL PT SI SK
+0.5,todo sin ZLB,64,saldo_BSI,0,
+0.5,todo sin ZLB,64,MIR_tipo_nuevo_total,0,
+0.5,todo sin ZLB,64,MIR_volumen_nuevo_cat0,0,
+0.5,todo sin ZLB,64,MIR_volumen_por_fijacion,0,
+0.5,todo sin ZLB,64,MIR_tipo_saldos_total,0,
+0.5,todo sin ZLB,64,inversion+saldo+volumen_cat0,0,

@@ -33,3 +33,8 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-08_1327,econometria,ENCARGO_2026-11-08_f16-estimacion-s1r.md,20868,run_2026-11-08_1327.log,opus,ba75cd12-cbf9-4fb5-95db-d1503ed081b6,medium,aceptada
 2026-11-08_1333,referee,ENCARGO_2026-11-08_f17-estimacion-s1r.md,38932,run_2026-11-08_1333.log,opus,dac20664-a1b3-41bd-9163-f1dcbf501bfd,,aceptada
 2026-11-08_1340,direccion-cientifica,ENCARGO_2026-11-08_f18-tras-h0.md,32752,run_2026-11-08_1340.log,opus,46bc8e17-f735-448f-9756-3d40ac01d234,high,aceptada
+2026-11-08_1549,econometria,ENCARGO_2026-11-08_f21-macros-paper.md,18672,run_2026-11-08_1549.log,sonnet,72cc285b-bcdc-4b7e-a632-2843d0dc4903,medium,aceptada
+2026-11-08_1549,datos,ENCARGO_2026-11-08_f5a-etapa2-datos.md,23384,run_2026-11-08_1549.log,sonnet,b996b7bf-504c-4bcb-844e-007a2f792bf7,medium,
+2026-11-08_1845,econometria,ENCARGO_2026-11-08_f21-macros-paper.md,21036,run_2026-11-08_1845.log,sonnet,72cc285b-bcdc-4b7e-a632-2843d0dc4903,medium,aceptada
+2026-11-08_1845,datos,ENCARGO_2026-11-08_f5a-etapa2-datos.md,36668,run_2026-11-08_1845.log,sonnet,b996b7bf-504c-4bcb-844e-007a2f792bf7,medium,
+2026-11-08_1849,referee,ENCARGO_2026-11-08_f22-macros.md,30668,run_2026-11-08_1849.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,

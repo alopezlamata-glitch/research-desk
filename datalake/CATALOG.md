@@ -48,6 +48,8 @@ Formato largo `date, series_id, value` en `.parquet` + original (`csv/<ID>.csv` 
 | BIS credit gap, EER, XRU, LONG_CPI, GLI | brecha de crédito, tipos de cambio efectivos/bilaterales, IPC largo (1661–), liquidez global | varias | ver parquet | `bis/WS_*.parquet` | OK |
 | BoE millennium dataset | "A millennium of macroeconomic data" (27 MB) | A/T/M | desde 1086 (hojas históricas) | `boe/millennium_macro_data.xlsx` | OK |
 | BCE (SDMX) | MRO, DFR, MLF, HICP, M3, activos Eurosistema, tipos MIR (empresas/hipotecas), curva AAA 2a/10a, PIB, CISS, deuda/PIB | varias | 1999– | `ecb/ecb_series.parquet` + `ecb/csv/` | OK; `unemployment` **ROTO** (clave STS 404) |
+| BCE por país (MIR, BSI) | Tipos y volúmenes MIR de nuevo negocio, tipos MIR de saldos, saldo BSI de préstamos a SNF; 20 países euro | M | 2000/2003– | `ecb_country/{MIR_rates_new,MIR_rates_stock,BSI_nfc_loans}.parquet` (`fetch/euro_panel.py`) | OK. **Por país no hay volúmenes por periodo de fijación** (solo en `U2`): sin cuota variable/fija por país |
+| Eurostat FBCF (P51G) | Inversión bruta trimestral, 20 países euro (CLV10 SCA/NSA, CP SCA) | Q | 1999Q1– | `eurostat/P51G_*.parquet` (`fetch/euro_panel.py`) | OK; Grecia es `EL`; total, no no residencial |
 | OCDE confianza (CLI/BCI/CCI) | 113 series | M | 1950–2026-05 | `oecd/cli_confidence.parquet` | OK vía espejo DBnomics (la API SDMX de la OCDE da 403 a scripts) |
 | Banco Mundial WDI | deuda gob. central/PIB, crédito privado/PIB, intereses/ingresos, tipo real, crecimiento | A | 1960– | `worldbank/wdi_selected.parquet` | OK |
 | Baron-Verner-Xiong (QJE 2021) | replication kit (zip) + README | — | — | `crises/baron_verner_xiong/` | OK (Dataverse DOI 10.7910/DVN/ECC9GE; contenido sin inspeccionar) |
