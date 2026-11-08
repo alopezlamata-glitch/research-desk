@@ -79,6 +79,11 @@ def test_invalid_model_is_refused():
         desk.model_for("datos", "Modelo: gpt5")
 
 
+def test_invalid_effort_is_refused():
+    with pytest.raises(desk.LaunchRefused, match="no válido"):
+        desk.encargo_field("Esfuerzo", "Esfuerzo: altísimo", desk.EFFORTS)
+
+
 @pytest.fixture
 def fake_spawn(tmp_path, monkeypatch):
     """Lanzamientos sin proceso real: DESKS y RUNS en tmp y spawn_detached captura los argumentos."""
@@ -216,3 +221,14 @@ def test_lock_time_is_taken_after_a_slow_launch(fake_spawn, monkeypatch):
     monkeypatch.setattr(desk, "process_created", lambda pid: real_dt(2026, 11, 7, 23, 41, 43))
     desk.launch("datos", "E.md")
     assert desk.read_lock(desk.DESKS / "datos")["started"] == "2026-11-07_2341"
+
+
+def test_effort_from_encargo_goes_to_the_cli_and_resume_keeps_it(fake_spawn, tmp_path):
+    desk.launch("datos", "E.md")
+    assert "--effort" not in fake_spawn[0]  # sin línea Esfuerzo:, el de la CLI
+    (tmp_path / "datos" / "F.md").write_text("Modelo: opus\n**Esfuerzo:** high\n", encoding="utf-8")
+    desk.launch("datos", "F.md")
+    assert fake_spawn[1][fake_spawn[1].index("--effort") + 1] == "high"
+    assert desk.read_runs()[-1]["effort"] == "high"
+    desk.resume("datos")
+    assert fake_spawn[2][fake_spawn[2].index("--effort") + 1] == "high"

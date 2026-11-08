@@ -34,7 +34,7 @@ MAX_CONCURRENT = int(os.environ.get("DESK_MAX_CONCURRENT", "2"))
 # Memoria comprometida disponible (RAM + paginación): agotarla es lo que provoca "bad allocation".
 MIN_FREE_GB = float(os.environ.get("DESK_MIN_COMMIT_GB", "2.0"))
 RUNS = DESKS / "RUNS.csv"
-RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id"]
+RUNS_FIELDS = ["started", "desk", "encargo", "pid", "log", "model", "session_id", "effort"]
 # Sin servidores MCP ni lista de skills: las desks no usan MCP y leen las skills por ruta (../../.claude/skills/).
 # No se usa --setting-sources: desactivaría los hooks de usuario de Pixel Agents.
 LEAN_CONTEXT = ["--strict-mcp-config", "--disable-slash-commands"]
@@ -69,6 +69,9 @@ DEFAULT_MODEL = {
     "literatura": "sonnet",
     "datos": "sonnet",
 }
+# Esfuerzo de razonamiento (`--effort` de la CLI). Sin línea `Esfuerzo: <nivel>` en el encargo, el de la CLI: el alto solo
+# donde lo justifique la tarea. Se fija al lanzar y no cambia en la sesión (cambiarlo a mitad puede invalidar la caché).
+EFFORTS = ("low", "medium", "high", "xhigh", "max")
 
 
 class LaunchRefused(RuntimeError):
@@ -172,13 +175,19 @@ def claude_cmd() -> list[str]:
     return [exe]  # en Windows, spawn_detached lo ejecuta dentro de cmd, que sabe abrir un .cmd
 
 
+def encargo_field(name: str, encargo_text: str, allowed: tuple[str, ...]) -> str | None:
+    """El valor de una línea `<name>: x` del encargo (también `**<name>:** x` o `- <name>: x`); None si no la tiene."""
+    m = re.search(rf"^\W*{name}\W+(\w+)", encargo_text, re.MULTILINE | re.IGNORECASE)
+    if not m:
+        return None
+    if (value := m.group(1).lower()) not in allowed:
+        raise LaunchRefused(f"{name.lower()} '{value}' no válido en el encargo; usa uno de {', '.join(allowed)}")
+    return value
+
+
 def model_for(desk: str, encargo_text: str) -> str:
     """El `Modelo:` del encargo si lo declara; si no, el de la desk."""
-    m = re.search(r"^\W*Modelo\W+(\w+)", encargo_text, re.MULTILINE | re.IGNORECASE)  # "Modelo: x", "**Modelo:** x"
-    model = m.group(1).lower() if m else DEFAULT_MODEL.get(desk, "sonnet")
-    if model not in MODELS:
-        raise LaunchRefused(f"modelo '{model}' no válido en el encargo; usa uno de {', '.join(MODELS)}")
-    return model
+    return encargo_field("Modelo", encargo_text, MODELS) or DEFAULT_MODEL.get(desk, "sonnet")
 
 
 def launch(desk: str, encargo: str) -> int:
@@ -186,10 +195,11 @@ def launch(desk: str, encargo: str) -> int:
     desk_dir = DESKS / desk
     if not (desk_dir / encargo).is_file():
         raise LaunchRefused(f"no existe {desk_dir / encargo}")
-    model = model_for(desk, (desk_dir / encargo).read_text(encoding="utf-8"))
+    text = (desk_dir / encargo).read_text(encoding="utf-8")
+    model, effort = model_for(desk, text), encargo_field("Esfuerzo", text, EFFORTS)
     prompt = (f"Lee y ejecuta el encargo de {encargo} (en esta carpeta). Trabaja hasta completar los "
               "entregables. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
-    return _start(desk, encargo, model, str(uuid.uuid4()), prompt, resuming=False)
+    return _start(desk, encargo, model, effort, str(uuid.uuid4()), prompt, resuming=False)
 
 
 def resume(desk: str, session_id: str | None = None, message: str | None = None) -> int:
@@ -211,7 +221,7 @@ def resume(desk: str, session_id: str | None = None, message: str | None = None)
                         "dejaste, sin rehacer lo hecho.")
     prompt = f"{start} Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo."
     model = last["model"] or DEFAULT_MODEL.get(desk, "sonnet")
-    return _start(desk, last["encargo"], model, last["session_id"], prompt, resuming=True)
+    return _start(desk, last["encargo"], model, last.get("effort") or None, last["session_id"], prompt, resuming=True)
 
 
 def builtin_tools(desk: str) -> list[str]:
@@ -223,19 +233,21 @@ def builtin_tools(desk: str) -> list[str]:
     return list(dict.fromkeys(t.split("(")[0] for t in TOOLS.get(desk, BASE_TOOLS)))
 
 
-def _start(desk: str, encargo: str, model: str, session_id: str, prompt: str, *, resuming: bool) -> int:
+def _start(desk: str, encargo: str, model: str, effort: str | None, session_id: str, prompt: str, *,
+           resuming: bool) -> int:
     desk_dir = DESKS / desk
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     # --resume conserva el session_id y sigue escribiendo en la misma transcripción (comprobado con la CLI 2.1.306).
     args = claude_cmd() + ["-p", prompt, "--resume" if resuming else "--session-id", session_id, "--model", model,
                            "--permission-mode", "acceptEdits", "--allowedTools", " ".join(TOOLS.get(desk, BASE_TOOLS)),
-                           *LEAN_CONTEXT, "--tools", ",".join(builtin_tools(desk))]
+                           *LEAN_CONTEXT, "--tools", ",".join(builtin_tools(desk)), *(["--effort", effort] if effort else [])]
     log, err = desk_dir / f"run_{stamp}.log", desk_dir / f"run_{stamp}.err"
     pid = spawn_detached(args, desk_dir, log, err)
     # La hora del lock se toma después de lanzar: si el lanzamiento se retrasa (el equipo se suspendió a medias, 2026-11-07),
     # el proceso nacería después de `stamp` y read_lock lo tomaría por un PID reutilizado.
     started = datetime.now().strftime("%Y-%m-%d_%H%M")
-    info = {"pid": pid, "encargo": encargo, "started": started, "log": log.name, "model": model, "session_id": session_id}
+    info = {"pid": pid, "encargo": encargo, "started": started, "log": log.name, "model": model, "session_id": session_id,
+            "effort": effort or ""}
     (desk_dir / ".lock").write_text(json.dumps(info), encoding="utf-8")
     append_run({"desk": desk, **info})
     return pid
