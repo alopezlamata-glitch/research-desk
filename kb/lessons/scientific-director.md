@@ -65,3 +65,15 @@ regla: Antes de prerregistrar un choque, calcular en la muestra exacta su primer
 - Cuando la LP está a ×1,2–1,4 del oráculo con el DGP conocido, cambiar de estimador (VAR, suavizado, bayesiano) no arregla la potencia: solo la arreglan más información del choque, más N o menos ruido.
 - Leer en la fuente la advertencia de relevancia de la propia serie (aquí, la versión de BS sin discursos) antes de elegirla.
 - En un panel con efectos fijos de tiempo, buscar una predicción con signo fijado por la teoría sobre la *diferencia* (aquí ∂I_u/∂g = 1 − ω); el nivel deja de estar identificado.
+
+## 2026-11-08 · p01 F11 · Al redactar un prerregistro, recorrer rama por rama el árbol de decisión simulado
+Estado: candidata
+estado: candidata
+evidencia: papers/p01-liquidity/exploration/PREREG_S1R_DRAFT.md, HANDOFF (preguntas 1–3: controles, consecuencia de los diagnósticos y refutación en V3s; las 7 decisiones no las fijaban, `s1r_lp.decide` sí)
+alcance: Dirección, redacción de prerregistros a partir de decisiones de los autores y de un MC
+caduca: 2027-05-08
+regla: Escribir la regla de decisión leyendo el código del árbol que se simuló, no el resumen de las decisiones. Para cada rama y cada elemento de la especificación (controles, muestra, diagnósticos), comprobar que lo cubre una decisión de los autores; lo que solo cubre el código se escribe tal cual y se lleva a los autores como pregunta explícita.
+
+- Un diagnóstico prerregistrado necesita su consecuencia escrita. Si se puede calcular sin la variable de resultado y ya se sabe que rechazará, hay que decirlo en el propio texto.
+- Antes de pegar texto encima de un bloque ```prereg, mirar qué congela `integrity.py::prereg_text` (desde el último `## `): un subencabezado `## ` deja fuera todo lo que está por encima.
+- Cada estimación que decide lleva su propio id confirmatorio, aunque sea la misma ecuación en otra muestra: la paridad usa la clave (spec_id, term).
