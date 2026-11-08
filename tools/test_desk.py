@@ -250,3 +250,15 @@ def test_estado_marks_the_last_session_and_usage_reports_cost_per_accepted(fake_
     desk.print_usage()
     # el coste de la rechazada se carga a la única aceptada
     assert "1/2 aceptadas · caché leída 200 · caché escrita 20 · salida 2" in capsys.readouterr().out
+
+
+def test_launch_prompt_bounds_scope_and_asks_for_handoff_except_for_the_referee(fake_spawn, tmp_path):
+    (tmp_path / "referee").mkdir()
+    (tmp_path / "referee" / "R.md").write_text("encargo", encoding="utf-8")
+    desk.launch("datos", "E.md")
+    desk.launch("referee", "R.md")
+    datos, referee = (call[call.index("-p") + 1] for call in fake_spawn)
+    assert "condición de parada" in datos and "## HANDOFF" in datos
+    # el prompt del Referee no cambia sin pasar la eval (CLAUDE.md, «Eval del Referee»)
+    assert referee == ("Lee y ejecuta el encargo de R.md (en esta carpeta). Trabaja hasta completar los entregables. "
+                       "Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")

@@ -24,5 +24,5 @@
 - [x] **E1** · `evals/referee/build.py::copy_raw`: un sha256 histórico se recupera de `_vintages/` (la fila antigua del MANIFEST apunta a la ruta viva, que ya tiene otro contenido) y se comprueba el hash después de copiar. Test de regresión.
 - [x] **E2** · `desk.py`: línea `Esfuerzo: low|medium|high|xhigh|max` en el encargo → `--effort` (sin ella, el de la CLI). Queda en `.lock` y `RUNS.csv`; `resume` reutiliza el de la sesión.
 - [x] **E3** · `desk.py estado <desk> <aceptada|rechazada|bloqueada|incompleta>`: la Coordinación marca la última sesión al revisarla; `usage` muestra el estado y, por desk, el consumo total entre las sesiones aceptadas (línea base del protocolo actual).
-- [ ] **E4** · Prompt de `launch`/`resume`: hacer solo el entregable del encargo, parar en su condición de parada y cerrar el entregable con `## HANDOFF` que cita los originales. Plantilla `desks/ENCARGO_TEMPLATE.md`. El Referee conserva su prompt (su cambio exige la eval).
+- [x] **E4** · Prompt de `launch`: hacer solo el entregable del encargo, parar en su condición de parada y cerrar el entregable con `## HANDOFF` que cita los originales. Plantilla `desks/ENCARGO_TEMPLATE.md`. El Referee conserva su prompt (su cambio exige la eval).
 - [ ] **E5** · `integrity.py::check_gate`: un informe APROBADO deja de valer si algo científico del paper cambió entre su commit y HEAD.

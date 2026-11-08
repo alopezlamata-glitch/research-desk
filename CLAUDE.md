@@ -103,7 +103,13 @@ Las reglas comprobables no dependen de la memoria de nadie:
 
   La Coordinación lo ajusta en cada encargo con una línea `Modelo: opus|sonnet|haiku`. Usa **haiku** para tareas mecánicas y
   acotadas, y sube a **opus** una tarea de Datos o Literatura que exija juicio. Los subagentes llevan `model:` en
-  su frontmatter. El modelo queda en `.lock` y en `desks/RUNS.csv`.
+  su frontmatter. El modelo queda en `.lock` y en `desks/RUNS.csv`. Con `Esfuerzo: low|medium|high|xhigh|max` se fija el
+  esfuerzo de razonamiento (sin línea, el de la CLI); el alto, solo donde la tarea lo justifique.
+- **Encargos acotados:** se escriben con `desks/ENCARGO_TEMPLATE.md`: objetivo, archivos imprescindibles, entregable,
+  criterios de aceptación y condición de parada. La desk cierra su entregable con `## HANDOFF`, que cita los
+  originales, y la desk siguiente lee primero ese HANDOFF. Al revisar, la Coordinación marca la sesión con
+  `tools/desk.py estado <desk> <aceptada|rechazada|bloqueada|incompleta>`. `usage` da el consumo por sesión aceptada,
+  que es la métrica para comparar cambios de protocolo.
 - **Skills** (en `.claude/skills/`): `verify-citation`, `sympy-check`, `mc-validate`, `referee-report`,
   `standup`, `new-paper`. Las desks las leen en `../../.claude/skills/<nombre>/SKILL.md`.
 - **Lecciones:** cada una lleva `Estado: candidata|validada|retirada`. Solo los autores las pasan a

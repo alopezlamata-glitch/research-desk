@@ -76,6 +76,17 @@ DEFAULT_MODEL = {
 EFFORTS = ("low", "medium", "high", "xhigh", "max")
 
 
+# Alcance que fija el prompt de lanzamiento. El encargo declara entregable, criterios de aceptación y condición de parada
+# (plantilla: desks/ENCARGO_TEMPLATE.md); el HANDOFF cita los originales para que la desk siguiente no los relea todos.
+# El Referee conserva su prompt: su informe ya es su entrega, y cambiar cómo se le lanza exige la eval de evals/referee/.
+SCOPE_DEFAULT = ("Haz lo que pide su entregable, sin ampliar el alcance, y para cuando se cumplan sus criterios de "
+                 "aceptación o su condición de parada; si te bloqueas, anótalo en el TASKS.md del paper y para. Cierra tu "
+                 "entregable principal con una sección `## HANDOFF`: hecho; evidencia (ruta:línea, commit); decisiones y "
+                 "quién las tomó; supuestos y límites; descartado y por qué; pendiente de decidir. Cita los archivos "
+                 "originales en vez de resumirlos.")
+SCOPE = {"referee": "Trabaja hasta completar los entregables."}
+SUMMARY = "Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo."
+
 # Resultado de la revisión de la Coordinación. La métrica de eficiencia es el consumo por sesión aceptada, no por sesión.
 ESTADOS = ("aceptada", "rechazada", "bloqueada", "incompleta")
 
@@ -203,8 +214,7 @@ def launch(desk: str, encargo: str) -> int:
         raise LaunchRefused(f"no existe {desk_dir / encargo}")
     text = (desk_dir / encargo).read_text(encoding="utf-8")
     model, effort = model_for(desk, text), encargo_field("Esfuerzo", text, EFFORTS)
-    prompt = (f"Lee y ejecuta el encargo de {encargo} (en esta carpeta). Trabaja hasta completar los "
-              "entregables. Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo.")
+    prompt = f"Lee y ejecuta el encargo de {encargo} (en esta carpeta). {SCOPE.get(desk, SCOPE_DEFAULT)} {SUMMARY}"
     return _start(desk, encargo, model, effort, str(uuid.uuid4()), prompt, resuming=False)
 
 
@@ -225,7 +235,7 @@ def resume(desk: str, session_id: str | None = None, message: str | None = None)
         raise LaunchRefused("el mensaje no puede llevar '%': cmd lo expandiría como variable")
     start = message or (f"La sesión se cortó antes de terminar el encargo de {last['encargo']}. Sigue desde donde lo "
                         "dejaste, sin rehacer lo hecho.")
-    prompt = f"{start} Al final, resume en 10 líneas lo hecho, lo que falta y cualquier riesgo."
+    prompt = f"{start} {SUMMARY}"
     model = last["model"] or DEFAULT_MODEL.get(desk, "sonnet")
     return _start(desk, last["encargo"], model, last.get("effort") or None, last["session_id"], prompt, resuming=True)
 
