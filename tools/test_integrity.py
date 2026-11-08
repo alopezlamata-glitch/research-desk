@@ -242,6 +242,25 @@ def test_gate_blocks_results_in_paper_without_an_approved_ancestor_audit(repo):
     assert ig.check_gate(repo, [tex, fig, rejected, ok]) == []
 
 
+def test_gate_approval_lapses_when_audited_science_changes_but_not_with_prose(repo):
+    write(repo, "papers/p/code/est.py", "beta = 1\n")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-q", "-m", "estimación")
+    tex = write(repo, "papers/p/paper/main.tex", "\\input{../output/macros.tex}\n")
+    ok = write(repo, "papers/p/audits/r.md", report("APROBADO", git(repo, "rev-parse", "HEAD")))
+    write(repo, "papers/p/TASKS.md", "- [x] auditado\n")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-q", "-m", "informe y redacción")
+    assert ig.check_gate(repo, [tex, ok]) == []  # redacción, TASKS.md y audits/ no tocan lo auditado
+    write(repo, "papers/p/code/est.py", "beta = 2\n")  # sin commitear: cuenta igual (es lo que entra en el commit)
+    assert len(ig.check_gate(repo, [tex, ok])) == 1
+    git(repo, "add", "-A")
+    git(repo, "commit", "-q", "-m", "cambio de estimación")
+    assert len(ig.check_gate(repo, [tex, ok])) == 1
+    again = write(repo, "papers/p/audits/r2.md", report("APROBADO", git(repo, "rev-parse", "HEAD")))
+    assert ig.check_gate(repo, [tex, ok, again]) == []  # una auditoría nueva del objeto cambiado la restablece
+
+
 # ---------------------------------------------------------------- rawhash
 def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()

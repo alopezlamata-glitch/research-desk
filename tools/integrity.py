@@ -341,8 +341,26 @@ APPROVED = {"APROBADO", "APROBADO CON CAMBIOS"}
 USES_OUTPUT = re.compile(r"\\(?:input|include|includegraphics)(?:\[[^\]]*\])?\{[^}]*\boutput/")
 
 
+# Lo que audita el Referee. Un cambio aquí después del commit auditado invalida la aprobación; uno en paper/ (redacción),
+# TASKS.md o audits/ no. Git ya guarda el hash de cada archivo: comparar commits basta para ligar la aprobación al objeto.
+SCIENTIFIC = ("code", "data", "output", "theory", "SPEC.md")
+
+
+def _approval_holds(root: Path, paper: str, fm: dict | None) -> bool:
+    """Informe APROBADO de un commit antecesor de HEAD, sin cambios científicos del paper desde entonces."""
+    if not (fm and fm.get("verdict") in APPROVED and re.fullmatch(r"[0-9a-f]{7,40}", fm.get("commit", ""))):
+        return False
+    r = _git(root, "merge-base", "--is-ancestor", fm["commit"], "HEAD")
+    if not r or r.returncode != 0:
+        return False
+    # Contra el árbol de trabajo, no contra HEAD: así cuenta también lo que entra en el commit que se está haciendo.
+    d = _git(root, "diff", "--name-only", fm["commit"], "--", *(f"papers/{paper}/{s}" for s in SCIENTIFIC))
+    return bool(d) and d.returncode == 0 and not d.stdout.strip()
+
+
 def check_gate(root: Path, files: list[str]) -> list[Violation]:
-    """Ningún resultado (`output/`) entra en un .tex sin un informe APROBADO de un commit antecesor de HEAD."""
+    """Ningún resultado (`output/`) entra en un .tex sin un informe APROBADO vigente: de un commit antecesor de HEAD y
+    sin cambios en `code/`, `data/`, `output/`, `theory/` ni `SPEC.md` del paper desde ese commit."""
     out = []
     approved_by_paper: dict[str, bool] = {}
     for rel in _paper_tex(files):
@@ -355,13 +373,12 @@ def check_gate(root: Path, files: list[str]) -> list[Violation]:
             continue
         if paper not in approved_by_paper:
             approved_by_paper[paper] = any(
-                (fm := front_matter(_read(root, a) or "")) and fm.get("verdict") in APPROVED
-                and re.fullmatch(r"[0-9a-f]{7,40}", fm.get("commit", ""))
-                and (r := _git(root, "merge-base", "--is-ancestor", fm["commit"], "HEAD")) and r.returncode == 0
+                _approval_holds(root, paper, front_matter(_read(root, a) or ""))
                 for a in files if re.match(rf"^papers/{re.escape(paper)}/audits/[^/]+\.md$", a))
         if not approved_by_paper[paper]:
-            out.append(Violation("gate", rel, n, "usa resultados de output/ sin un informe APROBADO del Referee "
-                                 "en audits/ cuyo commit sea antecesor de HEAD"))
+            out.append(Violation("gate", rel, n, "usa resultados de output/ sin un informe APROBADO vigente del Referee "
+                                 "en audits/ (de un commit antecesor de HEAD y sin cambios en code/, data/, output/, "
+                                 "theory/ ni SPEC.md desde ese commit)"))
     return out
 
 

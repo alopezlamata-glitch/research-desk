@@ -31,7 +31,7 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 | `speclog` | Toda especificación estimada está registrada; las no prerregistradas van marcadas como exploratorias | `papers/*/output/spec_log.csv` + bloque `prereg` del SPEC |
 | `referee` | Informes del Referee con cabecera YAML válida y cada hallazgo con evidencia | `papers/*/audits/` |
 | `prereg` | El prerregistro congelado no cambia sin Desviación (ver abajo) | `papers/*/SPEC.md` con bloque `prereg` |
-| `gate` | Un `.tex` que usa resultados (`output/`) exige un informe APROBADO cuyo commit sea antecesor de HEAD | `papers/*/paper/` + `papers/*/audits/` |
+| `gate` | Un `.tex` que usa resultados (`output/`) exige un informe APROBADO cuyo commit sea antecesor de HEAD y sin cambios científicos del paper desde entonces | `papers/*/paper/` + `papers/*/audits/` |
 | `rawhash` | Cada archivo de `raw/` tiene fila en su MANIFEST y su sha256 es el de la última; cada vintage coincide con el hash de su nombre | `datalake/raw/`, `papers/*/data/raw/` |
 | `lessons` | Cada lección tiene `Estado: candidata/validada/retirada`; las validadas, quién las validó | `kb/lessons/` |
 
@@ -67,7 +67,9 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
 
 ## Puerta de `paper/` (`gate`, 2026-11-05)
 - Un `.tex` de `papers/<slug>/paper/` que referencia `output/` (macros, tablas o figuras) solo pasa si en `audits/` hay un
-  informe con `verdict: APROBADO` o `APROBADO CON CAMBIOS` cuyo `commit` es antecesor de HEAD (`git merge-base --is-ancestor`).
+  informe con `verdict: APROBADO` o `APROBADO CON CAMBIOS` cuyo `commit` es antecesor de HEAD (`git merge-base --is-ancestor`)
+  y sin cambios desde ese commit en `code/`, `data/`, `output/`, `theory/` ni `SPEC.md` del paper (`git diff --name-only`
+  contra el árbol de trabajo, 2026-11-08). Un cambio científico posterior exige una auditoría nueva; uno de redacción no.
 - El texto sin resultados (introducción, literatura) no necesita auditoría.
 
 ## Datos brutos verificables (`rawhash` y vintages, 2026-11-05)
