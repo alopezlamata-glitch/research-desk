@@ -6,7 +6,8 @@ sustituye con la **parte 1** la sección "## Prerregistro de la etapa 1: EE. UU.
 Obliga: SPEC, Desviaciones del 2026-11-07 (`SPEC.md:155-182`) y del 2026-11-08 (`SPEC.md:183-201`, las 7 decisiones).
 Contexto: `exploration/DECISIONES_AUTORES_F11_2026-11-08.md`, `audits/2026-11-08_F9_mc.md` (F10), `output/F9_MC_REPORT.md`,
 `exploration/F12_CITAS_2026-11-08.md`. **Las cifras salen de `output/tables/f9_power.md` (abreviado `f9:<línea>`)** o de
-`data/clean/SAMPLE_COUNTS_S1R.md`; las que dependen de F13 van marcadas **`[F13]`** y no se dan.
+`data/clean/SAMPLE_COUNTS_S1R.md`. Las de F13 (commit 932be0c, `output/F13_COMPROBACIONES.md`) salen de
+`output/tables/f13_checks.md` (`f13:<línea>`) y `output/tables/f13_shock_diagnostics.md` (`f13d:<línea>`).
 
 **Nota de formato para la Coordinación.** `integrity.py::prereg_text` congela el texto desde el último encabezado `## ` anterior
 al bloque hasta el cierre del bloque (regex `^## `; `### ` no cuenta). Por eso la sección no lleva ningún `## ` intermedio: si se
@@ -23,15 +24,20 @@ estiman (Desviación del 2026-11-07). Decisiones de los autores: Desviaciones de
 `exploration/DECISIONES_AUTORES_F11_2026-11-08.md` y `exploration/PREREG_S1R_DRAFT.md`. El MC que respalda este diseño es F9
 (`output/F9_MC_REPORT.md`, tablas `output/tables/f9_power.md`), auditado en F10 (`audits/2026-11-08_F9_mc.md`, APROBADO CON
 CAMBIOS), con las comprobaciones de F13 (`output/F13_COMPROBACIONES.md`). Nada de esto ha usado la respuesta de la inversión.
+Citas de cifras: `f9:<línea>` = `output/tables/f9_power.md`, `f13:<línea>` = `output/tables/f13_checks.md`, `f13d:<línea>` =
+`output/tables/f13_shock_diagnostics.md`.
 
 **Pregunta.** ¿Se transmite un choque monetario a la inversión no residencial de EE. UU. cuando la liquidez de las empresas no
 financieras está por debajo de su tendencia, como predice el margen interior de reservas (ω ≥ ω_min > 0)? Se mide como la
 respuesta media en h = 4..12 trimestres, con subidas y bajadas juntas (la asimetría es exploratoria).
 
 **Muestra y datos.**
-- Choque principal: `rr_shock` (Romer-Romer, extensión de Coibion reestimada por Wieland, `resid_full`; agregado al trimestre
-  como suma de los 3 meses, `data/clean/DICTIONARY.md:121,128`) **[F13: si la agregación por suma frente a promedio cambia β_ref
-  o la potencia de forma material, los autores lo deciden antes de aprobar]**.
+- Choque principal: `rr_shock` (Romer-Romer, extensión de Coibion reestimada por Wieland, `resid_full`). **ε_t es la suma de los
+  choques mensuales de los 3 meses del trimestre** (`data/clean/DICTIONARY.md:121,128`); su unidad es el pp de fed funds sumado
+  en el trimestre, y en esa unidad se dan β_ref y el MDE "por pp de choque". Todos los trimestres tienen sus 3 meses, así que el
+  promedio de Tenreyro y Thwaites sería ε/3: β_ref y la potencia frente a β_ref **no dependen de sumar o promediar** (los t
+  difieren como mucho en 1,3·10⁻¹² y los veredictos de V3s son idénticos; f13:16-21). Solo el MDE por pp de choque se
+  multiplicaría por 3 con el promedio; el MDE por pp de fed funds no cambia (f13:23).
 - t ∈ 1969Q1–2005Q2 (`in_rr_sample`; el último t con t + 12 ≤ 2008Q2): N = 146, 73 trimestres en el estado restringido y 73 en el
   holgado (f9:6; `data/clean/SAMPLE_COUNTS_S1R.md:11-12`).
 - Muestra sin Volcker: la anterior sin las filas t ∈ 1979Q4–1982Q4 (13 trimestres). N = 133, con 62 y 71 por estado (f9:7;
@@ -66,15 +72,18 @@ Volcker y +0,83·β en β_U con la muestra completa; f9:30-31). La idea de contr
 Zubanov (2014, §2.2, pp. 11–13 del WP Tinbergen TI 2010-040/3), que la demuestran para choques independientes y en panel con
 efectos fijos (p. 6, E[u_s d_t] = 0): **se cita como idea, no como prueba de que `aum` sea insesgada con choques autocorrelados**.
 
-**Diagnósticos de los choques** (sin la inversión; se publican siempre; tabla `[F13]` en `output/tables/`):
-- DL: Ljung-Box(12) de ε en la muestra completa y sin Volcker **[F13]**.
-- DP: predictibilidad, F de Wald (HC1) de ε_t sobre 4 retardos de Δlog PIB real, Δlog deflactor y Δffr (12 restricciones), en las
-  dos muestras **[F13]**.
+**Diagnósticos de los choques** (sin la inversión; se publican siempre; tabla `output/tables/f13_shock_diagnostics.md`, generada por
+`code/mc/f13_checks.py`):
+- DL: Ljung-Box(12) de ε. Muestra completa: 16,78, p = 0,158; sin Volcker: 22,86, p = 0,029 (f13d:7-8).
+- DP: predictibilidad, F de Wald (HC1) de las 12 pendientes de ε_t sobre una constante y 4 retardos de 100·Δlog PIB real,
+  100·Δlog deflactor y Δffr (f13d:3). Muestra completa: F(12, 133) = 1,07, p = 0,391; sin Volcker: F(12, 120) = 1,66, p = 0,085
+  (f13d:7-8).
 - Qué se hace si rechazan (p < 0,05): **no cambia la especificación ni la regla de decisión**, porque cambiarlas por un diagnóstico
   sería elegir la especificación con los datos. El veredicto se refiere al estimando de choque aislado; el paper declara que, en
   esa muestra, no es comparable uno a uno con β_ref (respuesta total) y que la lectura en múltiplos c de β_ref es aproximada; la
-  que vale es el MDE en pp de ȳ por pp de choque. Se sabe ex ante que la muestra sin Volcker rechazará probablemente el
-  Ljung-Box: F10 obtuvo p = 0,029 y en predictibilidad p = 0,085 (`audits/2026-11-08_F9_mc.md:63-65`), cifras que F13 rehace.
+  que vale es el MDE en pp de ȳ por pp de choque. Se sabe antes de estimar, y sin mirar la inversión, que la muestra sin Volcker
+  rechaza el Ljung-Box (p = 0,029) y que la predictibilidad no rechaza al 5 % en ninguna muestra (f13d:7-8): la salvedad se
+  aplica a `s1r_liq_nov`.
 - Además se publican, como en el prerregistro anterior: D1, trimestres por estado; D2, Σ|ε| por estado (con y sin Volcker,
   `SAMPLE_COUNTS_S1R.md`); D3, contraste de balance ε_t ~ D_{t−1} + s_{t−1}.
 
@@ -85,8 +94,8 @@ IC al 95 % de los términos que deciden (b_lin, b_C) es 0,948–0,990 en los tre
 sobrecobertura hasta 0,99 porque es conservadora (cuesta potencia, no tamaño); ninguna de las 7 alternativas probadas por F10 lo
 hace mejor (`audits/2026-11-08_F9_mc.md:118-159`). La infracobertura no se aceptaría.
 
-**β_ref (alternativa de referencia).** β_ref = −2,5 × m_W × π_0 = **−1,820 pp de ȳ por pp de ε** (f9:14) **[F13: equivalencia del
-h = 0 con la agregación del choque]**.
+**β_ref (alternativa de referencia).** β_ref = −2,5 × m_W × π_0 = **−1,820 pp de ȳ por pp de ε** (ε sumado; f9:14, f13:9). Con
+el choque promediado sería −5,459, exactamente ×3, con el mismo efecto de 1 desv. típ. de ε (−1,092 pp; f13:9-12).
 - −2,5 %: respuesta del modelo lineal de Tenreyro y Thwaites (2016) para los índices de gasto duradero de los hogares y de inversión
   empresarial, ante una subida de 1 pp del fed funds (pp. 11–12 del PDF del WP). Es una sola cifra para los dos agregados y **el
   texto no dice en qué horizonte se lee** (`F12_CITAS_2026-11-08.md:26-33`): esa parte de la comparación no es verificable.
@@ -96,7 +105,7 @@ h = 0 con la agregación del choque]**.
 - m_W = 0,7667: media de min(h/10, 1) en h = 4..12, es decir, una rampa lineal hasta el pico en h = 10 (f9:14). La forma es un
   supuesto de la desk (F4, `output/F4_MC_REPORT.md:67`), centrado en el mínimo del PIB «two to three years after the shock» de
   Tenreyro y Thwaites (p. 10); no es una cifra de su texto.
-- c = 1 equivale a 1,92 pp de ȳ por pp de fed funds en el impacto (f9:705).
+- c = 1 equivale a 2,5 × m_W = 1,917 pp de ȳ por pp de fed funds en el impacto (f13:23).
 
 **Hipótesis** (β < 0: la inversión cae tras una subida y sube tras una bajada):
 - **H0** (`s1r_lin`, muestra completa): β_lin < 0. Sale de L_u > 0 con g ≥ 0 y ω ≥ ω_min
@@ -124,18 +133,18 @@ h = 0 con la agregación del choque]**.
 - El resultado de `s1r_liq_nov` se publica siempre, también cuando no decide.
 
 **Potencia y MDE (escritos antes de estimar; árbol V3s completo, con la puerta H0; `aum` y NW5+HC3; ruido homocedástico /
-heterocedástico `het_eps`).** Todas dependen de **[F13: equivalencia del h = 0]**.
+heterocedástico `het_eps`; 1000 réplicas, error MC de P ≈ ±0,013).** No dependen de sumar o promediar el choque (f13:9-21).
 - Con H1 cierta y β_C = β_U = β_ref (c = 1): P(confirma) = **0,037 / 0,059**; P(H0 no se confirma) = 0,824 / 0,854;
-  P(no concluyente) = 0,139 / 0,087; P(refuta) = 0 (f9:727, 799). Es una **medición acotada**: el resultado más probable con un
+  P(no concluyente) = 0,139 / 0,087; P(refuta) = 0 (f13:31, 47). Es una **medición acotada**: el resultado más probable con un
   efecto del tamaño de β_ref es que H1 no se interprete.
-- P(confirma) frente a c, con β_C = β_U = c·β_ref: c = 2: 0,171 / 0,189; c = 3: 0,364 / 0,361; c = 5: 0,745 / 0,778 (f9:886, 894).
-- **MDE** (c con P(confirma) = 0,8): **[F13]**. La interpolación de F9 da c ≈ 5,5 / 5,3 (f9:886, 894) y está por encima de c = 5.
-  En pp de ȳ por pp de choque, MDE = c_80 × 1,820 **[F13]**; en pp de ȳ por pp de fed funds en el impacto, c_80 × 1,92 **[F13]**.
-  Cota inferior, sin la puerta H0: el contraste de H1 sin Volcker por sí solo tiene un MDE de 10,01 / 8,92 pp de ȳ por pp de choque
-  (f9:691, 699).
+- P(confirma) frente a c, con β_C = β_U = c·β_ref: c = 2: 0,171 / 0,189; c = 3: 0,364 / 0,361; c = 4: 0,590 / 0,600;
+  c = 5: 0,745 / 0,778; c = 5,5: 0,797 / 0,840; c = 6: 0,871 / 0,882 (f13:32-37, 48-53).
+- **MDE** (c con P(confirma) = 0,8, interpolación lineal en la rejilla simulada): **c = 5,5 / 5,2**, es decir, **10,01 / 9,46 pp de
+  ȳ por pp de choque** (ε sumado) y 10,54 / 9,97 pp de ȳ por pp de fed funds en el impacto (f13:68-69). Unos 10 pp de ȳ por pp de
+  choque en los dos DGP. Con el choque promediado, el MDE por pp de choque sería ×3; el de pp de fed funds no cambia (f13:23).
 - Tamaño con β = 0: P(confirma) = 0,004 / 0,011 (f9:719, 791).
-- Bajo el rival (β_C = 0, β_U = c·β_ref): P(confirma) = 0,014 / 0,014 (c = 1), 0,025 / 0,033 (c = 2), 0,031 / 0,030 (c = 3),
-  0,035 / 0,027 (c = 5) (f9:759, 767, 775, 783; 831, 839, 847, 855); c = 4: **[F13]**.
+- Bajo el rival (β_C = 0, β_U = c·β_ref): P(confirma) **≤ 0,035 en toda la rejilla hasta c = 7** (máximo 0,035 / 0,033; f13:39-46,
+  55-62), por debajo de α.
 
 **Robustez prerregistrada** (no decide; se publica con IC sea cual sea el resultado; misma especificación `aum` y mismos errores salvo
 lo que se indica):
@@ -181,9 +190,8 @@ exige una Desviación con su huella (`tools/integrity.py`, check `prereg`).
 **Replicación cruzada:** `s1r_lin`, `s1r_liq` y `s1r_liq_nov` en R (`code/replication_r/`), con NW5+HC3 en trimestres naturales y
 paridad `estimates_py.csv` = `estimates_r.csv`.
 
-**Requisito previo a estimar:**
-- F13 entregado y sus cifras sustituyen a las marcas `[F13]` antes de la aprobación;
-- `s1r_lp.h1_verdict` sin la rama (b) en `s1r` y los ids `r1r_*` implementados, sin mirar la inversión.
+**Requisito previo a estimar:** `s1r_lp.h1_verdict` sin la rama (b) en `s1r` y los ids `r1r_*` implementados, sin mirar la
+inversión.
 
 ---
 
@@ -207,18 +215,17 @@ paridad `estimates_py.csv` = `estimates_r.csv`.
 - **Fuera por otro motivo:** `r_ctrl_interact` pasa a exploratorio junto con `aumi`, que es su versión pertinente aquí; `r_balance_ctrl`
   se sustituye por D3, que se publica siempre.
 
-# Parte 3 · Cifras que dependen de F13
+# Parte 3 · Cifras de F13 integradas (commit 932be0c)
 
-| # | Dónde (parte 1) | Qué falta | Encargo F13, punto |
+| # | Dónde (parte 1) | Qué fija | Fuente |
 |---|---|---|---|
-| 1 | Muestra (choque), β_ref, potencia y MDE | Que β_ref y la potencia no cambien al agregar el choque por promedio en vez de por suma. Ojo: 1969Q1 solo tiene marzo (`DICTIONARY.md:121,129`), así que suma y promedio no difieren solo en un factor 3 en esa fila | 1 |
-| 2 | Potencia y MDE | MDE simulado de V3s (c_80), en c·β_ref, en pp de ȳ por pp de choque y en pp de fed funds | 2 |
-| 3 | Potencia y MDE (rival) | P(confirma) de V3s bajo el rival con c = 4 | 2 |
-| 4 | Diagnósticos DL y DP | Ljung-Box(12) y predictibilidad, muestra completa y sin Volcker, en una tabla de `output/tables/` | 3 |
-| 5 | Muestra (choque) | Si el punto 1 falla de forma material, decisión de los autores sobre la agregación antes de aprobar | 1 (condición de parada) |
+| 1 | Muestra (choque), β_ref, potencia | ε = suma de los 3 meses; β_ref y la potencia frente a β_ref son invariantes a sumar o promediar (×3 exacto, mismos veredictos); solo el MDE por pp de choque depende de la unidad | `f13_checks.md:7-23` |
+| 2 | Potencia y MDE | c = 4: 0,590 / 0,600; c = 5,5: 0,797 / 0,840; MDE c = 5,5 / 5,2 = 10,01 / 9,46 pp de ȳ por pp de choque (10,54 / 9,97 por pp de fed funds) | `f13_checks.md:34,36,50,52,68-69` |
+| 3 | Potencia y MDE (rival) | P(confirma) ≤ 0,035 hasta c = 7 | `f13_checks.md:39-46,55-62` |
+| 4 | Diagnósticos DL y DP | Ljung-Box p = 0,158 / 0,029; predictibilidad p = 0,391 / 0,085 (completa / sin Volcker) | `f13_shock_diagnostics.md:7-8` |
 
-Aviso para F13: con P(confirma) = 0,745 / 0,778 en c = 5 (f9:886, 894), el c_80 de V3s queda entre 5 y 7. Simular c = 4 no lo acota;
-para el MDE hace falta simular por encima de c = 5.
+La condición de parada de F13 no se activó: la sensibilidad con la media de los meses con choque ≠ 0 deja P(confirma) de V3s con
+c = 1 en 0,032 / 0,034 (`f13_checks.md:13-14`). No entra en la parte 1 porque no es la agregación prerregistrada.
 
 ---
 
@@ -227,7 +234,8 @@ para el MDE hace falta simular por encima de c = 5.
 **Hecho.** La parte 1 es el texto completo que sustituye a "## Prerregistro de la etapa 1" (`SPEC.md:49-129`): pregunta, muestra,
 estado, especificación `aum`, estimando y diagnósticos, errores estándar con la excepción, hipótesis y regla V3s, β_ref con fuente y
 página, potencia y MDE ex ante, robustez y exploratorio. El bloque ```prereg``` lleva 3 ids confirmatorios y 6 de robustez, y la
-parte 2 los justifica. La parte 3 lista las cifras `[F13]`. No he tocado la SPEC ni el código.
+parte 2 los justifica. **Actualización tras F13 (commit 932be0c):** sus cifras están integradas y no queda ninguna marca
+de cifra pendiente. La parte 3 dice de dónde sale cada una. No he tocado la SPEC ni el código.
 
 **Evidencia.**
 - Las 7 decisiones (`SPEC.md:187-199`) aparecen en la parte 1:
@@ -238,8 +246,11 @@ parte 2 los justifica. La parte 3 lista las cifras `[F13]`. No he tocado la SPEC
   - 5, V3s con H0 solo en la muestra completa: Regla de decisión, pasos 1 y 3;
   - 6, refutación solo por (a): Regla de decisión;
   - 7, puerta H0: Regla de decisión, paso 1.
-- Cifras: `output/tables/f9_power.md` (líneas 6-7, 10-14, 17, 30-31, 38, 44-45, 52-53, 60-61, 691, 699, 705, 719, 727, 759-783,
-  791, 799, 831-855, 886, 894, 896-897); `data/clean/SAMPLE_COUNTS_S1R.md:11-19`.
+- Cifras:
+  - `output/tables/f9_power.md`, líneas 6-7, 10-14, 17, 30-31, 38, 44-45, 52-53, 60-61, 719, 791 y 896-897;
+  - `output/tables/f13_checks.md`, líneas 9-23, 31-62 y 68-69;
+  - `output/tables/f13_shock_diagnostics.md`, líneas 3 y 7-8;
+  - `data/clean/SAMPLE_COUNTS_S1R.md:11-19`.
 - Citas con página: Tenreyro-Thwaites pp. 9, 10, 11–12, 13 y Teulings-Zubanov pp. 6, 11–13, las dos del PDF del WP (F12,
   `exploration/F12_CITAS_2026-11-08.md:16-33,47-60`); la de γ = 3 la comprobé en `kb/library/md/TenreyroThwaites2016.md` (p. 10).
 - Estimador y árbol: `code/analysis/s1r_lp.py:44-54,75-88`; errores: `code/analysis/s1_lp.py:61-65`.
@@ -255,8 +266,12 @@ parte 2 los justifica. La parte 3 lista las cifras `[F13]`. No he tocado la SPEC
   - pasar `base` a exploratoria.
 
 **Supuestos y límites.**
-- Algunas cifras citadas en el texto no están en `output/tables/` sino en la réplica del Referee: el Ljung-Box y la predictibilidad
-  (`audits/2026-11-08_F9_mc.md:63-65`, que rehace F13) y la potencia con h = 1 (`:103`, exploratoria). Las cito con su ruta.
+- Solo una cifra no sale de `output/tables/`: la potencia con h = 1 (0,14–0,27), que es exploratoria y está en la réplica del
+  Referee (`audits/2026-11-08_F9_mc.md:103`). Los diagnósticos ya salen de `f13_shock_diagnostics.md`.
+- El MDE de V3s se escribe como la horquilla de los dos DGP, c = 5,2–5,5. El 5,5 (homo) es una celda simulada (0,797); el 5,2
+  (het_eps) se interpola entre c = 5 y c = 5,5. El error MC de P es ±0,013 (`F13_COMPROBACIONES.md:63`).
+- `F13_COMPROBACIONES.md:29,47` remite a las «líneas 74–77» de `f13_shock_diagnostics.md`, pero la tabla está en las líneas 7–8.
+  Cito estas últimas. Es una errata de referencia, no de cifras.
 - La rampa hasta h = 10 es un supuesto de la desk, no de TT.
 - El horizonte del −2,5 % de TT no es verificable con el texto (F12).
 
@@ -264,8 +279,8 @@ parte 2 los justifica. La parte 3 lista las cifras `[F13]`. No he tocado la SPEC
 1. **Controles.** Las 7 decisiones no fijan los controles. Escribo los que se simularon y auditaron (Δlog inversión, Δlog PIB,
    Δlog deflactor y Δffr, con 2 retardos). Salen el EBP y el rendimiento a 2 años de `s1_liq`, que F9 propuso quitar
    (F9_MC_REPORT §1). ¿Lo aprobáis?
-2. **Qué se hace si fallan los diagnósticos.** La decisión 3 pide declararlos, pero no dice qué pasa si rechazan, y se sabe ex ante
-   que el Ljung-Box sin Volcker probablemente rechaza (p = 0,029 en F10). Propongo no cambiar ni la especificación ni el veredicto:
+2. **Qué se hace si fallan los diagnósticos.** La decisión 3 pide declararlos, pero no dice qué pasa si rechazan, y ya se sabe que
+   el Ljung-Box sin Volcker rechaza (p = 0,029; la predictibilidad no rechaza al 5 %: p = 0,085; `f13_shock_diagnostics.md:8`). Propongo no cambiar ni la especificación ni el veredicto:
    solo se matiza la comparación con β_ref. ¿Lo aprobáis, o preferís otra consecuencia?
 3. **Refutación en V3s.** La decisión 5 define cuándo se confirma. No dice si (a) se evalúa solo con la muestra completa. He escrito
    lo que se simuló (`s1r_lp.decide`): refuta (a) con la muestra completa. Si la completa confirma y la de sin Volcker da β̂_C > 0
@@ -278,10 +293,11 @@ parte 2 los justifica. La parte 3 lista las cifras `[F13]`. No he tocado la SPEC
 - Un id por variante (V1/V2) en el bloque: son exploratorias.
 - `s1r_lin_nov` como confirmatoria: H0 no se exige sin Volcker.
 - Robustez que no tiene datos antes de 1985 o que es propia de la muestra de 1988+ (parte 2).
-- Dar un MDE interpolado como definitivo: F10 pide el simulado.
+- Meter en la parte 1 la sensibilidad con la media de los meses ≠ 0: no es la agregación prerregistrada y no cambia la potencia de
+  forma material (parte 3).
 
 **Pendiente.**
-- F13: cifras 1–5 de la parte 3, y el aviso de que c = 4 no acota el c_80 de V3s.
+- Autores: las 4 preguntas de arriba y la aprobación del texto.
 - Coordinación, tras la aprobación:
   - pegar la parte 1 en la SPEC, sin `## ` intermedios;
   - añadir la Desviación con `prereg <hash>` y el `prereg_commit` nuevo;
