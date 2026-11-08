@@ -32,7 +32,8 @@ Cada tarea tiene desk, criterio de "hecho" y su propio commit.
   - Declarar el estimando de choque aislado (RR sin Volcker autocorrelada, Ljung-Box p = 0,029).
   - NW5+HC3 es aceptable, con la excepción a la banda superior declarada (ninguna de las 7 alternativas probadas es mejor).
   Informe: `audits/2026-11-08_F9_mc.md`.
-- [ ] **F11** · scientific-director + coordination · Prerregistro nuevo `s1r_*` con los resultados de F9 y F10, antes de ver la respuesta de la inversión. **Lo aprueban los autores**; al cambiar el texto congelado, la Desviación lleva la huella `prereg` y un `prereg_commit` nuevo.
+- [~] **F12** · literature · Normalización del −2,5 % de Tenreyro-Thwaites (decide si β_ref usa el fed funds en h = 0 o h = 1) y verificación de Teulings-Zubanov (adelantos del choque como control). Encargo: `desks/literatura/ENCARGO_2026-11-08_f12-normalizacion-tt.md`.
+- [!] **F11** · scientific-director + coordination · **Decisiones de los autores en `exploration/DECISIONES_AUTORES_F11_2026-11-08.md`** (la 2 espera a F12). Prerregistro nuevo `s1r_*` con los resultados de F9 y F10, antes de ver la respuesta de la inversión. **Lo aprueban los autores**; al cambiar el texto congelado, la Desviación lleva la huella `prereg` y un `prereg_commit` nuevo.
 - [ ] **F5** · data + econometrics · Puerta de la etapa 2 (zona euro): disponibilidad de los MIR de saldos vivos y de la inversión trimestral por país; exposición contractual × stock; MC de potencia con 10–12 clústeres. Hecho: informe de puerta (pasa / no pasa).
 - [ ] **0.3b** · referee · Auditoría del resultado de `modelshock` (LP con shocks JK, interacción a h = 4–8). Útil antes de F5.
 
