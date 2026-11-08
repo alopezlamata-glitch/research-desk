@@ -342,40 +342,56 @@ def session_usage(session_id: str, transcripts: Path | None = None) -> dict | No
     return out
 
 
-def print_usage(desk: str | None = None) -> None:
-    sessions: dict[str, dict] = {}  # una sesión reanudada tiene varias filas en RUNS.csv y una sola transcripción
+def sessions(desk: str | None = None) -> list[dict]:
+    """Una fila por sesión de RUNS.csv (una reanudada tiene varias filas y una sola transcripción), con su `usage`."""
+    by_sid: dict[str, dict] = {}
     for r in read_runs():
         if r.get("session_id") and desk in (None, r["desk"]):
-            s = sessions.setdefault(r["session_id"], {**r, "launches": 0})
+            s = by_sid.setdefault(r["session_id"], {**r, "launches": 0})
             s["launches"] += 1
             s["estado"] = r.get("estado", "")  # el de la última fila: una reanudación vuelve a quedar sin revisar
-    if not sessions:
-        print("No hay sesiones con session_id en RUNS.csv (las anteriores a G7 no lo registran).")
-        return
-    print(f"{'inicio':16} {'desk':20} {'modelo':6} {'lanz':>4} {'turnos':>6} {'salida':>8} {'caché leída':>12} "
-          f"{'caché escrita':>13} {'pico ctx':>9} {'min':>6} {'estado':10}  encargo")
+    return [{**s, "usage": session_usage(sid)} for sid, s in by_sid.items()]
+
+
+def per_accepted(rows: list[dict]) -> dict[str, dict]:
+    """Por desk: sesiones revisadas y aceptadas, y el consumo de todas las revisadas repartido entre las aceptadas.
+
+    Solo cuentan las revisadas: una sesión sin revisar no es ni coste perdido ni entregable aceptado.
+    """
     by_desk: dict[str, dict] = {}
-    for sid, r in sessions.items():
-        head = f"{r['started']:16} {r['desk']:20} {r['model']:6} {r['launches']:>4}"
-        if (u := session_usage(sid)) is None:
-            print(f"{head}  sin transcripción ({sid})")
-            continue
-        print(f"{head} {u['turns']:>6} {u['output']:>8} {u['cache_read']:>12} {u['cache_write']:>13} "
-              f"{u['peak_ctx']:>9} {u['minutes']:>6} {r['estado'] or '-':10}  {r['encargo']}")
-        if r["estado"]:  # solo las revisadas: una sesión sin revisar no es ni coste perdido ni entregable aceptado
+    for r in rows:
+        if r["estado"] and (u := r["usage"]):
             d = by_desk.setdefault(r["desk"], {"revisadas": 0, "aceptadas": 0, "cache_read": 0, "cache_write": 0,
                                                "output": 0})
             d["revisadas"] += 1
             d["aceptadas"] += r["estado"] == "aceptada"
             for k in ("cache_read", "cache_write", "output"):
                 d[k] += u[k]
-    if by_desk:
+    for d in by_desk.values():
+        d["per"] = {k: d[k] // d["aceptadas"] for k in ("cache_read", "cache_write", "output")} if d["aceptadas"] else None
+    return by_desk
+
+
+def print_usage(desk: str | None = None) -> None:
+    rows = sessions(desk)
+    if not rows:
+        print("No hay sesiones con session_id en RUNS.csv (las anteriores a G7 no lo registran).")
+        return
+    print(f"{'inicio':16} {'desk':20} {'modelo':6} {'lanz':>4} {'turnos':>6} {'salida':>8} {'caché leída':>12} "
+          f"{'caché escrita':>13} {'pico ctx':>9} {'min':>6} {'estado':10}  encargo")
+    for r in rows:
+        head = f"{r['started']:16} {r['desk']:20} {r['model']:6} {r['launches']:>4}"
+        if (u := r["usage"]) is None:
+            print(f"{head}  sin transcripción ({r['session_id']})")
+            continue
+        print(f"{head} {u['turns']:>6} {u['output']:>8} {u['cache_read']:>12} {u['cache_write']:>13} "
+              f"{u['peak_ctx']:>9} {u['minutes']:>6} {r['estado'] or '-':10}  {r['encargo']}")
+    if by_desk := per_accepted(rows):
         print("\nPor sesión aceptada (el consumo de las rechazadas, bloqueadas o incompletas también cuenta):")
         for name, d in by_desk.items():
-            if not d["aceptadas"]:
+            if not (per := d["per"]):
                 print(f"  {name:20} {d['revisadas']} revisadas, ninguna aceptada")
                 continue
-            per = {k: d[k] // d["aceptadas"] for k in ("cache_read", "cache_write", "output")}
             print(f"  {name:20} {d['aceptadas']}/{d['revisadas']} aceptadas · caché leída {per['cache_read']} · "
                   f"caché escrita {per['cache_write']} · salida {per['output']}")
 

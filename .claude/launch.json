@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["-y", "pixel-agents", "--port", "3100"],
       "port": 3100
+    },
+    {
+      "name": "dashboard",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "python", "tools/dashboard.py", "3200"],
+      "port": 3200
     }
   ]
 }

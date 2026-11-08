@@ -168,3 +168,8 @@ Cada zona es un Area asociada a su carpeta (`.` para la Dirección, `desks/<desk
   al repo (`additionalDirectories: ../..`).
 - **Regenerar la oficina y esa configuración:** `node .claude/office/build_office.mjs`, **con el servidor parado**.
 - **Vista previa en imagen:** `uv run python .claude/office/preview_office.py <assets> <salida.png>`.
+
+**Panel de estado:** `uv run python tools/dashboard.py` (configuración `dashboard` en `.claude/launch.json`, en
+http://127.0.0.1:3200). Muestra qué está trabajando, qué espera a los autores o a la Coordinación, el estado y los
+últimos avances de cada paper, el consumo y la salud del repo. Solo lee. El estado de cada paper es la línea `Estado:`
+de su SPEC: mantenerla al día es tarea de la Coordinación.
