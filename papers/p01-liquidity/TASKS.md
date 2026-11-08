@@ -48,7 +48,7 @@ Cada tarea tiene desk, criterio de "hecho" y su propio commit.
 - [~] **F26** · literature · Citas pendientes del borrador (Jeenas, TFG1/TFG2, procedencia de la extensión de Romer-Romer, FRED/BEA/Z.1, Newey-West). Encargo: `desks/literatura/ENCARGO_2026-11-08_f26-citas-borrador.md`.
 - [ ] **F27** · theory · Test SymPy de la Observación tras el Corolario 1 (`I_u > ω_min p_f/a > 0` con g ≥ 0), o propuesta de quitarla.
 - [ ] **F28** · referee · Comprobación corta de F25 (cambia `code/` y `output/`), compilando `macros.tex`.
-- [ ] **F29** · writer · Cerrar los `	odo` del borrador con F25–F27 y quitar el rodeo de las macros en `main.tex`.
+- [ ] **F29** · writer · Cerrar los `\todo` del borrador con F25–F27 y quitar el rodeo de las macros en `main.tex`.
 - [ ] **F30** · referee · Auditoría del texto del paper en sesión nueva (en particular, que no lee b_C como contraste).
 - [-] **F19** · econometrics · Retirada (2026-11-08): los autores descartan la opción B de F18.
 - [-] **F20** · literature · Retirada (2026-11-08): los autores descartan la opción B de F18.
