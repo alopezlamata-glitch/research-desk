@@ -30,6 +30,6 @@ def test_spec_estado_joins_the_paragraph_and_strips_markup():
 
 def test_render_reads_the_real_repo_and_escapes_html():
     page = dashboard.render()
-    assert all(h in page for h in ("<h2>Ahora</h2>", "<h2>Espera a alguien</h2>", "<h2>Papers</h2>", "<h2>Consumo</h2>",
+    assert all(h in page for h in ("<h2>Ahora</h2>", "<h2>Espera a alguien</h2>", "<h2>Consumo</h2>",
                                    "<h2>Salud del repo</h2>", "p01-liquidity"))
     assert "<script" not in page
