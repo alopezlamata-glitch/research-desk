@@ -51,3 +51,20 @@ Estado: candidata
 5. **Controlar por adelantos del choque cambia el estimando si el choque está autocorrelado en la población.** Regla: con
    adelantos como controles, contrastar la autocorrelación del choque (Ljung-Box) y escribir en la SPEC que se estima la respuesta a
    un choque aislado.
+
+## 2026-11-08 · p01 · R-F17, estimación de `s1r_*` (F16)
+Estado: candidata
+1. **Cuando la puerta falla, se audita el resumen que se escala, no solo las cifras.** Las estimaciones y el veredicto eran
+   exactos, pero el HANDOFF daba el p < 0,05 de β̂_C en las dos muestras principales y se callaba las dos robusteces en las que no
+   pasa (p = 0,15 y 0,08). Regla: si un coeficiente sin veredicto "llama la atención", exigir que el resumen lleve todas sus filas
+   prerregistradas (principales y robustez), no solo las favorables.
+2. **No juntes en una frase un p unilateral y un IC bilateral al 95 %.** «p unilateral < 0,05 pero el IC al 95 % contiene el 0»
+   suena a contradicción y no lo es: al contraste unilateral al 5 % le corresponde el IC al 90 %. Regla: dar el IC del mismo nivel
+   que el contraste.
+3. **Las lecturas de implementación se juzgan sin la variable de resultado.** Para decidir si z debía estandarizarse en la logística
+   o si la mediana se recalculaba al recortar la muestra, bastó mirar el estado: rango de F (sin estandarizar, [0,35; 0,64], casi
+   sin estado) y número de filas que cambian de estado (5 de 136). Regla: comprobar el efecto de la lectura sobre el regresor, no
+   sobre β̂, para no elegir la lectura con los datos.
+4. **Comprobar que no hay ejecuciones escondidas con el historial del spec_log.** Un log de solo-añadir con una sola marca de
+   tiempo y un único commit es la prueba disponible; no detecta un log borrado a mano antes del commit. Regla: citar ese límite en
+   el informe.
