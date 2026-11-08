@@ -4,6 +4,14 @@ Fuentes: el MC de Econometría (`output/F9_MC_REPORT.md`, commit d1a77f5) y la a
 (`audits/2026-11-08_F9_mc.md`, APROBADO CON CAMBIOS, réplica en R, commit 99e6d1c). Las cifras salen de esos documentos.
 Nada de esto ha mirado la respuesta de la inversión: el prerregistro sigue pudiendo escribirse "antes de ver resultados".
 
+> **Actualización (2026-11-08, F12, commit 83bdf1c).** Tenreyro-Thwaites escalan el choque a 1 pp del fed funds **al impacto
+> (h = 0)**, con promedios trimestrales de Romer-Romer (pp. 9–11, 13). La decisión 2 queda resuelta por el texto: **β_ref se
+> mide en h = 0 y la potencia aplicable es 0,04–0,10**. Queda para Econometría comprobar que el h = 0 de F9 es equivalente
+> (F7 agregó el choque sumando los meses y TT promedian; la normalización por el fed funds debería hacerlo indiferente, pero hay
+> que verificarlo). Además, Teulings-Zubanov respalda controlar por los choques intermedios, pero solo para choques
+> independientes: no cubre la autocorrelación de RR sin Volcker, así que se cita como idea y no como prueba de que `aum` sea
+> insesgada (decisión 3). Con esto, la pregunta de fondo (A o B, abajo) pesa más.
+
 ## Dónde estamos
 
 - **Sesgo nuevo y su corrección.** Con la ventana h = 4..12, la LP con solo controles está sesgada porque los choques de
