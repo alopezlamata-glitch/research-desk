@@ -17,7 +17,7 @@ añadiera uno, la parte de arriba quedaría fuera del texto congelado.
 
 # Parte 1 · Texto para la SPEC (sustituye a la sección actual)
 
-## Prerregistro de la etapa 1 rediseñada: EE. UU. (`s1r_*`; aprobado por los autores el [fecha])
+## Prerregistro de la etapa 1 rediseñada: EE. UU. (`s1r_*`; aprobado por los autores el 2026-11-08)
 
 Sustituye al prerregistro de la etapa 1 aprobado el 2026-11-04 (`prereg_commit: af1c346`), cuyos ids `s1_*` y `r_*` no se
 estiman (Desviación del 2026-11-07). Decisiones de los autores: Desviaciones del 2026-11-07 y del 2026-11-08; justificación en
@@ -43,7 +43,7 @@ respuesta media en h = 4..12 trimestres, con subidas y bajadas juntas (la asimet
 - Muestra sin Volcker: la anterior sin las filas t ∈ 1979Q4–1982Q4 (13 trimestres). N = 133, con 62 y 71 por estado (f9:7;
   `SAMPLE_COUNTS_S1R.md:18-19`). Solo se quitan filas: el estado, los adelantos y retardos del choque y ȳ_t de las demás filas
   se calculan con la serie completa, como en el MC (`code/analysis/s1r_lp.py:44-54`).
-- Réplica con `mps_bs23_orth`: t ∈ 1988Q1–2005Q2, N = 70 (f9:17). No decide (ver robustez).
+- Réplica con `mps_bs23_orth`: t ∈ 1988Q1–2005Q2, N = 70 (f9:17). Exploratoria: no decide ni es robustez prerregistrada (ver abajo).
 - Inversión `A008RA3Q086SBEA` (índice de cantidad, BEA vía FRED), PIB real `GDPC1`, deflactor `GDPDEF`, fed funds `ffr` (media
   trimestral). Datos en última revisión, congelados por el hash de `data/raw/MANIFEST.csv`; refrescarlos es una Desviación.
 - Choques sin dato (antes de 1969Q1 en los retardos de las primeras filas; 2008Q1–Q2 en los adelantos de las dos últimas) cuentan
@@ -148,8 +148,6 @@ heterocedástico `het_eps`; 1000 réplicas, error MC de P ≈ ±0,013).** No dep
 
 **Robustez prerregistrada** (no decide; se publica con IC sea cual sea el resultado; misma especificación `aum` y mismos errores salvo
 lo que se indica):
-- `r1r_bs_lin`, `r1r_bs_liq`: réplica con `mps_bs23_orth`, 1988Q1–2005Q2. Descriptiva: con `base`, F9 obtuvo P(confirma) ≈ 0 para
-  todo c ≤ 10 (f9:896-897).
 - `r1r_from1971q3`: `s1r_liq` sin las filas 1969Q1–1971Q2, cuyos retardos del choque son anteriores a 1969 y cuentan como 0 (F10,
   hallazgo 9).
 - `r1r_state_q25`: `s1r_liq` con restringido = cuartil inferior de `s_{t−1}`.
@@ -163,6 +161,8 @@ lo que se indica):
 - `aumi` (retardos y adelantos del choque interactuados con el estado de su propio trimestre; F10, hallazgo 2);
 - β_ref con el fed funds en h = 1 (π_1 = 1,669, f9:11), que da P(confirma) ≈ 0,14–0,27 (F10, `audits/2026-11-08_F9_mc.md:103`);
 - la especificación `base` (sin retardos ni adelantos del choque);
+- la réplica con `mps_bs23_orth` (1988Q1–2005Q2, con `aum`): sin MC que la valide con N = 70 y ≈ 36 g.l. (con `base`, F9 obtuvo
+  P(confirma) ≈ 0 para todo c ≤ 10, f9:896-897), así que se publica como descriptiva y exploratoria;
 - la diferencia entre estados β_C − β_U (si la falta de liquidez amplifica o atenúa);
 - la IRF por horizonte;
 - la interacción exposición × restricción, la interacción triple, la coordinación y la STAR;
@@ -176,8 +176,6 @@ s1r_lin
 s1r_liq
 s1r_liq_nov
 # --- robustez prerregistrada (no deciden) ---
-r1r_bs_lin
-r1r_bs_liq
 r1r_from1971q3
 r1r_state_q25
 r1r_state_logistic
@@ -204,7 +202,8 @@ inversión.
   que es exploratoria.
 - **Robustez.** Solo entra lo que cumple dos condiciones: (i) se puede hacer con los datos de `stage1r_us.parquet` y los brutos de FRED;
   (ii) responde a una amenaza concreta de este diseño.
-  - `r1r_bs_*`: la réplica posterior a 1984 que pide la Desviación del 2026-11-07 (punto 2).
+  - (`r1r_bs_*`, la réplica posterior a 1984 que pide la Desviación del 2026-11-07, punto 2: **retirada del bloque por los autores el
+    2026-11-08**; la réplica se publica como exploratoria porque no tiene MC que la valide.)
   - `r1r_from1971q3`: los ceros de los retardos (F10, hallazgo 9).
   - `r1r_state_q25` y `r1r_state_logistic`: la mediana es una elección arbitraria del umbral, y estas dos ya estaban aprobadas por los
     autores el 2026-11-04.
