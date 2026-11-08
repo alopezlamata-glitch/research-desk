@@ -314,3 +314,7 @@ inversión.
   3. **La etapa 1b se cierra como "no pasa la puerta"** (F14a: G = 28–32 frente a 40, proxy sin cita verificada, sin capex). La
      puerta no se relaja: hacerlo sabiendo el resultado sería elegirla con el resultado delante.
   4. La opción B (repetir H1 en otros países) se descarta: se plantearía después de ver β̂_C. Se retiran F14b, F19 y F20.
+- 2026-11-08 · **Los autores cierran la etapa 2 como "no pasa la puerta"** (F5a, `exploration/F5A_ETAPA2_2026-11-08.md`): el MIR
+  del BCE no publica por país volúmenes por periodo de fijación (solo el agregado de la zona euro), así que no hay exposición
+  contractual × stock por país y ningún clúster cumple la puerta del 2026-11-04. No se redefine la exposición. El paper A queda
+  como teoría verificada más la medición acotada de la etapa 1; la etapa 2 se cita como trabajo futuro condicionado a datos.
