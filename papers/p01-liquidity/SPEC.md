@@ -304,3 +304,13 @@ inversión.
      del bloque.
   - Los ids `s1_*` y `r_*` de la etapa 1 anterior salen del bloque: no se estimarán.
   - Huella del texto congelado nuevo: prereg 1d9476332d29. El `prereg_commit` pasa al commit de esta aprobación.
+- 2026-11-08 · **Los autores deciden cómo sigue p01 tras `h0_falla`** (F16, auditada en F17: APROBADO), sobre las opciones del
+  Director científico (`exploration/F18_TRAS_H0_2026-11-08.md`):
+  1. **El paper es la opción A:** la teoría verificada más la medición prerregistrada y auditada de la etapa 1, presentada como
+     medición acotada con la potencia declarada ex ante. H1 no se interpreta; las 6 filas de b_C se muestran todas, con su p
+     unilateral y su IC, como "medición sin veredicto" (las dos que no pasan incluidas).
+  2. **Se abre en paralelo solo la puerta de la etapa 2** (zona euro, F5), tal como se aprobó el 2026-11-04 y sin mirar
+     resultados. Si pasa, la etapa 2 se prerregistra y entra en una versión 2 del paper; si no, el paper A queda como está.
+  3. **La etapa 1b se cierra como "no pasa la puerta"** (F14a: G = 28–32 frente a 40, proxy sin cita verificada, sin capex). La
+     puerta no se relaja: hacerlo sabiendo el resultado sería elegirla con el resultado delante.
+  4. La opción B (repetir H1 en otros países) se descarta: se plantearía después de ver β̂_C. Se retiran F14b, F19 y F20.
