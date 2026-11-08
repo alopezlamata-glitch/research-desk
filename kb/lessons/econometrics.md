@@ -59,3 +59,13 @@ Estado: candidata
    matriz de pesos HAC, `pmax(M, 0)`.
 4. **Un script de análisis no debe depender de columnas que no usa.** `sample_counts_s1r.samples` necesita `mps_bs23_orth`; el panel
    simulado para R no la tiene. Define la muestra con lo mínimo y comprueba en un test que coincide con los recuentos publicados.
+
+## 2026-11-08 · p01 · F16: estimación de `s1r_*` con la inversión real
+Estado: candidata
+1. **Antes de ejecutar un análisis prerregistrado, comprueba con `git diff <commit> -- code/` que el código es el revisado.** Así el
+   informe puede afirmar «tal como en bd4f7bc» con evidencia, no de memoria.
+2. **Cuando la puerta H0 falla, el informe no debe leer la medición de H1 como si fuera un veredicto, aunque sus p pasen de 0,05.**
+   Se publica como medición y se deja anotado en «pendiente de decidir», para que lo vea quien decide. Así no se esconde, pero tampoco
+   se interpreta.
+3. **Si los tests de paridad y de equivalencia con el MC se dejan escritos antes de ver los datos (F15), la estimación real es un
+   solo comando, sin nada que ajustar.** La paridad con los datos reales salió a 1e-12 a la primera.

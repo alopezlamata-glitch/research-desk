@@ -1,0 +1,8 @@
+timestamp,commit,script,spec_id,preregistered,exploratory,description,prereg
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,s1r_lin,True,False,"H0: ȳ(4..12) sobre ε, aum, 1969Q1–2005Q2, NW5+HC3",1d9476332d29
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,s1r_liq,True,False,"H1: β_C y β_U por estado de liquidez, aum, 1969Q1–2005Q2, NW5+HC3",1d9476332d29
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,s1r_liq_nov,True,False,"H1 sin 1979Q4–1982Q4 (V3s), aum, NW5+HC3",1d9476332d29
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,r1r_from1971q3,True,False,robustez: s1r_liq desde 1971Q3,1d9476332d29
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,r1r_state_q25,True,False,robustez: s1r_liq con restringido = cuartil inferior de s,1d9476332d29
+2026-11-08T12:28:20+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,r1r_state_logistic,True,False,"robustez: s1r_liq con estado logístico, γ = 3, c = mediana",1d9476332d29
+2026-11-08T12:28:21+00:00,690658d-dirty,code/analysis/01_s1r_estimate.py,r1r_lags4,True,False,robustez: s1r_liq con 4 retardos de los controles,1d9476332d29

@@ -28,5 +28,6 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-08_0703,direccion-cientifica,ENCARGO_2026-11-08_f11-prereg-s1r.md,37628,run_2026-11-08_0703.log,opus,3f075a69-eb0c-41e5-af09-0aeb54a202c5,high,aceptada
 2026-11-08_0703,econometria,ENCARGO_2026-11-08_f13-comprobaciones-s1r.md,37920,run_2026-11-08_0703.log,opus,5b111ca1-c96f-4181-bdbb-6571206f9af8,medium,aceptada
 2026-11-08_0720,direccion-cientifica,ENCARGO_2026-11-08_f11-prereg-s1r.md,40380,run_2026-11-08_0720.log,opus,3f075a69-eb0c-41e5-af09-0aeb54a202c5,high,
-2026-11-08_1256,econometria,ENCARGO_2026-11-08_f15-requisitos-s1r.md,23012,run_2026-11-08_1256.log,opus,f46c49e7-eb86-4386-bf0c-83a5fe97fc7e,medium,
-2026-11-08_1256,datos,ENCARGO_2026-11-08_f14a-qfr-puerta.md,32912,run_2026-11-08_1256.log,sonnet,11753bed-3a2c-4cc2-97c4-c92a43cc5610,medium,
+2026-11-08_1256,econometria,ENCARGO_2026-11-08_f15-requisitos-s1r.md,23012,run_2026-11-08_1256.log,opus,f46c49e7-eb86-4386-bf0c-83a5fe97fc7e,medium,aceptada
+2026-11-08_1256,datos,ENCARGO_2026-11-08_f14a-qfr-puerta.md,32912,run_2026-11-08_1256.log,sonnet,11753bed-3a2c-4cc2-97c4-c92a43cc5610,medium,aceptada
+2026-11-08_1327,econometria,ENCARGO_2026-11-08_f16-estimacion-s1r.md,20868,run_2026-11-08_1327.log,opus,ba75cd12-cbf9-4fb5-95db-d1503ed081b6,medium,
