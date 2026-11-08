@@ -77,3 +77,14 @@ regla: Escribir la regla de decisión leyendo el código del árbol que se simul
 - Un diagnóstico prerregistrado necesita su consecuencia escrita. Si se puede calcular sin la variable de resultado y ya se sabe que rechazará, hay que decirlo en el propio texto.
 - Antes de pegar texto encima de un bloque ```prereg, mirar qué congela `integrity.py::prereg_text` (desde el último `## `): un subencabezado `## ` deja fuera todo lo que está por encima.
 - Cada estimación que decide lleva su propio id confirmatorio, aunque sea la misma ecuación en otra muestra: la paridad usa la clave (spec_id, term).
+
+## 2026-11-08 · p01 F18 · Tras un veredicto negativo, puntuar las ampliaciones también por cuándo se fijaron
+Estado: candidata
+estado: candidata
+evidencia: papers/p01-liquidity/exploration/F18_TRAS_H0_2026-11-08.md §3 B–D y §4 (C y la puerta de la 1b se escribieron antes de F16; B y relajar la 1b se plantean después de ver β̂_C y G)
+alcance: Dirección, propuestas de continuación tras h0_falla, no concluyente o una puerta de datos que no pasa
+caduca: 2027-05-08
+regla: Tras un resultado negativo o una puerta fallida, separar las ampliaciones cuya hipótesis y puerta estaban escritas antes de ver el resultado de las que se plantean después. Las segundas se marcan como tales en el documento para los autores y no se recomiendan si existe una de las primeras con identificación igual o mejor. Una puerta no se relaja después de conocer el recuento que la hace fallar.
+
+- Empezar por el paper que existe pase lo que pase (aquí, teoría + medición acotada) y tratar las ampliaciones como puertas baratas con un punto de decisión, no como compromisos.
+- Dar todas las filas de la medición sin veredicto, también las que no favorecen la hipótesis (F17: dos de las seis robusteces no pasan).
