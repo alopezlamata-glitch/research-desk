@@ -23,6 +23,9 @@ __pycache__/
 *.synctex.gz
 *.bbl
 *.blg
+papers/*/paper/*.pdf   # se regenera con latexmk desde main.tex y output/macros.tex
+*.bbl
+*.blg
 
 # Local
 .claude/settings.local.json

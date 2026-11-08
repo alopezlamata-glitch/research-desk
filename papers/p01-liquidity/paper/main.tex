@@ -1,0 +1,561 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[round,authoryear]{natbib}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+% Open items for the authors and the desks; every \todo is listed in F23_HANDOFF.md.
+\newcommand{\todo}[1]{\textcolor{red}{[\textbf{TODO:} #1]}}
+\newcommand{\notewidth}{0.95\textwidth} % width of table notes
+
+% output/macros.tex defines four names containing the digit 0 (\PwHomoH0Falla, \PwHetH0Falla, \PwHomoPowH0, \PwHetPowH0),
+% which LaTeX cannot parse as control words. Until code/analysis/02_paper_macros.py renames them (see F23_HANDOFF.md), the
+% file is read with 0 as a letter and those four macros are aliased. No value is changed.
+\catcode`\0=11
+\input{../output/macros.tex}
+\let\PwHomoHzeroFalla\PwHomoH0Falla
+\let\PwHetHzeroFalla\PwHetH0Falla
+\let\PwHomoPowHzero\PwHomoPowH0
+\let\PwHetPowHzero\PwHetPowH0
+\catcode`\0=12
+
+\title{Precautionary Reserves and Monetary Transmission to Financially Constrained Firms:\\
+Theory and a Preregistered, Bounded Measurement}
+\author{\todo{author list and affiliations}}
+\date{Working paper draft}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+In models where a binding financing constraint fixes investment, monetary policy reaches constrained firms only through
+the repricing of their existing debt. We show that this prediction is a corner. When firms hold precautionary reserves that
+they can adjust, the investment response of a constrained firm is a weighted average of the unconstrained response and the
+repricing channel, and the weight on the unconstrained response is bounded below by a strictly positive constant that
+depends only on primitives. Aggregating firms that borrow from a common bank adds a crowding-out term that dampens the aggregate
+response but does not reverse it when repricing does not hurt constrained firms. All results are verified symbolically. We then report a preregistered measurement for
+the United States, 1969--2005: the average response of non-residential investment, four to twelve quarters ahead, to
+narrative monetary policy shocks, overall and by the state of corporate liquidity. The preregistered gate fails: the
+linear response is negative but its confidence interval contains both zero and the reference effect. Under the
+preregistered rule the state-dependent hypothesis is therefore not evaluated, and we report its estimates as measurement
+without a verdict. With the power computed before estimation, this was the most likely outcome even if the reference effect
+were true. The design had 80 percent power only for responses of roughly 10 percentage points per percentage point of
+shock, about five times the reference effect.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+
+How much of a monetary policy impulse reaches firms whose investment is limited by a financing constraint? Two polar answers
+are common. In models where the constraint pins investment down, an interest rate change moves the investment of
+constrained firms only through the cash flow freed or absorbed by the repricing of their outstanding debt; in the floating-rate
+channel of \citet[WP pp.~10--11]{IppolitoOzdagliPerezOrive2018}, the investment of a constrained firm moves one for one
+with the change in its interest bill. Without a constraint, investment responds through the usual cost-of-capital margin.
+Which of the two describes the economy is then a question about how many firms are constrained.
+
+This paper makes two contributions. The first is theoretical. We study a firm that faces a binding financing capacity and
+holds a precautionary liquidity reserve that it can adjust. Its investment response to a monetary easing is a weighted average
+of the unconstrained response and the repricing channel
+(Proposition~\ref{prop:transmission}). The weight on the unconstrained response falls as reserves become costlier to run down,
+but it is bounded below by a strictly positive constant that depends only on primitives (Proposition~\ref{prop:limits}). The
+rigid corner, in which a constrained firm without floating-rate debt does not respond at all, is reached only in the limit or at
+a corner of the reserve choice, never at an interior optimum. Aggregating heterogeneous firms that borrow from a common bank
+adds a crowding-out term that dampens the aggregate response but keeps it positive whenever repricing does not hurt
+constrained firms (Proposition~\ref{prop:aggregation}). Every derivation is verified symbolically, and the aggregation formula
+is also checked against a numerically solved nonlinear equilibrium (Appendix~\ref{app:verification}).
+
+The second contribution is a measurement. The theory implies that a monetary tightening lowers aggregate investment and that it
+lowers investment also when many firms are constrained. We take both implications to U.S. data with narrative monetary policy
+shocks \citep{RomerRomer2004}, using a design that was preregistered, with its decision rule and its power, before the
+investment response was estimated. The statistic is the average response of non-residential investment over horizons of four
+to twelve quarters. The state is whether the liquid assets of non-financial corporations relative to their debt are below
+their recent trend. The decision rule first requires the linear response to be negative (a gate) and only then evaluates the
+response in the low-liquidity state, which must hold both in the full sample and without the Volcker disinflation.
+
+The gate fails. The linear estimate is \bLinEst{} percentage points (pp) of average investment per pp of shock, with a
+one-sided $p$-value of \bLinP{} and a 95 percent confidence interval of $[\bLinCiLo, \bLinCiHi]$, which contains both zero and the
+reference effect of \betaRef{} that we fixed ex ante from \citet{TenreyroThwaites2016}. The hypothesis about the constrained state is
+therefore not interpreted. We report all six preregistered estimates of the response in the low-liquidity state, with
+their $p$-values and intervals, as measurement without a verdict. This outcome is not evidence that monetary policy does not
+affect investment. Before estimation, our Monte Carlo put the probability of exactly this outcome at \PwHomoHzeroFalla{} if the
+true response were the reference effect (\PwHetHzeroFalla{} with heteroskedastic noise). The design confirms H1 with probability
+0.8 only if the responses are of roughly 10 pp per pp of shock, about five times the reference effect. % num-ok: 0.8 es la potencia objetivo que define el MDE en el prerregistro, no un resultado
+
+We see the measurement as useful for two reasons. It bounds what aggregate U.S. data on this question can say, and it shows,
+with a design fixed in advance, why a sample of this length cannot distinguish the polar answers above. Two extensions that could
+add power, a cross-section of industries by firm size and a panel of euro-area countries with contractual measures of
+repricing exposure, did not pass the data requirements that we set for them before looking at any outcome
+(Section~\ref{sec:conclusion}).
+
+\paragraph{Related literature.}
+A large literature studies how firm balance sheets and debt structure shape the investment response to monetary policy
+\citep{OttonelloWinberry2020,CloyneFerreiraFroemelSurico2023,GrobZullig2024,JungherrMeierReineltSchott2024,GreenwaldKrainerPaul2025,BotteroEtAl2026}.
+\citet{OttonelloWinberry2020} find that firms with low default risk are the most responsive. \todo{Jeenas (BSE WP 1409) on
+firm liquidity and the investment response is the closest empirical paper; the bib entry is not VERIFIED (publication status
+in dispute) and cannot be cited yet.} Our model nests the floating-rate channel of
+\citet{IppolitoOzdagliPerezOrive2018}: their constrained firm, whose capital equals net worth plus a fixed borrowing limit
+(WP eqs.~2 and 7, pp.~10--11), is the rigid limit of ours with fully floating debt. \citet{PerezOriveTimmerVanDerGhote2026}
+show that when several financing constraints bind, firms respond more to tightenings than to easings, and that with a single
+binding constraint the response is symmetric (Propositions 1 and 2, WP pp.~12--13). Our model has a single capacity
+constraint and an interior reserve margin; we pool tightenings and easings and leave asymmetry to exploratory work. On the
+empirical side, we build on state-dependent local projections with narrative shocks \citep{TenreyroThwaites2016,Ramey2016}
+and on the use of future shocks as controls proposed by \citet{TeulingsZubanov2014}. \todo{cite the authors' earlier work (TFG1,
+TFG2) on which the model builds, once there are verified bib entries.}
+
+\section{Model}\label{sec:model}
+
+\subsection{A constrained firm with a reserve margin}
+
+A firm chooses investment $I$ and a precautionary liquidity reserve $m$. Each unit of reserves uses $\gamma>0$ units of
+financing capacity $H$, so that $I+\gamma m\le H$. The marginal return on investment is $q$ and its marginal cost rises with
+slope $a=b+\eta v+\psi/N$, where $b$ is the curvature of the project cost, $\eta v$ an uncertainty term, and $\psi/N$ the slope
+of the lending rate charged by a common bank (Section~\ref{sec:aggregation}). Reserves insure against a liquidity need
+$\xi\sim N(\mu,\sigma^2)$. Let $z=(m-\mu)/\sigma$, let $Q(z)$ be the upper tail of the standard normal and let
+$G(m)=\mathbb{E}[(\xi-m)^+]$ be the expected shortfall, so that $G'(m)=-Q(z)$. With the capacity constraint binding
+($\lambda>0$) and an interior reserve, the optimum satisfies
+\begin{equation}\label{eq:kkt}
+\lambda = q-aI,\qquad \kappa_F\,G(m)=\delta+\gamma\lambda,\qquad I+\gamma m=H,
+\end{equation}
+where $\delta$ is the carrying cost of reserves and $\kappa_F>0$ scales the value of insurance. Define
+$B\equiv-\kappa_F G'(m)=\kappa_F Q(z)$, the curvature of the reserve value at the optimum.
+
+A monetary easing is a small change $u$ in the policy rate (a cut). It raises the net return on investment, $q_u=p_f>0$, and it
+relaxes financing capacity through the repricing of debt, $H_u=g$, where $g=\gamma\mathcal{E}_D$ and $\mathcal{E}_D$ is the
+exposure of the firm's interest bill to the policy rate. We hold $a$, $\sigma$ and $\delta$ fixed.
+
+\begin{proposition}[Transmission with a reserve margin]\label{prop:transmission}
+Differentiating \eqref{eq:kkt} with respect to $u$,
+\begin{equation}\label{eq:Iu}
+I_u=\frac{\gamma^2 p_f+B g}{B+\gamma^2 a}=\omega\,\frac{p_f}{a}+(1-\omega)\,g,\qquad
+\omega=\frac{\gamma^2 a}{B+\gamma^2 a},
+\end{equation}
+and $m_u=\gamma(a g-p_f)/(B+\gamma^2 a)$, $\lambda_u=B(p_f-a g)/(B+\gamma^2 a)$.
+\end{proposition}
+
+The response is a weighted average of two margins: the price margin $p_f/a$, which is the response of an unconstrained firm, and
+the cash-flow margin $g$. The weight $\omega$ is high when reserves are cheap to adjust ($B$ small): the firm then funds
+investment by running down reserves and behaves as if unconstrained.
+
+\begin{proposition}[Limits and a lower bound on the weight]\label{prop:limits}
+\begin{enumerate}
+\item[(i)] As $B\to0$, $I_u\to p_f/a$: the unconstrained response.
+\item[(ii)] As $B\to\infty$, $I_u\to g$. With $g=0$ this is the zero response of models in which the constraint fixes
+investment. With $\gamma=1$ and $\mathcal{E}_D=L_0$ (all debt $L_0$ floating), it is the response $\partial K_1/\partial r_1=-L_0$
+implied by equations 2 and 7 of \citet[WP pp.~10--11]{IppolitoOzdagliPerezOrive2018}. With an adjustable reserve and finite
+$B$, their response is not exact.
+\item[(iii)] Because $Q$ decreases strictly from 1 to 0, $B=\kappa_F Q(z)\in(0,\kappa_F)$ and therefore
+\begin{equation}\label{eq:wmin}
+\omega\in(\omega_{\min},1),\qquad \omega_{\min}=\frac{\gamma^2 a}{\kappa_F+\gamma^2 a}>0 .
+\end{equation}
+The rigid limit $\omega=0$ is not reached at an interior optimum with finite $\kappa_F$. It obtains exactly at a corner where
+the reserve is fixed, in which case $I_u=g$.
+\end{enumerate}
+\end{proposition}
+
+\begin{corollary}[Exposure gradient]\label{cor:gradient}
+$\partial I_u/\partial g=1-\omega$, which is strictly positive when $B>0$ and zero in the limit $B\to0$.
+\end{corollary}
+
+\begin{remark}
+With $g\ge0$, \eqref{eq:Iu} and \eqref{eq:wmin} give $I_u\ge\omega\,p_f/a>\omega_{\min}\,p_f/a>0$: at an interior optimum a
+constrained firm always transmits a positive fraction of the unconstrained response.
+\end{remark}
+
+\subsection{Aggregation with a common bank}\label{sec:aggregation}
+
+Firms borrow from a common bank at $r_L=r_f+\phi L$, where $L$ is aggregate lending and $\phi=\psi/N$. Each firm takes $r_L$ as
+given, so its own cost curvature is $a_j$ (without $\phi$), and $\phi$ enters only through the price. There are $K$ types with
+mass $s_j$, curvature $a_j$, exposure $g_j$ and weight $\omega_j=\gamma_j^2 a_j/(B_j+\gamma_j^2 a_j)$, with $\omega_j=1$ for a
+type whose constraint is slack. Define $\Theta=\sum_j s_j\,\omega_j/a_j$ and $\bar G=\sum_j s_j(1-\omega_j)g_j$.
+
+\begin{proposition}[Aggregate response]\label{prop:aggregation}
+\begin{equation}\label{eq:Lu}
+L_u=\frac{\bar G+\Theta\,p_f}{1+\phi\,\Theta},
+\end{equation}
+and each type responds as in \eqref{eq:Iu} with $p_f$ replaced by the effective price shock $x=p_f-\phi L_u$. Moreover:
+\begin{enumerate}
+\item[(i)] With $g_j=0$ for all $j$, $L_u<\Theta\,p_f$: the common bank dampens the aggregate response by the factor
+$1/(1+\phi\Theta)$.
+\item[(ii)] With a single type, \eqref{eq:Lu} coincides with \eqref{eq:Iu} for a representative firm with curvature
+$a_j+\phi$.
+\item[(iii)] If $g_j\ge0$ and $\omega_j\ge\omega_{\min}>0$ for all $j$, then $L_u>0$.
+\end{enumerate}
+\end{proposition}
+
+The crowding-out term matters for the measurement. When constrained firms receive cash-flow relief, their extra borrowing raises
+the lending rate and lowers the investment of slack firms; the aggregate response is smaller than the sum of individual
+responses at a fixed lending rate. Proposition~\ref{prop:aggregation} also corrects a shortcut: the aggregate formula that treats
+constrained firms as rigid ($\omega_j=0$) does not hold when reserves are adjustable. In a nonlinear equilibrium solved
+numerically, \eqref{eq:Lu} matches the finite-difference derivative and the rigid formula does not
+(Appendix~\ref{app:verification}).
+
+\paragraph{Scope.} The results are local: the mass of constrained firms is held fixed, although in the data it moves with the
+shock. They are partial equilibrium, with the price of investment fixed, and $B_j$ is evaluated at the initial equilibrium.
+
+\subsection{From the model to the hypotheses}\label{sec:hypotheses}
+
+A monetary tightening is $-u$. Our sign convention for the estimated responses is that $\beta<0$ means investment falls after a
+tightening and rises after an easing. Proposition~\ref{prop:aggregation}(iii) gives $L_u>0$ whenever repricing does not hurt
+constrained firms ($g_j\ge0$) and reserves are interior, which yields
+\begin{itemize}
+\item[\textbf{H0}] the average response of aggregate investment to a monetary shock is negative, $\beta_{\text{lin}}<0$.
+\end{itemize}
+The remark after Corollary~\ref{cor:gradient} gives $I_u>0$ for a constrained firm with $g\ge0$, whereas the rigid corner predicts
+$I_u=g$, which is zero without floating-rate debt. This yields
+\begin{itemize}
+\item[\textbf{H1}] in the state where many firms are constrained, the response is also negative, $\beta_C<0$.
+\end{itemize}
+H1 rests on the maintained assumption that net exposure to repricing is non-negative, $g\ge0$; a rejection would reject the model
+with $g\ge0$, not the reserve margin as such. The theory does not sign the difference between the constrained and the unconstrained
+state, which depends on whether $g$ is larger or smaller than $p_f/a$; that difference is therefore not a preregistered hypothesis.
+The empirical state below measures aggregate corporate liquidity, which we use as a proxy for a large mass of firms on the
+constrained margin. That mapping is an assumption of the measurement, not a result of the model.
+
+\section{Preregistered design}\label{sec:design}
+
+The hypotheses, the specification, the decision rule, the power and the minimum detectable effect were written and frozen
+before the investment response was estimated (preregistration frozen at commit \texttt{3d6b508}, approved by the authors on
+2026-11-08). The design replaces an earlier preregistration, based on high-frequency shocks \citep{BauerSwanson2023} and
+short horizons, which was abandoned before any estimation because its Monte Carlo power against the reference effect was close
+to its size. All deviations are dated and documented in the project specification.
+
+\subsection{Data and sample}
+
+The shock $\varepsilon_t$ is the \citet{RomerRomer2004} narrative series, defined as the residual from regressing the intended
+change in the federal funds rate at each FOMC meeting on Greenbook forecasts, in the version extended through 2007 that is
+distributed with the replication files of \citet{Ramey2016}. \todo{verified citation for the provenance of the extended series
+(Wieland's update, openICPSR 135741), which the Literature desk could not open.} The quarterly shock is the sum of the
+monthly shocks in the quarter, so its unit is the percentage point of federal funds summed over the quarter. Investment is the
+BEA quantity index of real private non-residential fixed investment; controls are real GDP, the GDP deflator and the quarterly
+average federal funds rate (FRED). Corporate liquidity is the ratio of broad liquid assets to credit-market debt of non-financial
+corporations in the Financial Accounts of the United States (Z.1). \todo{formal citations for FRED, BEA and Z.1; no verified bib
+entries exist yet.} All series are in their latest vintage, not real time.
+
+The estimation sample is $t\in$ 1969Q1--2005Q2, the last quarter for which $t+12$ ends before 2008Q3; it has \NShockFull{}
+quarters, \DiagFullDoneRestr{} in each state. Because most Volcker-era quarters fall in the low-liquidity state and carry a
+large share of the shock variation (Table~\ref{tab:diagnostics}), the design also uses a sample without 1979Q4--1982Q4, with
+\DiagNoVN{} quarters. The sensitivity of Romer--Romer-based estimates to the 1979--1982 period is discussed by
+\citet{Coibion2012}. Dropping the Volcker quarters only removes rows; the state, the shock leads and lags and the dependent
+variable of the remaining rows are computed from the full series. Missing shocks (before 1969 in the lags of the first rows,
+2008 in the leads of the last two) are set to zero.
+
+\subsection{State}
+
+Let $s_t$ be the log of the liquidity ratio minus its average over the previous twelve quarters. The low-liquidity
+(``constrained'') state is $D_{t-1}=1$ if $s_{t-1}$ is below its median in the full shock sample; the median is not recomputed
+without Volcker. The state is predetermined with respect to the shock, but it is not randomly assigned: a difference between
+states describes how the response to a shock varies with liquidity, not the effect of liquidity.
+
+\subsection{Specification}
+
+The dependent variable is the average response over horizons four to twelve,
+\[
+\bar y_t=\frac{1}{9}\sum_{h=4}^{12}100\left[\log I_{t+h}-\log I_{t-1}\right].
+\]
+The linear specification (\texttt{s1r\_lin}) is
+\[
+\bar y_t=\alpha+\beta_{\text{lin}}\varepsilon_t+\sum_{j=1}^{10}\lambda_j\varepsilon_{t-j}+\sum_{j=1}^{12}\varphi_j\varepsilon_{t+j}
++\sum_{\ell=1}^{2}\Gamma_\ell' x_{t-\ell}+u_t,
+\]
+and the state-dependent specification (\texttt{s1r\_liq}) replaces $\beta_{\text{lin}}\varepsilon_t$ with
+$\delta D_{t-1}+\beta_C D_{t-1}\varepsilon_t+\beta_U(1-D_{t-1})\varepsilon_t$; \texttt{s1r\_liq\_nov} is the same specification
+without the Volcker quarters. The controls $x_t$ are the log changes ($\times100$) of investment, real GDP and the deflator and the
+change in the federal funds rate. The shock lags and leads are not interacted with the state. Estimation is by OLS.
+
+\paragraph{Estimand and identifying assumption.}
+Because the regression controls for the shocks of $t+1,\dots,t+12$, the coefficients on $\varepsilon_t$ measure the average
+response over horizons four to twelve to an \emph{isolated} shock, holding future shocks fixed. This equals the total response
+(that of a local projection without leads) only if the shocks are serially uncorrelated in the population, which is our declared
+identifying assumption. Without the leads, the window projection is biased by the sample autocorrelation of the shocks. The idea
+of controlling for intervening shocks is that of \citet{TeulingsZubanov2014}, who prove it for independent shocks in a panel with
+fixed effects; we use it as motivation, not as a proof that the estimator is unbiased when shocks are autocorrelated.
+
+\paragraph{Inference.}
+Standard errors are Newey--West with a Bartlett kernel and five lags in calendar quarters, applied to HC3-rescaled residuals,
+with Student-$t$ critical values on $N-k$ degrees of freedom. \todo{Newey and West (1987): bib entry not VERIFIED.} In our Monte Carlo
+these intervals cover close to or above the nominal level for the coefficients that decide, without material undercoverage. We
+accept the overcoverage because it costs power, not size. \todo{macro for the simulated coverage range of NW5+HC3 (F9), if the text should
+give it.}
+
+\paragraph{Shock diagnostics.}
+Without using investment, we report a Ljung--Box test with twelve lags on $\varepsilon_t$; a predictability test, the Wald $F$ of
+regressing $\varepsilon_t$ on four lags of real GDP growth, inflation and the change in the federal funds rate; the number of
+quarters and the sum of $|\varepsilon_t|$ by state; and a balance test of $\varepsilon_t$ on $D_{t-1}$ and $s_{t-1}$. It was
+fixed in advance that a rejection would change neither the specification nor the decision rule. It only qualifies the
+comparison of an isolated-shock estimate with the reference effect, which is a total response.
+
+\subsection{Reference effect}
+
+The reference effect translates a published estimate into our units. \citet[WP pp.~11--12]{TenreyroThwaites2016} report, in their linear model, a fall of
+2.5 percent in household durable spending and business investment after a 1 pp rise in the federal funds rate, % num-ok: cifra citada de Tenreyro-Thwaites (2016), no es un resultado de este paper
+with the shock scaled to raise the funds rate by 1 pp on impact; their text does not state the horizon at which that figure is
+read. We multiply it by the average over $h=4,\dots,12$ of a linear ramp that peaks at $h=10$ (an assumption of ours) and by the
+impact response of the funds rate to our shock, $\pi_0=\piZero$ (s.e.\ \piZeroSe). The result is
+$\beta_{\text{ref}}=\betaRef$ pp of $\bar y$ per pp of shock; a one-standard-deviation shock ($\sigma_\varepsilon=\sdEps$) then
+moves $\bar y$ by \betaRefSd{} pp. A multiple $c$ of the reference effect is written $c\,\beta_{\text{ref}}$.
+
+\subsection{Decision rule}
+
+The rule fixes a one-sided level of 0.05 with $t$ critical values and a single H1, without multiplicity correction: % num-ok: nivel prerregistrado del contraste
+\begin{enumerate}
+\item \textbf{H0 gate.} If $\hat\beta_{\text{lin}}$ in \texttt{s1r\_lin} (full sample) is not negative with $p<0.05$, the outcome % num-ok: nivel prerregistrado del contraste
+is ``H0 is not confirmed'': H1 is not interpreted, and $\hat\beta_C$, $\hat\beta_U$ and their intervals are published as
+measurement without a verdict.
+\item Otherwise, $\hat\beta_C$ in \texttt{s1r\_liq} is evaluated: if it is positive with $p<0.05$, H1 is refuted; if it is % num-ok: nivel prerregistrado del contraste
+negative with $p<0.05$, the rule moves to step 3; otherwise the outcome is inconclusive. % num-ok: nivel prerregistrado del contraste
+\item H1 is confirmed only if $\hat\beta_C$ is also negative with $p<0.05$ in \texttt{s1r\_liq\_nov}; otherwise the outcome is % num-ok: nivel prerregistrado del contraste
+inconclusive. Requiring both tests to pass is an intersection--union test, whose size does not exceed the nominal level.
+\end{enumerate}
+
+\subsection{Power, written before estimation}
+
+Table~\ref{tab:power} reports the probabilities of each outcome of the full decision tree, gate included, from 1,000 Monte Carlo
+replications with the actual shocks and states, under homoskedastic noise and under noise whose variance rises with $|\varepsilon_t|$.
+If the true responses in both states equal the reference effect ($c=1$), the most likely outcome is that the gate fails, and the
+probability of confirming H1 is close to the nominal level of the test. The minimum detectable effect (MDE), the $c$ at which the
+probability of confirming H1 reaches 0.8, is a $c$ of about five: roughly 10 pp of $\bar y$ per pp of shock. Under the rival hypothesis that the % num-ok: 0.8 es la potencia objetivo que define el MDE
+constrained state does not respond ($\beta_C=0$) while the unconstrained state responds with $c\,\beta_{\text{ref}}$, the
+probability of confirming H1 stays below the nominal level across the simulated grid. We preregistered H1 as a bounded measurement:
+with a reference-sized effect, the design was expected to end at the gate.
+
+\begin{table}[t]
+\centering
+\caption{Outcome probabilities of the preregistered decision rule, computed before estimation}\label{tab:power}
+\begin{tabular}{lcc}
+\toprule
+ & Homoskedastic & Heteroskedastic \\
+\midrule
+\multicolumn{3}{l}{\emph{True effect $c=1$ in both states ($\beta_C=\beta_U=\beta_{\text{ref}}$)}} \\
+\quad P(gate fails: H0 not confirmed) & \PwHomoHzeroFalla & \PwHetHzeroFalla \\
+\quad P(H1 confirmed) & \PwHomoConfirma & \PwHetConfirma \\
+\quad P(inconclusive) & \PwHomoNoConc & \PwHetNoConc \\
+\quad Power of the H0 test & \PwHomoPowHzero & \PwHetPowHzero \\
+\quad Power of the H1 test, full sample & \PwHomoPowHone & \PwHetPowHone \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Minimum detectable effect (P(H1 confirmed) $=0.8$)}} \\ % num-ok: potencia objetivo del MDE
+\quad $c$ & \MdeHomoC & \MdeHetC \\
+\quad pp of $\bar y$ per pp of shock & \MdeHomoEps & \MdeHetEps \\
+\quad pp of $\bar y$ per pp of federal funds on impact & \MdeHomoFfr & \MdeHetFfr \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Size and rival}} \\
+\quad P(H1 confirmed) with $\beta=0$ & \SizeHomo & \SizeHet \\
+\quad Max.\ P(H1 confirmed) under the rival ($\beta_C=0$) & \MdeHomoRivalMax & \MdeHetRivalMax \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\begin{minipage}{\notewidth}\footnotesize
+\emph{Notes:} 1,000 replications per cell; actual shocks and states; the estimator, standard errors and decision tree of
+Section~\ref{sec:design}. The MDE is interpolated linearly on the simulated grid of $c$; it should be read as roughly 10 pp per
+pp of shock and not to more precision. One unit of $c$ is \mdeEpsUnit{} pp of $\bar y$ per pp of shock and \mdeFfrUnit{} pp per pp
+of federal funds on impact. The rival maximum is taken over the simulated grid.
+\end{minipage}
+\end{table}
+
+\subsection{Preregistered robustness}
+
+Four variants of \texttt{s1r\_liq} were preregistered as robustness. They do not enter the decision and are published whatever
+their result: \texttt{r1r\_from1971q3} drops 1969Q1--1971Q2, whose shock lags precede 1969 and are set to zero;
+\texttt{r1r\_state\_q25} defines the constrained state as the bottom quartile of $s_{t-1}$; \texttt{r1r\_state\_logistic} replaces
+$D_{t-1}$ with a logistic function of the standardized $s_{t-1}$, with slope $\gamma=3$ and centered at the median; and
+\texttt{r1r\_lags4} uses four lags of the controls.
+
+\section{Results}\label{sec:results}
+
+\subsection{Estimates}
+
+Table~\ref{tab:estimates} reports every preregistered estimate: the linear response, the six estimates of $\beta_C$ (two
+confirmatory specifications and four robustness variants) and the six of $\beta_U$. The main specifications are replicated in R
+and coincide with the Python estimates to numerical precision. An independent replication by the project's referee, written from
+the specification without the authors' code, reproduces all coefficients, the diagnostics and the outcome.
+
+\begin{table}[t]
+\centering
+\caption{Preregistered estimates: average response of investment, $h=4,\dots,12$}\label{tab:estimates}
+\begin{tabular}{llrrrrc}
+\toprule
+Specification & Term & Estimate & s.e. & d.f. & $p$ (one-sided) & 95\% CI \\ % num-ok: nivel del intervalo
+\midrule
+\multicolumn{7}{l}{\emph{Gate (decides)}} \\
+\texttt{s1r\_lin} & $\beta_{\text{lin}}$ & \bLinEst & \bLinSe & \bLinDof & \bLinP & $[\bLinCiLo, \bLinCiHi]$ \\
+\addlinespace
+\multicolumn{7}{l}{\emph{Confirmatory specifications for H1 (not evaluated: measurement without a verdict)}} \\
+\texttt{s1r\_liq} & $\beta_C$ & \bCLiqEst & \bCLiqSe & \bCLiqDof & \bCLiqP & $[\bCLiqCiLo, \bCLiqCiHi]$ \\
+ & $\beta_U$ & \bULiqEst & \bULiqSe & \bULiqDof & \bULiqP & $[\bULiqCiLo, \bULiqCiHi]$ \\
+\texttt{s1r\_liq\_nov} & $\beta_C$ & \bCLiqNovEst & \bCLiqNovSe & \bCLiqNovDof & \bCLiqNovP & $[\bCLiqNovCiLo, \bCLiqNovCiHi]$ \\
+ & $\beta_U$ & \bULiqNovEst & \bULiqNovSe & \bULiqNovDof & \bULiqNovP & $[\bULiqNovCiLo, \bULiqNovCiHi]$ \\
+\addlinespace
+\multicolumn{7}{l}{\emph{Preregistered robustness (never decides)}} \\
+\texttt{r1r\_from1971q3} & $\beta_C$ & \bCRobFromEst & \bCRobFromSe & \bCRobFromDof & \bCRobFromP & $[\bCRobFromCiLo, \bCRobFromCiHi]$ \\
+ & $\beta_U$ & \bURobFromEst & \bURobFromSe & \bURobFromDof & \bURobFromP & $[\bURobFromCiLo, \bURobFromCiHi]$ \\
+\texttt{r1r\_state\_q25} & $\beta_C$ & \bCRobQuartEst & \bCRobQuartSe & \bCRobQuartDof & \bCRobQuartP & $[\bCRobQuartCiLo, \bCRobQuartCiHi]$ \\
+ & $\beta_U$ & \bURobQuartEst & \bURobQuartSe & \bURobQuartDof & \bURobQuartP & $[\bURobQuartCiLo, \bURobQuartCiHi]$ \\
+\texttt{r1r\_state\_logistic} & $\beta_C$ & \bCRobLogitEst & \bCRobLogitSe & \bCRobLogitDof & \bCRobLogitP & $[\bCRobLogitCiLo, \bCRobLogitCiHi]$ \\
+ & $\beta_U$ & \bURobLogitEst & \bURobLogitSe & \bURobLogitDof & \bURobLogitP & $[\bURobLogitCiLo, \bURobLogitCiHi]$ \\
+\texttt{r1r\_lags4} & $\beta_C$ & \bCRobLagsEst & \bCRobLagsSe & \bCRobLagsDof & \bCRobLagsP & $[\bCRobLagsCiLo, \bCRobLagsCiHi]$ \\
+ & $\beta_U$ & \bURobLagsEst & \bURobLagsSe & \bURobLagsDof & \bURobLagsP & $[\bURobLagsCiLo, \bURobLagsCiHi]$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\begin{minipage}{\notewidth}\footnotesize
+\emph{Notes:} OLS; dependent variable $\bar y_t$, in pp of average investment over $h=4,\dots,12$; coefficients in pp of $\bar y$
+per pp of shock (shock summed over the quarter). Shock lags $t-1,\dots,t-10$ and leads $t+1,\dots,t+12$ as controls, not interacted
+with the state. Newey--West (Bartlett, five lags) on HC3-rescaled residuals; $t$ on $N-k$ d.f. The $p$-value is one-sided for
+$\beta<0$; the interval is two-sided, so the two objects have different levels. Outcome of the preregistered rule:
+\texttt{\verdictoVs}. Because the gate fails, no row other than $\beta_{\text{lin}}$ is evaluated: the remaining $p$-values are
+descriptive. Source: \texttt{code/analysis/01\_s1r\_estimate.py}; \texttt{output/tables/s1r\_estimates.md}.
+\end{minipage}
+\end{table}
+
+\subsection{The preregistered outcome, step by step}
+
+\begin{enumerate}
+\item \textbf{Gate.} The linear response is $\hat\beta_{\text{lin}}=\bLinEst$ (s.e.\ \bLinSe, \bLinDof{} d.f.), with one-sided
+$p=\bLinP$. The gate requires $p<0.05$, so H0 is not confirmed. % num-ok: nivel prerregistrado del contraste
+\item \textbf{Step 2 is not evaluated.} Under the rule, $\hat\beta_C$ and $\hat\beta_U$ of \texttt{s1r\_liq} are published as
+measurement, without a verdict.
+\item \textbf{Step 3 is not evaluated.} The estimates of \texttt{s1r\_liq\_nov} are published, as the preregistration requires,
+also when they do not decide.
+\end{enumerate}
+
+H0 is not confirmed and H1 is not interpreted: it is neither confirmed, nor refuted, nor inconclusive, because the rule does not
+reach it. The six estimates of $\beta_C$ in Table~\ref{tab:estimates}, and their one-sided $p$-values, carry no inferential
+weight under the preregistered rule. All six rows are reported, whatever their $p$-values, so that readers see the whole
+measurement rather than a selection of it.
+
+\subsection{Shock diagnostics}
+
+Table~\ref{tab:diagnostics} reports the shock diagnostics. The predictability test does not reject at the 5 percent level in
+either sample, and the balance test does not reject that the shock is unrelated to the state. The Ljung--Box test does not
+reject in the full sample, but it does reject without the Volcker quarters ($p=\DiagNoVLBP$). This was known before estimation,
+because the diagnostics do not use investment. As fixed in advance, it changes neither the specification nor the outcome. Its
+consequence is that, in \texttt{s1r\_liq\_nov}, the isolated-shock estimate is not comparable one for one with the reference effect,
+which is a total response, and a reading in multiples of $\beta_{\text{ref}}$ is only approximate; the relevant scale there is
+the MDE in pp of $\bar y$ per pp of shock. Since \texttt{s1r\_liq\_nov} does not decide, the caveat affects only how that
+measurement is read.
+
+\begin{table}[t]
+\centering
+\caption{Shock diagnostics (no investment data used)}\label{tab:diagnostics}
+\begin{tabular}{lcc}
+\toprule
+ & Full sample & Without 1979Q4--1982Q4 \\
+\midrule
+Quarters ($N$) & \DiagFullN & \DiagNoVN \\
+Quarters, constrained / unconstrained state & \DiagFullDoneRestr{} / \DiagFullDoneHolg & \DiagNoVDoneRestr{} / \DiagNoVDoneHolg \\
+$\sum|\varepsilon_t|$, constrained / unconstrained & \DiagFullDtwoRestr{} / \DiagFullDtwoHolg & \DiagNoVDtwoRestr{} / \DiagNoVDtwoHolg \\
+Balance: $F$ ($p$) & \DiagFullDthreeF{} (\DiagFullDthreeP) & \DiagNoVDthreeF{} (\DiagNoVDthreeP) \\
+Ljung--Box(12) ($p$) & \DiagFullLB{} (\DiagFullLBP) & \DiagNoVLB{} (\DiagNoVLBP) \\
+Predictability: $F$(\DiagFullPredDfA, \DiagFullPredDfB) ($p$) & \DiagFullPredF{} (\DiagFullPredP) & \\
+Predictability: $F$(\DiagNoVPredDfA, \DiagNoVPredDfB) ($p$) & & \DiagNoVPredF{} (\DiagNoVPredP) \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\begin{minipage}{\notewidth}\footnotesize
+\emph{Notes:} State $D_{t-1}$ defined with the full-sample median of $s_{t-1}$. Balance: OLS of $\varepsilon_t$ on a constant,
+$D_{t-1}$ and $s_{t-1}$, HC1 Wald $F$ on the two slopes. Predictability: OLS of $\varepsilon_t$ on a constant and four lags of
+real GDP growth, inflation and the change in the federal funds rate, HC1 Wald $F$ on the twelve slopes. The Ljung--Box statistic
+without Volcker concatenates 1979Q3 and 1983Q1. Source: \texttt{output/tables/s1r\_shock\_diagnostics.md}.
+\end{minipage}
+\end{table}
+
+\section{What the measurement can and cannot rule out}\label{sec:power}
+
+The 95 percent interval for the linear response, $[\bLinCiLo, \bLinCiHi]$, contains zero and the reference effect
+$\beta_{\text{ref}}=\betaRef$. The data therefore do not distinguish between no response and a response of the size of the
+reference effect. What the interval does exclude, at that level, are average responses more negative than \bLinCiLo{} pp of
+$\bar y$ per pp of shock and positive responses above \bLinCiHi.
+
+The outcome is the one the design anticipated. With a reference-sized effect in both states, the probability that the gate
+fails was \PwHomoHzeroFalla{} (\PwHetHzeroFalla{} with heteroskedastic noise), and the probability of confirming H1 was
+\PwHomoConfirma{} (\PwHetConfirma). The design confirms H1 with probability 0.8 only if the responses in both states are of roughly % num-ok: potencia objetivo del MDE
+10 pp of $\bar y$ per pp of shock. Effects of the size of the reference effect are well below what this design can detect with
+U.S. aggregate data over this period. The design relies on local projections, which have substantially higher variance than
+VAR estimators at medium and long horizons \citep{LiPlagborgMollerWolf2024}; its statistic averages horizons four to twelve, and
+its sample has \NShockFull{} quarters split into two states.
+
+The measurement says nothing about state dependence. It neither supports nor contradicts the reserve margin of
+Section~\ref{sec:model}.
+
+\section{Limitations}\label{sec:limitations}
+
+\begin{itemize}
+\item \textbf{Power.} The design was preregistered as a bounded measurement. Its MDE is about five times the reference effect.
+\item \textbf{Estimand.} The coefficients measure the response to an isolated shock. They equal the total response only if the
+shocks are serially uncorrelated in the population. Without Volcker the Ljung--Box test rejects, so the comparison with the
+reference effect is approximate in that sample.
+\item \textbf{Reference effect.} The published figure we translate does not state its horizon, and the ramp that spreads it over
+horizons four to twelve is our assumption.
+\item \textbf{State.} Aggregate liquidity relative to trend is a proxy for the mass of constrained firms; the model does not
+deliver that mapping. The state is predetermined but not exogenous, and differences between states are not effects of liquidity.
+\item \textbf{Inference.} The standard errors tend to overcover in the Monte Carlo, which lowers power.
+\item \textbf{Data.} Series are in their latest vintage, not real time. The Romer--Romer extension beyond 1996 relies on a
+re-estimation with updated Greenbook data.
+\item \textbf{Theory.} The propositions are local and partial equilibrium, and they hold the mass of constrained firms fixed. They
+assume non-negative net exposure to repricing ($g\ge0$).
+\end{itemize}
+
+\section{Conclusion}\label{sec:conclusion}
+
+The constrained firm of rigid models is a corner. With an adjustable precautionary reserve, its investment response is a weighted
+average of the unconstrained response and the repricing channel, with a weight bounded away from zero. A common bank dampens the
+aggregate response without reversing it. A preregistered measurement on U.S. data for 1969--2005 cannot confirm that the aggregate
+response is negative, and therefore, under its own rule, does not interpret the response in the low-liquidity state. With the
+power computed before estimation, this was the expected outcome for an effect of the size found in the literature.
+
+Two extensions could add power and were set up with gates fixed before looking at any outcome. A cross-section of industries by
+firm size would test the exposure gradient of Corollary~\ref{cor:gradient} with time fixed effects; it did not pass its gate,
+because the available survey data do not provide enough industry--size groups with continuous series over the required window. A
+panel of euro-area countries would interact the shock with contractual exposure to repricing; it did not pass its gate, because
+the euro-area interest rate statistics do not publish, by country, lending volumes by initial rate-fixation period. Both remain
+future work, conditional on data that meet those requirements.
+
+\bibliographystyle{p01}
+\bibliography{references}
+
+\appendix
+\section{Symbolic verification}\label{app:verification}
+
+Every result in Section~\ref{sec:model} is verified with SymPy in two scripts in \texttt{theory/}, run with
+\texttt{uv run pytest papers/p01-liquidity/theory}. Each positive test has a negative counterpart that must fail.
+
+\begin{center}\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ll}
+\toprule
+Result & Test \\
+\midrule
+\multicolumn{2}{l}{\emph{\texttt{theory/check\_nesting.py}}} \\
+Prop.~\ref{prop:transmission}, $I_u$ & \texttt{test\_transmission\_formula\_from\_kkt}, \texttt{test\_weighted\_form} \\
+Prop.~\ref{prop:transmission}, $m_u$, $\lambda_u$ & \texttt{test\_buffer\_and\_multiplier\_formulas} \\
+Prop.~\ref{prop:limits}(i) & \texttt{test\_unconstrained\_limit} \\
+Prop.~\ref{prop:limits}(ii) & \texttt{test\_rigid\_limit\_B\_to\_infinity\_is\_g}, \\
+ & \texttt{test\_tfg1\_minimum\_branches}, \\
+ & \texttt{test\_iopo\_2018\_eq7\_is\_rigid\_limit\_with\_full\_repricing} \\
+Prop.~\ref{prop:limits}(iii) & \texttt{test\_Q\_is\_strictly\_decreasing\_onto\_open\_unit\_interval}, \\
+ & \texttt{test\_B\_is\_in\_open\_interval\_zero\_kappa}, \texttt{test\_weight\_is\_bounded\_below\_by\_w\_min}, \\
+ & \texttt{test\_fixed\_buffer\_corner\_gives\_g\_exactly} \\
+Cor.~\ref{cor:gradient} & \texttt{test\_dI\_dg\_is\_one\_minus\_w\_and\_its\_sign} \\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{theory/check\_aggregation.py}}} \\
+Prop.~\ref{prop:aggregation}, \eqref{eq:Lu} & \texttt{test\_general\_formula\_any\_number\_of\_types} \\
+Prop.~\ref{prop:aggregation}(i) & \texttt{test\_response\_is\_smaller\_than\_without\_common\_bank} \\
+Prop.~\ref{prop:aggregation}(ii) & \texttt{test\_representative\_agent\_matches\_tfg2} \\
+Prop.~\ref{prop:aggregation}(iii) & \texttt{test\_L\_u\_positive\_with\_nonnegative\_g\_and\_w\_above\_min} \\
+\eqref{eq:Lu} vs.\ nonlinear equilibrium & \texttt{test\_general\_formula\_against\_nonlinear\_equilibrium} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\todo{The remark after Corollary~\ref{cor:gradient} combines \eqref{eq:Iu} and \eqref{eq:wmin}; ask Theory for a dedicated test of
+$I_u>\omega_{\min}p_f/a$ with $g\ge0$, or drop the remark.}
+
+\end{document}
