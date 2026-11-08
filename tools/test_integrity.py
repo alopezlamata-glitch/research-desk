@@ -261,6 +261,19 @@ def test_gate_approval_lapses_when_audited_science_changes_but_not_with_prose(re
     assert ig.check_gate(repo, [tex, ok, again]) == []  # una auditoría nueva del objeto cambiado la restablece
 
 
+def test_gate_ignores_the_spec_status_line_but_not_the_rest_of_the_spec(repo):
+    spec = "# p — SPEC\n\nEstado: diseño F.\nSiguiente: F4.\n\n## Hipótesis\nH1: beta < 0.\n"
+    write(repo, "papers/p/SPEC.md", spec)
+    git(repo, "add", "-A")
+    git(repo, "commit", "-q", "-m", "spec")
+    tex = write(repo, "papers/p/paper/main.tex", "\\input{../output/macros.tex}\n")
+    ok = write(repo, "papers/p/audits/r.md", report("APROBADO", git(repo, "rev-parse", "HEAD")))
+    write(repo, "papers/p/SPEC.md", spec.replace("Estado: diseño F.\nSiguiente: F4.", "Estado: en curso F9."))
+    assert ig.check_gate(repo, [tex, ok]) == []  # la Coordinación actualiza el estado sin reabrir la auditoría
+    write(repo, "papers/p/SPEC.md", spec.replace("beta < 0", "beta > 0"))
+    assert len(ig.check_gate(repo, [tex, ok])) == 1
+
+
 # ---------------------------------------------------------------- rawhash
 def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()

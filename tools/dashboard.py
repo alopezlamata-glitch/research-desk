@@ -61,8 +61,9 @@ def tasks(text: str) -> list[dict]:
 
 def spec_estado(spec: str) -> str:
     """El párrafo de la línea `Estado:` de la SPEC, sin marcas de Markdown."""
-    m = re.search(r"^Estado:\s*(.+(?:\n(?!\n).+)*)", spec, re.MULTILINE)
-    return re.sub(r"\*\*|`", "", m.group(1)).replace("\n", " ") if m else "(la SPEC no tiene línea Estado:)"
+    if not (m := integrity.SPEC_STATUS.search(spec)):  # el mismo párrafo que la puerta no cuenta como científico
+        return "(la SPEC no tiene línea Estado:)"
+    return re.sub(r"\*\*|`", "", m.group(0).removeprefix("Estado:").strip()).replace("\n", " ")
 
 
 def paper(p: Path) -> dict:

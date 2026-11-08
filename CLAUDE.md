@@ -51,7 +51,7 @@ los papers; lo específico de cada paper vive en `papers/<slug>/SPEC.md`.
    `prereg_commit: <sha>` en el SPEC; cambiarlo exige que esa entrada lleve la huella `prereg <hash>` que da `integrity.py`.
 3. Ningún resultado pasa a `paper/` sin un informe del **Referee** en `audits/` que lo apruebe. Un `.tex` que usa
    `output/` no pasa el pre-commit sin un informe APROBADO de un commit antecesor de HEAD, y la aprobación caduca si
-   después cambia `code/`, `data/`, `output/`, `theory/` o `SPEC.md` del paper (la redacción no la invalida).
+   después cambia `code/`, `data/`, `output/`, `theory/` o `SPEC.md` del paper (la redacción y la línea `Estado:` de la SPEC no la invalidan).
    El Referee se lanza en **sesión nueva** desde `papers/<slug>/audits/` (no como subagente
    de la sesión del autor) para que no herede su razonamiento.
 4. Al cerrar cada tarea, la desk añade lecciones a `kb/lessons/<desk>.md`. El humano revisa

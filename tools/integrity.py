@@ -343,7 +343,13 @@ USES_OUTPUT = re.compile(r"\\(?:input|include|includegraphics)(?:\[[^\]]*\])?\{[
 
 # Lo que audita el Referee. Un cambio aquí después del commit auditado invalida la aprobación; uno en paper/ (redacción),
 # TASKS.md o audits/ no. Git ya guarda el hash de cada archivo: comparar commits basta para ligar la aprobación al objeto.
-SCIENTIFIC = ("code", "data", "output", "theory", "SPEC.md")
+# De SPEC.md cuenta todo salvo el párrafo `Estado:` del principio, que la Coordinación actualiza al avanzar el paper.
+SCIENTIFIC = ("code", "data", "output", "theory")
+SPEC_STATUS = re.compile(r"^Estado:.*(?:\n(?!\n).+)*", re.MULTILINE)
+
+
+def _spec_science(text: str) -> str:
+    return SPEC_STATUS.sub("", text.replace("\r\n", "\n"), count=1)
 
 
 def _approval_holds(root: Path, paper: str, fm: dict | None) -> bool:
@@ -355,12 +361,17 @@ def _approval_holds(root: Path, paper: str, fm: dict | None) -> bool:
         return False
     # Contra el árbol de trabajo, no contra HEAD: así cuenta también lo que entra en el commit que se está haciendo.
     d = _git(root, "diff", "--name-only", fm["commit"], "--", *(f"papers/{paper}/{s}" for s in SCIENTIFIC))
-    return bool(d) and d.returncode == 0 and not d.stdout.strip()
+    if not d or d.returncode != 0 or d.stdout.strip():
+        return False
+    spec = f"papers/{paper}/SPEC.md"
+    old = _git(root, "show", f"{fm['commit']}:{spec}")
+    old_text = old.stdout.decode("utf-8") if old and old.returncode == 0 else ""
+    return _spec_science(old_text) == _spec_science(_read(root, spec) or "")
 
 
 def check_gate(root: Path, files: list[str]) -> list[Violation]:
     """Ningún resultado (`output/`) entra en un .tex sin un informe APROBADO vigente: de un commit antecesor de HEAD y
-    sin cambios en `code/`, `data/`, `output/`, `theory/` ni `SPEC.md` del paper desde ese commit."""
+    sin cambios en `code/`, `data/`, `output/`, `theory/` ni `SPEC.md` del paper (salvo su línea `Estado:`) desde ese commit."""
     out = []
     approved_by_paper: dict[str, bool] = {}
     for rel in _paper_tex(files):
@@ -378,7 +389,7 @@ def check_gate(root: Path, files: list[str]) -> list[Violation]:
         if not approved_by_paper[paper]:
             out.append(Violation("gate", rel, n, "usa resultados de output/ sin un informe APROBADO vigente del Referee "
                                  "en audits/ (de un commit antecesor de HEAD y sin cambios en code/, data/, output/, "
-                                 "theory/ ni SPEC.md desde ese commit)"))
+                                 "theory/ ni SPEC.md, salvo su línea Estado:, desde ese commit)"))
     return out
 
 
