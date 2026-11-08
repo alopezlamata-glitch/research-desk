@@ -17,3 +17,22 @@ Estado: candidata
 5. **Calcula el efecto mínimo detectable antes de discutir escenarios.** Con β_ref, un choque de 1 desv. típica mueve ȳ ≈ 0,07 pp
    frente a un ee de 9–17 pp: la potencia es ≈ el tamaño (hace falta ≈ 40·β_ref para 0,8), y todo veredicto distinto de "no
    concluyente" es ruido. Haz esta cuenta en la fase de diseño, no después del prerregistro.
+
+## 2026-11-08 · p01 · F9: Monte Carlo de una LP con ventana larga (h = 4..12) y choques narrativos
+Estado: candidata
+1. **Con una ventana larga y una IRF persistente, ȳ_t contiene la respuesta a los choques reales de t−10..t+12.** Si la serie de
+   choques está autocorrelada en la muestra (Romer-Romer sin Volcker: ρ1 = 0,20, ρ4 = 0,17), la LP sesga β̂ de forma proporcional a
+   β (en p01, +66 % en `s1r_lin` sin Volcker y −67 % en la réplica BS). No es un problema del error estándar: ningún HAC lo arregla.
+   Regla: mide el error de diseño sin ruido para cada muestra y, si es grande, añade retardos (hasta el pico de la IRF supuesta) y
+   adelantos (hasta el horizonte máximo) del choque como controles. Con β igual en los dos estados lo anula; con β distinto queda un
+   resto, porque no van interactuados (interactuarlos lo anula, pero cuesta un ≈ 50 % de ee en p01).
+2. **La regla de parada debe mirar también la cobertura centrada en β + error de diseño** («pseudo»): separa lo que es culpa del
+   error estándar de lo que es sesgo condicional a los choques. En F4 la diferencia era despreciable; en F9 no.
+3. **Más retardos de Bartlett no arreglan una cobertura baja con N ≈ 140 y un error muy persistente:** NW(12)+HC3 dio ee *menores*
+   que NW(5)+HC3 en b_C sin Volcker y cubrió 0,90–0,92 (el sesgo a la baja del HAC con residuos MCO domina). Pruébalo con MC antes
+   de suponer que «más ancho de banda = más conservador».
+4. **Con la condición de H0 y un ee conservador, la potencia del árbol completo cae muy por debajo de la del contraste aislado**
+   (en p01, 0,04–0,10 frente a la cota del Director de 0,2–0,4). Da siempre el MDE del árbol completo, no el de la desv. típ. de β̂.
+5. **Calibra la heterocedasticidad del DGP en una muestra con suficientes episodios** (ρ de recesiones con 4 trimestres sale 0,2:
+   ruido). Y liga la varianza a la ventana del error (e_t..e_{t+h}), no solo al choque contemporáneo, si quieres estresar las filas
+   de alto apalancamiento.

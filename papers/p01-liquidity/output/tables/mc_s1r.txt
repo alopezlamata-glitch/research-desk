@@ -1,0 +1,105 @@
+[base · RR · homo · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.1058 RMSE=1.4788 cobertura=0.934 potencia=0.034 fallos=0
+       b_C T=146   sesgo=+0.6771 RMSE=1.5709 cobertura=0.900 potencia=0.019 fallos=0
+       b_U T=146   sesgo=-1.9247 RMSE=4.4696 cobertura=0.883 potencia=0.228 fallos=0
+     b_lin T=73    sesgo=-0.1828 RMSE=3.8789 cobertura=0.856 potencia=0.091 fallos=0
+       b_C T=73    sesgo=+1.2535 RMSE=2.9520 cobertura=0.911 potencia=0.010 fallos=0
+       b_U T=73    sesgo=-1.9549 RMSE=6.5854 cobertura=0.855 potencia=0.178 fallos=0
+[base · RR_noV · homo · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-1.2034 RMSE=2.9387 cobertura=0.904 potencia=0.262 fallos=0
+       b_C T=133   sesgo=-0.4786 RMSE=3.1639 cobertura=0.913 potencia=0.187 fallos=0
+       b_U T=133   sesgo=-2.0628 RMSE=4.9300 cobertura=0.896 potencia=0.219 fallos=0
+     b_lin T=66    sesgo=-1.4437 RMSE=5.4290 cobertura=0.852 potencia=0.205 fallos=0
+       b_C T=66    sesgo=+0.7370 RMSE=4.7176 cobertura=0.958 potencia=0.040 fallos=0
+       b_U T=66    sesgo=-2.4934 RMSE=7.8419 cobertura=0.815 potencia=0.220 fallos=0
+[aum · RR · homo · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.0007 RMSE=1.6441 cobertura=0.976 potencia=0.094 fallos=0
+       b_C T=146   sesgo=-0.0133 RMSE=2.1634 cobertura=0.973 potencia=0.085 fallos=0
+       b_U T=146   sesgo=+0.0601 RMSE=3.1966 cobertura=0.985 potencia=0.051 fallos=0
+     b_lin T=73    sesgo=-0.1674 RMSE=3.8028 cobertura=0.952 potencia=0.069 fallos=0
+       b_C T=73    sesgo=-0.2499 RMSE=4.9585 cobertura=0.974 potencia=0.038 fallos=0
+       b_U T=73    sesgo=+0.0062 RMSE=5.1960 cobertura=0.964 potencia=0.039 fallos=0
+[aum · RR_noV · homo · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-0.0128 RMSE=1.8822 cobertura=0.981 potencia=0.052 fallos=0
+       b_C T=133   sesgo=-0.1212 RMSE=3.6331 cobertura=0.957 potencia=0.076 fallos=0
+       b_U T=133   sesgo=+0.1103 RMSE=3.1985 cobertura=0.984 potencia=0.046 fallos=0
+     b_lin T=66    sesgo=-0.0983 RMSE=4.1205 cobertura=0.971 potencia=0.046 fallos=0
+       b_C T=66    sesgo=-0.1589 RMSE=6.2364 cobertura=0.988 potencia=0.023 fallos=0
+       b_U T=66    sesgo=+0.0080 RMSE=5.2504 cobertura=0.979 potencia=0.020 fallos=0
+[base · RR · het_eps · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.0915 RMSE=1.6463 cobertura=0.944 potencia=0.040 fallos=0
+       b_C T=146   sesgo=+0.6783 RMSE=1.8005 cobertura=0.926 potencia=0.013 fallos=0
+       b_U T=146   sesgo=-2.0003 RMSE=4.3401 cobertura=0.872 potencia=0.242 fallos=0
+     b_lin T=73    sesgo=-0.1350 RMSE=3.4160 cobertura=0.885 potencia=0.095 fallos=0
+       b_C T=73    sesgo=+1.2619 RMSE=2.9825 cobertura=0.937 potencia=0.009 fallos=0
+       b_U T=73    sesgo=-1.8296 RMSE=6.1399 cobertura=0.839 potencia=0.191 fallos=0
+[base · RR_noV · het_eps · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-1.2083 RMSE=2.7617 cobertura=0.899 potencia=0.304 fallos=0
+       b_C T=133   sesgo=-0.4661 RMSE=3.2611 cobertura=0.905 potencia=0.208 fallos=0
+       b_U T=133   sesgo=-2.0967 RMSE=4.3217 cobertura=0.896 potencia=0.243 fallos=0
+     b_lin T=66    sesgo=-1.3186 RMSE=4.7242 cobertura=0.847 potencia=0.218 fallos=0
+       b_C T=66    sesgo=+0.7926 RMSE=4.2765 cobertura=0.950 potencia=0.041 fallos=0
+       b_U T=66    sesgo=-2.3321 RMSE=6.7560 cobertura=0.806 potencia=0.244 fallos=0
+[aum · RR · het_eps · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.0035 RMSE=1.8063 cobertura=0.983 potencia=0.065 fallos=0
+       b_C T=146   sesgo=-0.0028 RMSE=2.3577 cobertura=0.980 potencia=0.080 fallos=0
+       b_U T=146   sesgo=+0.0407 RMSE=2.8880 cobertura=0.992 potencia=0.037 fallos=0
+     b_lin T=73    sesgo=-0.0814 RMSE=3.6151 cobertura=0.958 potencia=0.063 fallos=0
+       b_C T=73    sesgo=-0.1220 RMSE=4.5504 cobertura=0.981 potencia=0.033 fallos=0
+       b_U T=73    sesgo=-0.0451 RMSE=4.7757 cobertura=0.971 potencia=0.031 fallos=0
+[aum · RR_noV · het_eps · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-0.0066 RMSE=1.7849 cobertura=0.978 potencia=0.065 fallos=0
+       b_C T=133   sesgo=-0.1069 RMSE=3.5956 cobertura=0.951 potencia=0.097 fallos=0
+       b_U T=133   sesgo=+0.1045 RMSE=2.7895 cobertura=0.987 potencia=0.049 fallos=0
+     b_lin T=66    sesgo=-0.0067 RMSE=3.7264 cobertura=0.971 potencia=0.055 fallos=0
+       b_C T=66    sesgo=-0.0364 RMSE=5.3806 cobertura=0.986 potencia=0.026 fallos=0
+       b_U T=66    sesgo=+0.0415 RMSE=4.6567 cobertura=0.980 potencia=0.026 fallos=0
+[base · RR · het_rec · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.1088 RMSE=1.4643 cobertura=0.938 potencia=0.036 fallos=0
+       b_C T=146   sesgo=+0.6824 RMSE=1.5606 cobertura=0.910 potencia=0.014 fallos=0
+       b_U T=146   sesgo=-1.9292 RMSE=4.3946 cobertura=0.881 potencia=0.232 fallos=0
+     b_lin T=73    sesgo=-0.1812 RMSE=3.8037 cobertura=0.854 potencia=0.092 fallos=0
+       b_C T=73    sesgo=+1.2500 RMSE=2.9322 cobertura=0.915 potencia=0.007 fallos=0
+       b_U T=73    sesgo=-1.9432 RMSE=6.4531 cobertura=0.857 potencia=0.180 fallos=0
+[base · RR_noV · het_rec · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-1.1987 RMSE=2.8937 cobertura=0.907 potencia=0.266 fallos=0
+       b_C T=133   sesgo=-0.4651 RMSE=3.1361 cobertura=0.920 potencia=0.179 fallos=0
+       b_U T=133   sesgo=-2.0686 RMSE=4.8346 cobertura=0.898 potencia=0.221 fallos=0
+     b_lin T=66    sesgo=-1.4298 RMSE=5.3133 cobertura=0.853 potencia=0.205 fallos=0
+       b_C T=66    sesgo=+0.7335 RMSE=4.6717 cobertura=0.961 potencia=0.037 fallos=0
+       b_U T=66    sesgo=-2.4666 RMSE=7.6759 cobertura=0.818 potencia=0.223 fallos=0
+[aum · RR · het_rec · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=146   sesgo=+0.0025 RMSE=1.6297 cobertura=0.979 potencia=0.088 fallos=0
+       b_C T=146   sesgo=-0.0075 RMSE=2.1520 cobertura=0.976 potencia=0.081 fallos=0
+       b_U T=146   sesgo=+0.0514 RMSE=3.1446 cobertura=0.987 potencia=0.046 fallos=0
+     b_lin T=73    sesgo=-0.1609 RMSE=3.7401 cobertura=0.953 potencia=0.068 fallos=0
+       b_C T=73    sesgo=-0.2454 RMSE=4.8558 cobertura=0.979 potencia=0.038 fallos=0
+       b_U T=73    sesgo=+0.0147 RMSE=5.1210 cobertura=0.964 potencia=0.040 fallos=0
+[aum · RR_noV · het_rec · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=133   sesgo=-0.0101 RMSE=1.8581 cobertura=0.980 potencia=0.049 fallos=0
+       b_C T=133   sesgo=-0.1077 RMSE=3.5899 cobertura=0.958 potencia=0.075 fallos=0
+       b_U T=133   sesgo=+0.1019 RMSE=3.1406 cobertura=0.984 potencia=0.047 fallos=0
+     b_lin T=66    sesgo=-0.0882 RMSE=4.0379 cobertura=0.974 potencia=0.042 fallos=0
+       b_C T=66    sesgo=-0.1644 RMSE=6.0966 cobertura=0.992 potencia=0.021 fallos=0
+       b_U T=66    sesgo=+0.0224 RMSE=5.1634 cobertura=0.979 potencia=0.022 fallos=0
+[base · BS · homo · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=70    sesgo=+2.5185 RMSE=8.6381 cobertura=0.961 potencia=0.021 fallos=0
+       b_C T=70    sesgo=+4.0350 RMSE=9.5064 cobertura=0.986 potencia=0.004 fallos=0
+       b_U T=70    sesgo=+3.1930 RMSE=10.6343 cobertura=0.971 potencia=0.013 fallos=0
+     b_lin T=35    sesgo=+3.0250 RMSE=13.3738 cobertura=0.950 potencia=0.034 fallos=0
+       b_C T=35    sesgo=+3.4516 RMSE=15.0665 cobertura=0.971 potencia=0.024 fallos=0
+       b_U T=35    sesgo=+3.0316 RMSE=16.7297 cobertura=0.990 potencia=0.001 fallos=0
+[base · BS · het_eps · NW5+HC3] dentro de [0,92; 0,98]
+     b_lin T=70    sesgo=+2.5433 RMSE=8.5515 cobertura=0.968 potencia=0.018 fallos=0
+       b_C T=70    sesgo=+4.0779 RMSE=9.9783 cobertura=0.980 potencia=0.005 fallos=0
+       b_U T=70    sesgo=+3.2047 RMSE=10.5512 cobertura=0.972 potencia=0.013 fallos=0
+     b_lin T=35    sesgo=+3.0327 RMSE=13.0543 cobertura=0.952 potencia=0.037 fallos=0
+       b_C T=35    sesgo=+3.5717 RMSE=15.0501 cobertura=0.971 potencia=0.026 fallos=0
+       b_U T=35    sesgo=+2.9141 RMSE=16.8415 cobertura=0.986 potencia=0.004 fallos=0
+[base · BS · het_rec · NW5+HC3] **CoverageOutOfBand** con T
+     b_lin T=70    sesgo=+2.5417 RMSE=8.6016 cobertura=0.962 potencia=0.021 fallos=0
+       b_C T=70    sesgo=+4.0830 RMSE=9.7164 cobertura=0.986 potencia=0.004 fallos=0
+       b_U T=70    sesgo=+3.1667 RMSE=10.5475 cobertura=0.973 potencia=0.013 fallos=0
+     b_lin T=35    sesgo=+3.0319 RMSE=13.2923 cobertura=0.946 potencia=0.034 fallos=0
+       b_C T=35    sesgo=+3.4783 RMSE=15.1324 cobertura=0.970 potencia=0.024 fallos=0
+       b_U T=35    sesgo=+3.0196 RMSE=16.6409 cobertura=0.991 potencia=0.002 fallos=0
