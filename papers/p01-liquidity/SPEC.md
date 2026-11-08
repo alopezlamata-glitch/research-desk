@@ -180,3 +180,22 @@ congelado: cambiarlo exige una Desviación con su huella (`tools/integrity.py`, 
   inversión: (V1) muestra completa con la robustez sin Volcker como comprobación; (V2) principal sin Volcker; (V3) muestra
   completa, y H1 solo se confirma si también se sostiene sin Volcker. El estado sigue definido como en el prerregistro
   (mediana de `s_{t−1}` en la muestra completa de cada choque); quitar Volcker no lo redefine.
+- 2026-11-08 · **Los autores fijan el diseño del prerregistro nuevo de la etapa 1 (`s1r_*`)** sobre el MC de F9
+  (`output/F9_MC_REPORT.md`), su auditoría F10 (`audits/2026-11-08_F9_mc.md`, APROBADO CON CAMBIOS) y F12
+  (`exploration/F12_CITAS_2026-11-08.md`). Resumen en `exploration/DECISIONES_AUTORES_F11_2026-11-08.md`. Camino **A**: se
+  prerregistra la H1 agregada como medición acotada y se abre en paralelo un MC de puerta para la etapa 1b. Decisiones:
+  1. **Variante V3s con la especificación `aum`** (choques de t−10 a t+12 como controles). V1 con `aum` queda descartada:
+     confirma en falso un 10–14 % frente al rival (F10).
+  2. **β_ref con la respuesta del fed funds al impacto (h = 0)**, como normalizan Tenreyro-Thwaites (pp. 10–11, 13; F12). La
+     potencia que se escribe ex ante es la de h = 0 (≈ 0,04–0,10 frente a β_ref); el MDE se escribe también en pp de ȳ por pp
+     de choque.
+  3. **El estimando es la respuesta a un choque aislado**; la SPEC declara el supuesto de choques sin autocorrelación en la
+     población y los diagnósticos (Ljung-Box y predictibilidad de los choques). Teulings-Zubanov se cita como idea, no como
+     prueba de insesgadez.
+  4. **Errores estándar: NW(5) con residuos HC3 sobre `aum`**, con la sobrecobertura declarada como excepción a la banda. Cierra
+     la decisión 5 del 2026-11-07, que esperaba a esta validación (cubre 0,948–0,990 también con heterocedasticidad).
+  5. **V3s:** H1 se confirma con la muestra completa y también sin 1979Q4–1982Q4; H0 se exige solo con la muestra completa.
+  6. **H1 solo se refuta por la regla (a)**; la (b) se retira porque no puede activarse con esta precisión.
+  7. **Se mantiene la puerta H0.**
+  - El bloque ```prereg``` y su texto congelado no cambian hasta que los autores aprueben el borrador de F11; entonces la
+    Desviación llevará la huella `prereg <hash>` y un `prereg_commit` nuevo.
