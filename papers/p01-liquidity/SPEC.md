@@ -211,7 +211,7 @@ r1r_state_logistic
 r1r_lags4
 ```
 
-prereg_commit: af1c346 (provisional: se actualiza al commit de la aprobación del 2026-11-08). Lo que va de `## Prerregistro` a este bloque está congelado: cambiarlo
+prereg_commit: 3d6b508 (aprobación de los autores, 2026-11-08). Lo que va de `## Prerregistro` a este bloque está congelado: cambiarlo
 exige una Desviación con su huella (`tools/integrity.py`, check `prereg`).
 
 **Replicación cruzada:** `s1r_lin`, `s1r_liq` y `s1r_liq_nov` en R (`code/replication_r/`), con NW5+HC3 en trimestres naturales y
