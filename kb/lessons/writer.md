@@ -1,5 +1,24 @@
 # Lecciones — Redacción (writer)
 
+## 2026-11-11 · p01 · F31, cambios del Referee (F30)
+Estado: candidata
+1. **Lo que limita la potencia es el diseño, no «los datos».** Al describir un MC de potencia, acotar a «this design / this
+   estimator»: otro estimador sobre la misma muestra podría detectar más (el Referee corrigió la introducción).
+2. **Un nombre de hoja o de archivo no verifica autoría.** La lección 1 de F29 se quedó corta: «Wieland construye la extensión»
+   tampoco estaba verificado. Decir solo lo que respalda la nota del `.bib` y escribir explícitamente lo no verificado.
+3. **Rangos de cifras con las macros de ambos extremos** (`\MdeHetC{} to \MdeHomoC{}`) en vez de redondear en palabras
+   («about five» quedaba corto en un caso).
+4. **Escribir el objetivo del que salen las condiciones de óptimo y todos los signos de los parámetros** (`a>0`); si una letra
+   cambia de significado entre secciones, decir cuál es en cada una.
+5. **«Verified symbolically» solo si todos los tests son simbólicos**; si hay comprobaciones de signo muestreadas, decirlo.
+
+## 2026-11-11 · p01 · F29, cierre de `\todo` del borrador
+Estado: candidata
+1. **Atribuir a la fuente solo lo que la nota del `.bib` dice que se verificó** (p. ej. que Wieland construye la extensión, no que
+   sea `resid_full`); si la cita no respalda la frase, se deja el `\todo` con el motivo.
+2. **Macros de cifras con `{}` final** (`\CovAumNwHcLo{}`) para que LaTeX no se coma el espacio.
+3. **Tras quitar un rodeo, compilar con `compile_main.py` y `latexmk`**, no suponer que funciona.
+
 ## 2026-11-08 · p01 · F23, borrador del paper A
 Estado: candidata
 1. **Compilar las macros antes de darlas por buenas.** `output/macros.tex` pasó una auditoría que comparaba cada cadena con su celda

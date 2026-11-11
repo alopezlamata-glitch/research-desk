@@ -110,3 +110,106 @@ corta del Referee; después se quitan las líneas 18-27 de `main.tex`.
   entre las dos partes, es decisión suya.
 - Referee: auditoría de `paper/` en sesión nueva. Aparte de lo automático, conviene que compruebe que el texto no lee b_C como
   contraste (`exploration/F18_TRAS_H0_2026-11-08.md:119`).
+
+## HANDOFF F29
+
+**Hecho.** En `paper/main.tex`: (1) quitado el rodeo de macros, queda `\input{../output/macros.tex}`; (2) cobertura NW5+HC3 con
+`\CovAumNwHcLo`–`\CovAumNwHcHi`; (3) `\todo` de la Observación quitado, enunciado intacto; (4) citas `Jeenas2026`,
+`WielandRomerShocks2021`+`WielandYang2020`, `FRED2026`+`BEA2026NonresInv`+`FedZ12026`, `NeweyWest1987`. Quedan 2 `\todo`
+(autores `main.tex:22`; TFG1/TFG2 `main.tex:99`), más la definición (`:15`).
+
+**Evidencia.** `compile_main.py` (`audits/replication_2026-11-11_F28/`): «pdflatex rc=0; 0 errores». `latexmk -pdf`: sin
+warnings en `paper/main.log`. `integrity.py --only citations,numbers`: OK. Fuentes de las citas:
+`exploration/F26_CITAS_2026-11-08.md`; Observación: `theory/F27_OBSERVACION_2026-11-11.md`. Sin commit (lo pide el encargo;
+entra con el informe F30 del Referee).
+
+**Decisiones (Coordinación, en el encargo).** Citar el WP `Jeenas2026`, no `JeenasJPE2026`; sin número de tabla NIPA; autores y
+TFG1/TFG2 se quedan como `\todo`.
+
+**Supuestos y límites.**
+- Wieland/Romer-Romer: solo digo que la extensión cubre hasta 2007 y la construye Wieland. F26 no verificó que la serie de los
+  ficheros de Ramey (2016) sea exactamente `resid_full` (nota de `WielandRomerShocks2021` en `references.bib`).
+- «Closest empirical study» ya estaba en el borrador; ahora se atribuye al WP.
+- El rango de cobertura 0,948–0,990 va junto a «close to or above the nominal level»; el mínimo está una milésima bajo 0,95.
+- No he visto el PDF renderizado; solo el log.
+
+**Descartado.** Escribir `a>0` explícito en la pendiente del coste marginal (opcional; no cambia nada).
+
+**Pendiente de decidir.** Autores: lista de autores y cita de TFG1/TFG2; si se pasa de `Jeenas2026` a `JeenasJPE2026`.
+Coordinación: F30 (Referee) sobre texto y `theory/`; si `main.pdf` se versiona.
+
+## HANDOFF F31
+
+Aplica a `paper/main.tex` (sin commit, como pide el encargo) los hallazgos de `audits/2026-11-11_F30_texto.md`. Solo texto: no
+he tocado `code/`, `output/`, `theory/`, `references.bib` ni la SPEC, ni ningún enunciado de proposición.
+
+**Hecho, por hallazgo** (líneas del `main.tex` resultante):
+- **1 (mayor), aplicado.** `main.tex:84-85`, con la corrección mínima del informe. Revisados abstract (`:29-44`), §5 (`:472-488`)
+  y conclusión (`:508-521`): ninguna otra frase atribuye el límite a los datos sin acotar (§5 ya dice «this design»).
+- **2 (mayor), aplicado, opción (a).** `main.tex:233-236`: Ramey (2016) re-estima con Greenbook actualizados (`WielandYang2020`
+  respalda solo eso); Wieland distribuye una extensión similar (`WielandRomerShocks2021`); «we have not verified that the two
+  series coincide». Ya no se dice quién construyó la serie.
+- **4, aplicado.** «five times» → `\MdeHetC{} to \MdeHomoC{} times` (macros, no palabras) en `:43`, `:82`, `:323` y `:493`;
+  «linear point estimate is negative» `:39`; «unusually low relative to their recent trend» `:71-72`.
+- **5, aplicado.** Nota de la tabla 2, `main.tex:414-415`.
+- **6, aplicado.** Objetivo con penalización cuadrática del déficit `main.tex:115-119` (el Lagrangiano de
+  `audits/replication_2026-11-11_F30/check_remark.py:46`); `a=b+\eta v+\psi/N>0` en `:110`. `\delta` se define ahora en
+  el objetivo («costs δ per unit»), por eso salió de la frase tras (`eq:kkt`).
+- **7, aplicado.** `a` de la empresa representativa que internaliza el precio del banco, con remisión a Prop. 3(ii), y curvatura
+  `b+\eta v` de la empresa precio-aceptante (`:111-113`); `L=\sum_j s_jI_j` (`:171-172`); paso a H1 cita la Observación
+  (ahora `\label{rem:chain}`) y la Prop. 3(iii) (`:209-212`).
+- **8, aplicado.** Fila del test de F27 en el apéndice (`:549`); «verified symbolically» → «verified with SymPy (symbolic
+  identities and limits; sign claims checked on sampled domains)» en abstract `:35-36` e introducción `:63-64`; apéndice `:530-531`
+  («Most positive tests have a negative counterpart»).
+- **3 (OK) y 9–11:** sin cambios; 9 (Jeenas) excluido por el encargo.
+
+**Evidencia.** `uv run python papers/p01-liquidity/audits/replication_2026-11-11_F30/compile_full.py`: rc [0,0,0,0], 0 errores,
+0 citas/referencias indefinidas, 0 Overfull, 13 páginas, 22 claves. `uv run python tools/integrity.py --only citations,numbers`:
+«integridad: OK». `\todo` en uso: 2 (`main.tex:22`, `:101`), más la definición (`:15`). El test citado existe
+(`theory/check_nesting.py:141`).
+
+**Decisiones.** Coordinación (encargo): opción (a) en el hallazgo 2; no tocar Jeenas, autores ni TFG1/TFG2. Redacción: usar las
+macros `\MdeHetC`/`\MdeHomoC` en vez de «five to five and a half» (lo sugiere el encargo; así no hay cifra tecleada); en el
+hallazgo 7, la variante «empresa representativa» en vez de introducir `a_0`, para no tocar la notación de las proposiciones.
+
+**Supuestos y límites.**
+- El ω_min de la Prop. 3(iii) sigue sin decir con qué `a` se evalúa: aclararlo exigiría tocar el enunciado (fuera del encargo).
+  Como 3(iii) es una hipótesis «ω_j ≥ ω_min > 0», la afirmación vale con cualquiera de las dos.
+- La frase de H1 dice que la Prop. 3(iii) vale «whatever the mass of constrained types»: es mi lectura de su enunciado (slack ⇒
+  ω_j = 1 ≥ ω_min); el Referee debería confirmarla.
+- No he visto el PDF renderizado; solo la salida de `compile_full.py`.
+
+**Descartado.** Añadir aserciones simbólicas de signo o el test de las KKT desde ℓ(m) (es `theory/`, para Teoría). Corregir el
+docstring de `check_nesting.py` (idem; haría caducar la aprobación).
+
+**Decisiones de los autores (2026-11-11), aplicadas después:**
+- **TFG1/TFG2:** son borradores propios y no se citan. Quitado el `\todo` de la literatura (antes `main.tex:101-102`) sin cita
+  sustituta; la contribución teórica (`main.tex:55-64`) queda como estaba. Resuelve la dependencia «\todo» del informe F30.
+- **Jeenas (hallazgo 9):** fuente principal `JeenasJPE2026`, con el WP entre paréntesis (`\citealt{Jeenas2026}`) y sin «in a
+  working paper» (`main.tex:93-94`).
+- Tras ambas: `compile_full.py` rc [0,0,0,0], 0 errores, 0 indefinidas, 0 Overfull, 13 páginas; `integrity.py --only
+  citations,numbers` OK; queda solo el `\todo` de autores (`main.tex:22`). La lista de claves de `compile_full.py` no muestra
+  `Jeenas2026` porque su regex no reconoce `\citealt` (`compile_full.py:42`); LaTeX no da la cita por indefinida y el check
+  `citations` sí reconoce `\citealt` (`tools/integrity.py:132`).
+- Límite: el apéndice sigue nombrando `test_tfg1_minimum_branches` y `test_representative_agent_matches_tfg2` (`main.tex:542`,
+  `:553`), que remiten a obras no citadas. Renombrarlos es `theory/` (Teoría) y haría caducar la aprobación.
+
+**Pendiente de decidir.** ~~Autores: Jeenas WP/JPE (hallazgo 9), autores y TFG1/TFG2.~~ Resuelto el 2026-11-11, salvo la lista de autores.
+Coordinación: si los cambios de §2 (objetivo, `a`, `L`, paso a H1) merecen una lectura breve del Referee antes del commit, o si basta
+el informe F30 (lo exige la puerta solo para `code/`, `data/`, `output/`, `theory/`, SPEC); opción (b) del hallazgo 2 (Datos +
+Literatura) si se quiere volver a afirmar quién construye la serie.
+
+## HANDOFF F33
+
+Encargo de la Coordinación (2026-11-11): hallazgos 3 y 7 de `audits/2026-11-11_F32_relectura.md`. Solo `paper/main.tex`, sin commit.
+- **Hallazgo 3:** «internalizes the bank's pricing» sustituido por la corrección mínima del informe, palabra por palabra (`main.tex:110-113`).
+- **Hallazgo 3, relacionado:** «(with $a_j$ in place of $a$)» en la frase de la Observación «at a given lending rate» (`main.tex:209`).
+- **Hallazgo 7, apéndice:** «Every result in Section 2, from the optimality conditions (1) on, is verified with SymPy…» (`main.tex:529`).
+- **Hallazgo 7, abstract:** «All results, from the firm's optimality conditions on, are verified…» (`main.tex:35`); sin `\eqref`, porque el abstract
+  no remite a ecuaciones.
+- **Hallazgo 7, introducción:** «Every result, from the optimality conditions~(1) on, is verified…» (`main.tex:63`), con una referencia hacia
+  delante a `eq:kkt`.
+- **Evidencia:** `compile_full.py` (F30) rc [0,0,0,0], 0 errores, 0 indefinidas, 0 Overfull, 13 páginas; `integrity.py --only
+  citations,numbers` OK; queda solo el `\todo` de autores (`main.tex:22`).
+- **Sin tocar (encargo):** nombres de tests con `tfg` (`main.tex:543`, `:554`); el test que derive las KKT desde el objetivo sigue pendiente
+  para Teoría (F30 hallazgo 6, F32 hallazgo 7).

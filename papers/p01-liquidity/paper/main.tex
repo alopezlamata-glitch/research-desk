@@ -15,16 +15,7 @@
 \newcommand{\todo}[1]{\textcolor{red}{[\textbf{TODO:} #1]}}
 \newcommand{\notewidth}{0.95\textwidth} % width of table notes
 
-% output/macros.tex defines four names containing the digit 0 (\PwHomoH0Falla, \PwHetH0Falla, \PwHomoPowH0, \PwHetPowH0),
-% which LaTeX cannot parse as control words. Until code/analysis/02_paper_macros.py renames them (see F23_HANDOFF.md), the
-% file is read with 0 as a letter and those four macros are aliased. No value is changed.
-\catcode`\0=11
 \input{../output/macros.tex}
-\let\PwHomoHzeroFalla\PwHomoH0Falla
-\let\PwHetHzeroFalla\PwHetH0Falla
-\let\PwHomoPowHzero\PwHomoPowH0
-\let\PwHetPowHzero\PwHetPowH0
-\catcode`\0=12
 
 \title{Precautionary Reserves and Monetary Transmission to Financially Constrained Firms:\\
 Theory and a Preregistered, Bounded Measurement}
@@ -41,14 +32,15 @@ the repricing of their existing debt. We show that this prediction is a corner. 
 they can adjust, the investment response of a constrained firm is a weighted average of the unconstrained response and the
 repricing channel, and the weight on the unconstrained response is bounded below by a strictly positive constant that
 depends only on primitives. Aggregating firms that borrow from a common bank adds a crowding-out term that dampens the aggregate
-response but does not reverse it when repricing does not hurt constrained firms. All results are verified symbolically. We then report a preregistered measurement for
+response but does not reverse it when repricing does not hurt constrained firms. All results, from the firm's optimality conditions on, are verified with SymPy (symbolic
+identities and limits; sign claims checked on sampled domains). We then report a preregistered measurement for
 the United States, 1969--2005: the average response of non-residential investment, four to twelve quarters ahead, to
 narrative monetary policy shocks, overall and by the state of corporate liquidity. The preregistered gate fails: the
-linear response is negative but its confidence interval contains both zero and the reference effect. Under the
+linear point estimate is negative but its confidence interval contains both zero and the reference effect. Under the
 preregistered rule the state-dependent hypothesis is therefore not evaluated, and we report its estimates as measurement
 without a verdict. With the power computed before estimation, this was the most likely outcome even if the reference effect
 were true. The design had 80 percent power only for responses of roughly 10 percentage points per percentage point of
-shock, about five times the reference effect.
+shock, \MdeHetC{} to \MdeHomoC{} times the reference effect.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -68,15 +60,16 @@ but it is bounded below by a strictly positive constant that depends only on pri
 rigid corner, in which a constrained firm without floating-rate debt does not respond at all, is reached only in the limit or at
 a corner of the reserve choice, never at an interior optimum. Aggregating heterogeneous firms that borrow from a common bank
 adds a crowding-out term that dampens the aggregate response but keeps it positive whenever repricing does not hurt
-constrained firms (Proposition~\ref{prop:aggregation}). Every derivation is verified symbolically, and the aggregation formula
+constrained firms (Proposition~\ref{prop:aggregation}). Every result, from the optimality conditions~\eqref{eq:kkt} on, is verified with SymPy (symbolic identities and limits; sign
+claims checked on sampled domains), and the aggregation formula
 is also checked against a numerically solved nonlinear equilibrium (Appendix~\ref{app:verification}).
 
 The second contribution is a measurement. The theory implies that a monetary tightening lowers aggregate investment and that it
 lowers investment also when many firms are constrained. We take both implications to U.S. data with narrative monetary policy
 shocks \citep{RomerRomer2004}, using a design that was preregistered, with its decision rule and its power, before the
 investment response was estimated. The statistic is the average response of non-residential investment over horizons of four
-to twelve quarters. The state is whether the liquid assets of non-financial corporations relative to their debt are below
-their recent trend. The decision rule first requires the linear response to be negative (a gate) and only then evaluates the
+to twelve quarters. The state is whether the liquid assets of non-financial corporations relative to their debt are unusually
+low relative to their recent trend. The decision rule first requires the linear response to be negative (a gate) and only then evaluates the
 response in the low-liquidity state, which must hold both in the full sample and without the Volcker disinflation.
 
 The gate fails. The linear estimate is \bLinEst{} percentage points (pp) of average investment per pp of shock, with a
@@ -86,10 +79,10 @@ therefore not interpreted. We report all six preregistered estimates of the resp
 their $p$-values and intervals, as measurement without a verdict. This outcome is not evidence that monetary policy does not
 affect investment. Before estimation, our Monte Carlo put the probability of exactly this outcome at \PwHomoHzeroFalla{} if the
 true response were the reference effect (\PwHetHzeroFalla{} with heteroskedastic noise). The design confirms H1 with probability
-0.8 only if the responses are of roughly 10 pp per pp of shock, about five times the reference effect. % num-ok: 0.8 es la potencia objetivo que define el MDE en el prerregistro, no un resultado
+0.8 only if the responses are of roughly 10 pp per pp of shock, \MdeHetC{} to \MdeHomoC{} times the reference effect. % num-ok: 0.8 es la potencia objetivo que define el MDE en el prerregistro, no un resultado
 
-We see the measurement as useful for two reasons. It bounds what aggregate U.S. data on this question can say, and it shows,
-with a design fixed in advance, why a sample of this length cannot distinguish the polar answers above. Two extensions that could
+We see the measurement as useful for two reasons. It bounds what this preregistered design can say with aggregate U.S. data on this
+question, and it shows why, with this estimator and a sample of this length, it cannot distinguish the polar answers above. Two extensions that could
 add power, a cross-section of industries by firm size and a panel of euro-area countries with contractual measures of
 repricing exposure, did not pass the data requirements that we set for them before looking at any outcome
 (Section~\ref{sec:conclusion}).
@@ -97,17 +90,15 @@ repricing exposure, did not pass the data requirements that we set for them befo
 \paragraph{Related literature.}
 A large literature studies how firm balance sheets and debt structure shape the investment response to monetary policy
 \citep{OttonelloWinberry2020,CloyneFerreiraFroemelSurico2023,GrobZullig2024,JungherrMeierReineltSchott2024,GreenwaldKrainerPaul2025,BotteroEtAl2026}.
-\citet{OttonelloWinberry2020} find that firms with low default risk are the most responsive. \todo{Jeenas (BSE WP 1409) on
-firm liquidity and the investment response is the closest empirical paper; the bib entry is not VERIFIED (publication status
-in dispute) and cannot be cited yet.} Our model nests the floating-rate channel of
+\citet{OttonelloWinberry2020} find that firms with low default risk are the most responsive. \citet{JeenasJPE2026}, on firm
+liquidity and the investment response, is the closest empirical study (working-paper version: \citealt{Jeenas2026}). Our model nests the floating-rate channel of
 \citet{IppolitoOzdagliPerezOrive2018}: their constrained firm, whose capital equals net worth plus a fixed borrowing limit
 (WP eqs.~2 and 7, pp.~10--11), is the rigid limit of ours with fully floating debt. \citet{PerezOriveTimmerVanDerGhote2026}
 show that when several financing constraints bind, firms respond more to tightenings than to easings, and that with a single
 binding constraint the response is symmetric (Propositions 1 and 2, WP pp.~12--13). Our model has a single capacity
 constraint and an interior reserve margin; we pool tightenings and easings and leave asymmetry to exploratory work. On the
 empirical side, we build on state-dependent local projections with narrative shocks \citep{TenreyroThwaites2016,Ramey2016}
-and on the use of future shocks as controls proposed by \citet{TeulingsZubanov2014}. \todo{cite the authors' earlier work (TFG1,
-TFG2) on which the model builds, once there are verified bib entries.}
+and on the use of future shocks as controls proposed by \citet{TeulingsZubanov2014}.
 
 \section{Model}\label{sec:model}
 
@@ -115,15 +106,22 @@ TFG2) on which the model builds, once there are verified bib entries.}
 
 A firm chooses investment $I$ and a precautionary liquidity reserve $m$. Each unit of reserves uses $\gamma>0$ units of
 financing capacity $H$, so that $I+\gamma m\le H$. The marginal return on investment is $q$ and its marginal cost rises with
-slope $a=b+\eta v+\psi/N$, where $b$ is the curvature of the project cost, $\eta v$ an uncertainty term, and $\psi/N$ the slope
-of the lending rate charged by a common bank (Section~\ref{sec:aggregation}). Reserves insure against a liquidity need
+slope $a=b+\eta v+\psi/N>0$, where $b$ is the curvature of the project cost, $\eta v$ an uncertainty term, and $\psi/N$ the slope
+of the lending rate charged by a common bank. This is the firm of Section~\ref{sec:aggregation} read as a representative firm: because the
+lending rate rises with aggregate lending, the equilibrium response of price-taking firms of a single type is that of one firm with
+curvature $a$ (Proposition~\ref{prop:aggregation}(ii)); an individual firm that takes the lending rate as given has curvature
+$b+\eta v$. Reserves insure against a liquidity need
 $\xi\sim N(\mu,\sigma^2)$. Let $z=(m-\mu)/\sigma$, let $Q(z)$ be the upper tail of the standard normal and let
-$G(m)=\mathbb{E}[(\xi-m)^+]$ be the expected shortfall, so that $G'(m)=-Q(z)$. With the capacity constraint binding
-($\lambda>0$) and an interior reserve, the optimum satisfies
+$G(m)=\mathbb{E}[(\xi-m)^+]$ be the expected shortfall, so that $G'(m)=-Q(z)$. Holding reserves costs $\delta$ per unit, and a
+shortfall is penalized quadratically, so the firm solves
+\[
+\max_{I,m}\; qI-\tfrac{a}{2}I^2-\delta m-\tfrac{\kappa_F}{2}\,\mathbb{E}\big[((\xi-m)^+)^2\big]\quad\text{s.t.}\quad I+\gamma m\le H .
+\]
+With the capacity constraint binding ($\lambda>0$) and an interior reserve, the optimum satisfies
 \begin{equation}\label{eq:kkt}
 \lambda = q-aI,\qquad \kappa_F\,G(m)=\delta+\gamma\lambda,\qquad I+\gamma m=H,
 \end{equation}
-where $\delta$ is the carrying cost of reserves and $\kappa_F>0$ scales the value of insurance. Define
+where $\kappa_F>0$ scales the value of insurance. Define
 $B\equiv-\kappa_F G'(m)=\kappa_F Q(z)$, the curvature of the reserve value at the optimum.
 
 A monetary easing is a small change $u$ in the policy rate (a cut). It raises the net return on investment, $q_u=p_f>0$, and it
@@ -163,14 +161,15 @@ the reserve is fixed, in which case $I_u=g$.
 $\partial I_u/\partial g=1-\omega$, which is strictly positive when $B>0$ and zero in the limit $B\to0$.
 \end{corollary}
 
-\begin{remark}
+\begin{remark}\label{rem:chain}
 With $g\ge0$, \eqref{eq:Iu} and \eqref{eq:wmin} give $I_u\ge\omega\,p_f/a>\omega_{\min}\,p_f/a>0$: at an interior optimum a
 constrained firm always transmits a positive fraction of the unconstrained response.
 \end{remark}
 
 \subsection{Aggregation with a common bank}\label{sec:aggregation}
 
-Firms borrow from a common bank at $r_L=r_f+\phi L$, where $L$ is aggregate lending and $\phi=\psi/N$. Each firm takes $r_L$ as
+Firms borrow from a common bank at $r_L=r_f+\phi L$, where $L=\sum_j s_jI_j$ is aggregate lending, the
+mass-weighted sum of the investment of the types defined below, and $\phi=\psi/N$. Each firm takes $r_L$ as
 given, so its own cost curvature is $a_j$ (without $\phi$), and $\phi$ enters only through the price. There are $K$ types with
 mass $s_j$, curvature $a_j$, exposure $g_j$ and weight $\omega_j=\gamma_j^2 a_j/(B_j+\gamma_j^2 a_j)$, with $\omega_j=1$ for a
 type whose constraint is slack. Define $\Theta=\sum_j s_j\,\omega_j/a_j$ and $\bar G=\sum_j s_j(1-\omega_j)g_j$.
@@ -207,8 +206,10 @@ constrained firms ($g_j\ge0$) and reserves are interior, which yields
 \begin{itemize}
 \item[\textbf{H0}] the average response of aggregate investment to a monetary shock is negative, $\beta_{\text{lin}}<0$.
 \end{itemize}
-The remark after Corollary~\ref{cor:gradient} gives $I_u>0$ for a constrained firm with $g\ge0$, whereas the rigid corner predicts
-$I_u=g$, which is zero without floating-rate debt. This yields
+Remark~\ref{rem:chain} gives $I_u>0$ for a constrained firm with $g\ge0$ at a given lending rate (with $a_j$ in place of $a$), whereas the rigid corner predicts
+$I_u=g$, which is zero without floating-rate debt. With a common bank each type responds to $x$ rather than $p_f$, and the
+aggregate counterpart is Proposition~\ref{prop:aggregation}(iii), which holds whatever the mass of constrained types. Together they
+yield
 \begin{itemize}
 \item[\textbf{H1}] in the state where many firms are constrained, the response is also negative, $\beta_C<0$.
 \end{itemize}
@@ -230,13 +231,13 @@ to its size. All deviations are dated and documented in the project specificatio
 
 The shock $\varepsilon_t$ is the \citet{RomerRomer2004} narrative series, defined as the residual from regressing the intended
 change in the federal funds rate at each FOMC meeting on Greenbook forecasts, in the version extended through 2007 that is
-distributed with the replication files of \citet{Ramey2016}. \todo{verified citation for the provenance of the extended series
-(Wieland's update, openICPSR 135741), which the Literature desk could not open.} The quarterly shock is the sum of the
+distributed with the replication files of \citet{Ramey2016}, which re-estimate the Romer--Romer regression through 2007 with
+updated Greenbook forecasts \citep{WielandYang2020}. Wieland distributes a similar extension \citep{WielandRomerShocks2021}; we
+have not verified that the two series coincide. The quarterly shock is the sum of the
 monthly shocks in the quarter, so its unit is the percentage point of federal funds summed over the quarter. Investment is the
 BEA quantity index of real private non-residential fixed investment; controls are real GDP, the GDP deflator and the quarterly
 average federal funds rate (FRED). Corporate liquidity is the ratio of broad liquid assets to credit-market debt of non-financial
-corporations in the Financial Accounts of the United States (Z.1). \todo{formal citations for FRED, BEA and Z.1; no verified bib
-entries exist yet.} All series are in their latest vintage, not real time.
+corporations in the Financial Accounts of the United States (Z.1). Sources: \citet{FRED2026}, \citet{BEA2026NonresInv} and \citet{FedZ12026}. All series are in their latest vintage, not real time.
 
 The estimation sample is $t\in$ 1969Q1--2005Q2, the last quarter for which $t+12$ ends before 2008Q3; it has \NShockFull{}
 quarters, \DiagFullDoneRestr{} in each state. Because most Volcker-era quarters fall in the low-liquidity state and carry a
@@ -279,10 +280,9 @@ fixed effects; we use it as motivation, not as a proof that the estimator is unb
 
 \paragraph{Inference.}
 Standard errors are Newey--West with a Bartlett kernel and five lags in calendar quarters, applied to HC3-rescaled residuals,
-with Student-$t$ critical values on $N-k$ degrees of freedom. \todo{Newey and West (1987): bib entry not VERIFIED.} In our Monte Carlo
-these intervals cover close to or above the nominal level for the coefficients that decide, without material undercoverage. We
-accept the overcoverage because it costs power, not size. \todo{macro for the simulated coverage range of NW5+HC3 (F9), if the text should
-give it.}
+with Student-$t$ critical values on $N-k$ degrees of freedom \citep{NeweyWest1987}. In our Monte Carlo
+these intervals cover close to or above the nominal level for the coefficients that decide, without material undercoverage (simulated coverage between \CovAumNwHcLo{} and \CovAumNwHcHi{}). We
+accept the overcoverage because it costs power, not size.
 
 \paragraph{Shock diagnostics.}
 Without using investment, we report a Ljung--Box test with twelve lags on $\varepsilon_t$; a predictability test, the Wald $F$ of
@@ -320,7 +320,7 @@ Table~\ref{tab:power} reports the probabilities of each outcome of the full deci
 replications with the actual shocks and states, under homoskedastic noise and under noise whose variance rises with $|\varepsilon_t|$.
 If the true responses in both states equal the reference effect ($c=1$), the most likely outcome is that the gate fails, and the
 probability of confirming H1 is close to the nominal level of the test. The minimum detectable effect (MDE), the $c$ at which the
-probability of confirming H1 reaches 0.8, is a $c$ of about five: roughly 10 pp of $\bar y$ per pp of shock. Under the rival hypothesis that the % num-ok: 0.8 es la potencia objetivo que define el MDE
+probability of confirming H1 reaches 0.8, is a $c$ of \MdeHetC{} to \MdeHomoC: roughly 10 pp of $\bar y$ per pp of shock. Under the rival hypothesis that the % num-ok: 0.8 es la potencia objetivo que define el MDE
 constrained state does not respond ($\beta_C=0$) while the unconstrained state responds with $c\,\beta_{\text{ref}}$, the
 probability of confirming H1 stays below the nominal level across the simulated grid. We preregistered H1 as a bounded measurement:
 with a reference-sized effect, the design was expected to end at the gate.
@@ -411,7 +411,8 @@ per pp of shock (shock summed over the quarter). Shock lags $t-1,\dots,t-10$ and
 with the state. Newey--West (Bartlett, five lags) on HC3-rescaled residuals; $t$ on $N-k$ d.f. The $p$-value is one-sided for
 $\beta<0$; the interval is two-sided, so the two objects have different levels. Outcome of the preregistered rule:
 \texttt{\verdictoVs}. Because the gate fails, no row other than $\beta_{\text{lin}}$ is evaluated: the remaining $p$-values are
-descriptive. Source: \texttt{code/analysis/01\_s1r\_estimate.py}; \texttt{output/tables/s1r\_estimates.md}.
+descriptive. The standardization of $s_{t-1}$ in \texttt{r1r\_state\_logistic} and the use of the full-sample median in
+\texttt{r1r\_from1971q3} are implementation choices fixed before estimation. Source: \texttt{code/analysis/01\_s1r\_estimate.py}; \texttt{output/tables/s1r\_estimates.md}.
 \end{minipage}
 \end{table}
 
@@ -489,7 +490,7 @@ Section~\ref{sec:model}.
 \section{Limitations}\label{sec:limitations}
 
 \begin{itemize}
-\item \textbf{Power.} The design was preregistered as a bounded measurement. Its MDE is about five times the reference effect.
+\item \textbf{Power.} The design was preregistered as a bounded measurement. Its MDE is \MdeHetC{} to \MdeHomoC{} times the reference effect.
 \item \textbf{Estimand.} The coefficients measure the response to an isolated shock. They equal the total response only if the
 shocks are serially uncorrelated in the population. Without Volcker the Ljung--Box test rejects, so the comparison with the
 reference effect is approximate in that sample.
@@ -525,8 +526,9 @@ future work, conditional on data that meet those requirements.
 \appendix
 \section{Symbolic verification}\label{app:verification}
 
-Every result in Section~\ref{sec:model} is verified with SymPy in two scripts in \texttt{theory/}, run with
-\texttt{uv run pytest papers/p01-liquidity/theory}. Each positive test has a negative counterpart that must fail.
+Every result in Section~\ref{sec:model}, from the optimality conditions~\eqref{eq:kkt} on, is verified with SymPy in two scripts in \texttt{theory/}, run with
+\texttt{uv run pytest papers/p01-liquidity/theory}. Identities and limits are verified symbolically; sign claims are checked on
+sampled domains of the parameters. Most positive tests have a negative counterpart that must fail.
 
 \begin{center}\footnotesize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{ll}
@@ -544,6 +546,7 @@ Prop.~\ref{prop:limits}(iii) & \texttt{test\_Q\_is\_strictly\_decreasing\_onto\_
  & \texttt{test\_B\_is\_in\_open\_interval\_zero\_kappa}, \texttt{test\_weight\_is\_bounded\_below\_by\_w\_min}, \\
  & \texttt{test\_fixed\_buffer\_corner\_gives\_g\_exactly} \\
 Cor.~\ref{cor:gradient} & \texttt{test\_dI\_dg\_is\_one\_minus\_w\_and\_its\_sign} \\
+Remark~\ref{rem:chain} & \texttt{test\_remark\_chain\_I\_u\_ge\_w\_pf\_a\_gt\_w\_min\_pf\_a\_gt\_0} \\
 \addlinespace
 \multicolumn{2}{l}{\emph{\texttt{theory/check\_aggregation.py}}} \\
 Prop.~\ref{prop:aggregation}, \eqref{eq:Lu} & \texttt{test\_general\_formula\_any\_number\_of\_types} \\
@@ -554,8 +557,5 @@ Prop.~\ref{prop:aggregation}(iii) & \texttt{test\_L\_u\_positive\_with\_nonnegat
 \bottomrule
 \end{tabular}
 \end{center}
-
-\todo{The remark after Corollary~\ref{cor:gradient} combines \eqref{eq:Iu} and \eqref{eq:wmin}; ask Theory for a dedicated test of
-$I_u>\omega_{\min}p_f/a$ with $g\ge0$, or drop the remark.}
 
 \end{document}

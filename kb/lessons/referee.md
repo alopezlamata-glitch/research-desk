@@ -106,3 +106,13 @@ Estado: candidata
    y pedir que el texto lo escriba.
 4. **Un test negativo se valida mutando en memoria lo que el test usa (peso, signo, dominio) y viendo que falla.** Es barato, no toca
    `theory/` y distingue un negativo real de uno vacío.
+
+## 2026-11-11 · p01 · R-F32, relectura de F31
+Estado: candidata
+1. **Al aplicar un hallazgo, la palabra económica que se añade también se audita.** Para decir qué `a` era, Redacción escribió que la
+   empresa representativa «internaliza» la tarifa del banco. Con el modelo del paper, internalizar da a₀ + 2φ; la Prop. 3(ii) es el
+   equilibrio de precio-aceptantes (a₀ + φ). Regla: si un cambio de texto da un mecanismo («internaliza», «toma como dado»,
+   «anticipa»), derivar en SymPy la versión con y sin ese mecanismo y ver cuál da la fórmula citada.
+2. **El diff contra HEAD puede mezclar cambios ya auditados.** Aquí HEAD tenía el borrador F23, así que el diff incluía F29 (auditado en
+   F30) y F31. Regla: separar con las citas literales del informe anterior qué cambió de verdad, y guardar en `audits/` una copia (o el
+   sha256) del `.tex` auditado para que la relectura siguiente pueda hacer un diff exacto.

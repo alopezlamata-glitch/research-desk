@@ -50,3 +50,7 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-11_1908,redaccion,ENCARGO_2026-11-11_f29-cerrar-todos.md,5336,run_2026-11-11_1908.log,sonnet,666935b0-ae2b-43a7-b972-ad04a88f6e82,medium,aceptada
 2026-11-11_1911,referee,ENCARGO_2026-11-11_f30-texto-paper-a.md,7068,run_2026-11-11_1911.log,opus,c22a7c4b-8021-42e7-9ab6-d1ae882314b5,high,aceptada
 2026-11-11_2307,referee,ENCARGO_2026-11-11_f30-texto-paper-a.md,39712,run_2026-11-11_2307.log,opus,c22a7c4b-8021-42e7-9ab6-d1ae882314b5,high,aceptada
+2026-11-11_2314,redaccion,ENCARGO_2026-11-11_f31-cambios-f30.md,2904,run_2026-11-11_2314.log,opus,da8a26c0-f16c-4412-9da4-d1410fd775c6,medium,aceptada
+2026-11-11_2318,redaccion,ENCARGO_2026-11-11_f31-cambios-f30.md,12524,run_2026-11-11_2318.log,opus,da8a26c0-f16c-4412-9da4-d1410fd775c6,medium,aceptada
+2026-11-11_2320,referee,ENCARGO_2026-11-11_f32-relectura-texto.md,33496,run_2026-11-11_2320.log,opus,64c0b87d-92a4-4acf-8d27-702e5d04ca13,medium,aceptada
+2026-11-11_2329,redaccion,ENCARGO_2026-11-11_f31-cambios-f30.md,12376,run_2026-11-11_2329.log,opus,da8a26c0-f16c-4412-9da4-d1410fd775c6,medium,aceptada
