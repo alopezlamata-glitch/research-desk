@@ -60,7 +60,8 @@ expected |= {"sdEps": c[1], "piZero": pz, "piZeroSe": pzse, "betaRef": c[3], "be
 for ln, n in ((31, "Homo"), (47, "Het")):
     c = cells(T / "f13_checks.md", ln)
     assert c[1:3] == ["1", "1"]
-    expected |= {f"Pw{n}H0Falla": c[5], f"Pw{n}Confirma": c[6], f"Pw{n}NoConc": c[8], f"Pw{n}PowH0": c[9], f"Pw{n}PowHone": c[10]}
+    expected |= {f"Pw{n}HzeroFalla": c[5], f"Pw{n}Confirma": c[6], f"Pw{n}NoConc": c[8], f"Pw{n}PowHzero": c[9],
+                 f"Pw{n}PowHone": c[10]}
     if n == "Homo":
         expected |= {"mdeEpsUnit": c[3], "mdeFfrUnit": c[4]}
 for ln, n in ((68, "Homo"), (69, "Het")):
@@ -72,6 +73,14 @@ for ln, n in ((719, "Homo"), (791, "Het")):
     c = cells(T / "f9_power.md", ln)
     assert c[:6] == ["aum", "RR", {"Homo": "homo", "Het": "het_eps"}[n], "1", "0", "V3s"], c
     expected[f"Size{n}"] = c[7]
+
+# f9_power.md:44-45, 52-53, 60-61 (§1b, aum, NW5+HC3, T completo; añadido en F28): mínimo y máximo de la columna NW5+HC3
+cov = []
+for ln in (44, 45, 52, 53, 60, 61):
+    c = cells(T / "f9_power.md", ln)
+    assert c[0] == "aum" and c[3].startswith("T = "), c
+    cov += re.match(r"(\d\.\d+)–(\d\.\d+)", c[5]).groups()
+expected |= {"CovAumNwHcLo": min(cov), "CovAumNwHcHi": max(cov)}
 
 got = {k: re.sub(r"^\\ensuremath\{(.*)\}$", r"\1", v)
        for k, v in re.findall(r"^\\newcommand\{\\(\w+)\}\{(.*)\}$", (OUT / "macros.tex").read_text(encoding="utf-8"), re.MULTILINE)}

@@ -45,3 +45,4 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-08_1930,literatura,ENCARGO_2026-11-08_f26-citas-borrador.md,34596,run_2026-11-08_1930.log,sonnet,e63bf09f-5281-44a5-ae92-869b9be27590,medium,aceptada
 2026-11-11_1659,econometria,ENCARGO_2026-11-08_f25-macros-nombres.md,2760,run_2026-11-11_1659.log,sonnet,15487e61-8104-428d-8d37-9bfa230a9ab3,low,aceptada
 2026-11-11_1659,literatura,ENCARGO_2026-11-08_f26-citas-borrador.md,7980,run_2026-11-11_1659.log,sonnet,e63bf09f-5281-44a5-ae92-869b9be27590,medium,aceptada
+2026-11-11_1850,referee,ENCARGO_2026-11-11_f28-macros-f25.md,15640,run_2026-11-11_1850.log,opus,eabbe1ba-ea9c-45b6-b76a-ad9fb609a50e,medium,aceptada

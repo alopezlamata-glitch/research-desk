@@ -83,3 +83,11 @@ Estado: candidata
    para las cifras derivadas (MDE, umbrales), leer la línea que las genera.
 3. **Comprobar que la fuente "auditada" tiene de verdad un informe en `audits/`.** F13 no lo tenía; su respaldo era el prerregistro
    aprobado. Regla: citar la cadena de aprobación real en el informe.
+
+## 2026-11-11 · p01 · R-F28, renombrado de macros (F25)
+Estado: candidata
+1. **Un renombrado se audita compilando también al consumidor, no solo el archivo renombrado.** `macros.tex` compilaba, pero el
+   rodeo `\let\Nuevo\Viejo` de `main.tex` pasó a dejar `\Nuevo` indefinida al desaparecer `\Viejo`. Regla: al renombrar macros,
+   compilar el `.tex` que las usa en un directorio temporal, sin tocarlo.
+2. **Cuando una celda tiene dos rangos (todos los términos y, entre paréntesis, los que deciden), mira cuál toma el parser.** Aquí
+   coincidían, pero la SPEC describe uno y el código lee el otro. Regla: recalcular los dos y pedir que el código lea el que cita la SPEC.
