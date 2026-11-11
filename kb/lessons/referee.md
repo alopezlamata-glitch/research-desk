@@ -91,3 +91,18 @@ Estado: candidata
    compilar el `.tex` que las usa en un directorio temporal, sin tocarlo.
 2. **Cuando una celda tiene dos rangos (todos los términos y, entre paréntesis, los que deciden), mira cuál toma el parser.** Aquí
    coincidían, pero la SPEC describe uno y el código lee el otro. Regla: recalcular los dos y pedir que el código lea el que cita la SPEC.
+
+## 2026-11-11 · p01 · R-F30, texto del paper A y test de F27
+Estado: candidata
+1. **En el texto, busca la frase que convierte un límite del diseño en un límite de los datos.** La sección de resultados decía «what
+   this design can detect», pero la introducción decía «what aggregate U.S. data can say», y el propio paper cita que las LP tienen más
+   varianza que los VAR. Regla: comparar cada afirmación de alcance de la introducción y del abstract con su versión acotada del cuerpo.
+2. **Una cita de procedencia de datos se contrasta con las notas de todas las entradas implicadas, no solo con la citada.** La frase
+   sobre la serie de Romer-Romer citaba dos entradas cuyas notas decían «no verificado» y «solo metadatos», y la de Ramey contaba otra
+   historia. Regla: para cada «X construye/distribuye la serie», leer las notas del `.bib` de X, de la fuente de los ficheros y del
+   DICTIONARY.
+3. **Las KKT que se dan sin objetivo son una derivación sin verificar.** Los tests partían de `κ G(m) = δ + γλ`, que solo sale con una
+   penalización cuadrática del déficit; con la lineal, la cota cambia de fórmula. Regla: derivar las KKT desde el objetivo en SymPy
+   y pedir que el texto lo escriba.
+4. **Un test negativo se valida mutando en memoria lo que el test usa (peso, signo, dominio) y viendo que falla.** Es barato, no toca
+   `theory/` y distingue un negativo real de uno vacío.

@@ -47,3 +47,6 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-11_1659,literatura,ENCARGO_2026-11-08_f26-citas-borrador.md,7980,run_2026-11-11_1659.log,sonnet,e63bf09f-5281-44a5-ae92-869b9be27590,medium,aceptada
 2026-11-11_1850,referee,ENCARGO_2026-11-11_f28-macros-f25.md,15640,run_2026-11-11_1850.log,opus,eabbe1ba-ea9c-45b6-b76a-ad9fb609a50e,medium,aceptada
 2026-11-11_1902,teoria,ENCARGO_2026-11-11_f27-observacion-corolario.md,36100,run_2026-11-11_1902.log,opus,323a4d38-86ef-49dd-a04e-ed9d6ac93fd4,medium,aceptada
+2026-11-11_1908,redaccion,ENCARGO_2026-11-11_f29-cerrar-todos.md,5336,run_2026-11-11_1908.log,sonnet,666935b0-ae2b-43a7-b972-ad04a88f6e82,medium,aceptada
+2026-11-11_1911,referee,ENCARGO_2026-11-11_f30-texto-paper-a.md,7068,run_2026-11-11_1911.log,opus,c22a7c4b-8021-42e7-9ab6-d1ae882314b5,high,aceptada
+2026-11-11_2307,referee,ENCARGO_2026-11-11_f30-texto-paper-a.md,39712,run_2026-11-11_2307.log,opus,c22a7c4b-8021-42e7-9ab6-d1ae882314b5,high,aceptada
