@@ -7,12 +7,26 @@
 
 % ============ 2025-2026 y working papers recientes ============
 
-@unpublished{Jeenas2026,
+@techreport{Jeenas2026,
   author = {Jeenas, Priit},
   title = {Firm Balance Sheet Liquidity, Monetary Policy Shocks, and Investment Dynamics},
+  institution = {Universitat Pompeu Fabra, Department of Economics and Business},
+  type = {Economics Working Paper},
+  number = {1872},
   year = {2023},
-  note = {DISCREPANCIA: el borrador cita JPE 2026 ("Just Accepted, 18 sep 2026"). Existe como BSE Working Paper 1409 (version oct 2023, rev. may 2024). El estado JPE no esta confirmado: la pagina del autor aun lo lista como R\&R en JPE y la tabla de contenidos de JPE lo muestra sin acceso y con volumen 0. NO citar como JPE publicado hasta confirmarlo. Rebusqueda 2026-11-04: solo WP UPF 1872 / BSE 1409, sin registro JPE. Paginas citadas en el diseno F (pp. 2--6, 17) comprobadas en WP UPF 1872 (oct-2023)},
-  url = {https://bse.eu/research/working-papers/firm-balance-sheet-liquidity-monetary-policy-shocks-and-investment-dynamics},
+  note = {VERIFICADA (F26, 2026-11-08). Version de trabajo: UPF WP 1872 = BSE WP 1409 (oct-2023, rev. may-2024), comprobado en EconPapers RePEc:upf:upfgen:1872 y en el repositorio UPF/BSE. Paginas citadas en el diseno F (pp. 2--6, 17) comprobadas en este WP (oct-2023). Hay version publicada: ver JeenasJPE2026. Las paginas NO se han contrastado con la version de la revista},
+  url = {https://econ-papers.upf.edu/papers/1872.pdf},
+  keywords = {tfg1, tfg2}
+}
+
+@article{JeenasJPE2026,
+  author = {Jeenas, Priit},
+  title = {Firm Balance Sheet Liquidity, Monetary Policy Shocks, and Investment Dynamics},
+  journal = {Journal of Political Economy},
+  year = {2026},
+  doi = {10.1086/744130},
+  note = {VERIFICADA solo en el registro DOI (F26, 2026-11-08): Crossref 10.1086/744130 da titulo, autor unico, Journal of Political Economy, publicado en linea 2026-09-22; sin volumen, numero ni paginas. La pagina de la revista dio 403 y no se abrio: el texto publicado NO se ha leido ni comparado con el WP (Jeenas2026), asi que las paginas del diseno F no valen para esta version. Sustituye la DISCREPANCIA anterior (el borrador decia JPE, y eso era cierto; la fecha 18-sep-2026 no coincide con el registro: 22-sep-2026)},
+  url = {https://doi.org/10.1086/744130},
   keywords = {tfg1, tfg2}
 }
 
@@ -683,7 +697,9 @@
   volume = {55},
   number = {3},
   pages = {703--708},
-  note = {NO VERIFICADA en esta sesion},
+  doi = {10.2307/1913610},
+  note = {VERIFICADA (F26, 2026-11-08). Crossref 10.2307/1913610: Econometrica 55(3), mayo 1987, autores Newey y West en ese orden; OpenAlex coincide. Paginas 703--708: Crossref y OpenAlex solo dan la inicial (703); el rango completo sale de la ficha de Econometrica (econometricsociety.org, 55(3):703--708) y del manual de Stata. Apoya la matriz HAC con nucleo Bartlett y semi-definicion positiva garantizada (resumen); texto completo solo en JSTOR, no leido},
+  url = {https://doi.org/10.2307/1913610},
   keywords = {tfg1, tfg2}
 }
 
@@ -723,16 +739,40 @@
   author = {{Federal Reserve Bank of St. Louis}},
   title = {{FRED}: Federal Reserve Economic Data},
   year = {2026},
-  note = {NO VERIFICADA: base de datos; no es una referencia a comprobar},
+  note = {VERIFICADA (F26, 2026-11-08) como base de datos: la ficha de la serie A008RA3Q086SBEA en fred.stlouisfed.org da la cita sugerida (fuente BEA, recuperada de FRED, Federal Reserve Bank of St. Louis). FRED no publica un formato de cita propio (ni la pagina de terminos de la API ni la de la API lo traen). Series usadas (code/data/download_stage1_us.py:30-31): GDPC1, GDPDEF, FEDFUNDS, A008RA3Q086SBEA. Vintage descargado: FRED 2026-11-04 (MANIFEST.csv)},
+  url = {https://fred.stlouisfed.org/},
   keywords = {tfg1, tfg2}
 }
 
-@misc{BEA2021,
+@misc{BEA2026NonresInv,
   author = {{U.S. Bureau of Economic Analysis}},
-  title = {Gross Domestic Product, Second Quarter 2021: Technical Note},
-  year = {2021},
-  note = {NO VERIFICADA en esta sesion},
+  title = {Real Gross Private Domestic Investment: Fixed Investment: Nonresidential (Chain-Type Quantity Index), Index 2017=100, Seasonally Adjusted, Quarterly ({A008RA3Q086SBEA})},
+  howpublished = {Retrieved from FRED, Federal Reserve Bank of St. Louis},
+  year = {2026},
+  note = {VERIFICADA (F26, 2026-11-08): ficha FRED de A008RA3Q086SBEA, fuente BEA, release Gross Domestic Product, indice de cantidad 2017=100. La ficha enlaza las tablas NIPA 1.1.3, 1.5.3, 5.2.3 y 5.3.3 sin decir cual la contiene: NO se cita numero de tabla NIPA. La pagina de BEA con la tabla no se pudo abrir. Cobertura desde 1947Q1 (kb/data_catalog.md). Sustituye a BEA2021 (nota tecnica del PIB 2T-2021), que no respalda esta serie y se elimina},
+  url = {https://fred.stlouisfed.org/series/A008RA3Q086SBEA},
   keywords = {tfg1, tfg2}
+}
+
+@misc{FedZ12026,
+  author = {{Board of Governors of the Federal Reserve System}},
+  title = {Financial Accounts of the {United States} -- {Z.1}, Second Quarter 2026},
+  year = {2026},
+  month = sep,
+  note = {VERIFICADA (F26, 2026-11-08): pagina del release en federalreserve.gov/releases/z1/: titulo oficial, edicion 2026:Q2, publicada el 11-sep-2026 (coincide con data/raw, z1_csv_files_20260911.zip). Tablas usadas por el codigo: S.11.1.b (niveles del balance de sociedades no financieras) y S.11.1.t (flujo de inversion fija). La pagina no lista las series: los codigos salen de code/data/build_stage1_us.py:90-98 y no se han contrastado con la guia de series de la Fed},
+  url = {https://www.federalreserve.gov/releases/z1/},
+  keywords = {tfg1, tfg2}
+}
+
+@misc{WielandRomerShocks2021,
+  author = {Wieland, Johannes},
+  title = {Updated {Romer--Romer} Monetary Policy Shocks},
+  howpublished = {Replication repository, openICPSR project 135741, version V1},
+  year = {2021},
+  doi = {10.3886/E135741V1},
+  note = {VERIFICADA (F26, 2026-11-08). Procedencia: (i) DataCite 10.3886/e135741v1: creador Johannes Wieland (UCSD), editor ICPSR, V1, fecha 2021; el abstract dice que extiende la serie de Romer y Romer (2004), con codigo Stata (mensual, trimestral, anual) y pronosticos del Greenbook actualizados hasta 2007; (ii) repositorio GitHub johanneswieland/RomerShocks (README leido): extension hasta 2007, serie resid_full estimada en 1969--2007, version estable en ICPSR, pide citar Wieland-Yang junto con Romer-Romer (2004); (iii) la web de Wieland enlaza ambos. Es decir, la extension la construye Wieland sobre las actualizaciones del Greenbook de Wieland y Yang (citadas por Ramey 2016, p. 41). La pagina de openICPSR dio 403 y no se abrio; DataCite y el README coinciden. El README cita Wieland-Yang como 2019 y DataCite como 2020: el articulo es WielandYang2020 (JMCB). NO verificado que la serie de los ficheros de Ramey (2016) sea exactamente resid_full},
+  url = {https://github.com/johanneswieland/RomerShocks},
+  keywords = {nueva}
 }
 
 % ============ Policy_Confidence_Coherence.tex (borrador anterior) ============
@@ -1096,7 +1136,7 @@
   volume = {52},
   number = {1},
   pages = {79--113},
-  note = {VERIFICADA solo en metadatos (EconPapers RePEc:wly:jmoncb:v:52:y:2020:i:1:p:79-113; NBER w22141). El texto NO se leyo. Es la fuente que cita Ramey (2016, p. 41) como Wieland y Yang (2015) para la actualizacion del Greenbook hasta 2007; que el paper publique la serie extendida no esta comprobado. El deposito openICPSR 135741 (Updated Romer-Romer Monetary Policy Shocks, Wieland, DOI 10.3886/E135741V1, 23-mar-2021) aparece en un buscador con muestra 1969--2007, pero la pagina dio 403 y no se pudo abrir: cobertura y autoria NO VERIFICADAS},
+  note = {VERIFICADA solo en metadatos (EconPapers RePEc:wly:jmoncb:v:52:y:2020:i:1:p:79-113; NBER w22141). El texto NO se leyo. Es la fuente que cita Ramey (2016, p. 41) como Wieland y Yang (2015) para la actualizacion del Greenbook hasta 2007; que el paper publique la serie extendida no esta comprobado. La serie extendida la distribuye Wieland (WielandRomerShocks2021; su README pide citar Wieland-Yang junto con Romer-Romer 2004), verificada en F26},
   url = {https://www.nber.org/papers/w22141},
   keywords = {nueva}
 }

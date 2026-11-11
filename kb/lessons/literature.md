@@ -54,3 +54,12 @@ Validada por: Adrián López Lamata (2026-11-08)
 Estado: retirada
 - **Los enlaces de CESifo/«DocDL» pueden devolver HTML:** comprobar el tipo de contenido con `curl -w "%{content_type}"` y probar el WP del Tinbergen Institute (`papers.tinbergen.nl/<nnnnn>.pdf`).
    *Motivo:* trasladado a kb/data_catalog.md («Trucos de acceso por fuente»)
+
+## 2026-11-08 · p01 · F26 (citas pendientes del borrador del paper A)
+Estado: candidata
+- **Crossref/DataCite por WebFetch cuando la web de la revista o el repositorio dan 403:** `api.crossref.org/works/<doi>` y `api.datacite.org/dois/<doi>` dan metadatos (autor, revista, fecha en línea), no volumen/páginas ni texto. Una cita así se marca «solo registro DOI».
+- **«No encontrado» antes no es «no publicado»:** la versión JPE de Jeenas existía en Crossref (22-sep-2026) cuando una sesión anterior solo veía el WP. Repetir la búsqueda con `query.bibliographic` en Crossref.
+- **Un depósito de openICPSR suele tener espejo en GitHub:** la web del autor enlaza el README público, que sí se lee y da cobertura y autoría.
+- **FRED no tiene formato de cita propio:** citar la ficha de la serie (fuente BEA, «retrieved from FRED»). Si la ficha no dice qué tabla NIPA la contiene, no inventar el número.
+- **Trabajo previo de los autores sin depósito público no se puede citar como VERIFICADA:** avisar pronto para que lo depositen.
+   *Motivo:* trasladado a kb/data_catalog.md («Trucos de acceso por fuente»)

@@ -38,6 +38,10 @@ started,desk,encargo,pid,log,model,session_id,effort,estado
 2026-11-08_1845,econometria,ENCARGO_2026-11-08_f21-macros-paper.md,21036,run_2026-11-08_1845.log,sonnet,72cc285b-bcdc-4b7e-a632-2843d0dc4903,medium,aceptada
 2026-11-08_1845,datos,ENCARGO_2026-11-08_f5a-etapa2-datos.md,36668,run_2026-11-08_1845.log,sonnet,b996b7bf-504c-4bcb-844e-007a2f792bf7,medium,aceptada
 2026-11-08_1849,referee,ENCARGO_2026-11-08_f22-macros.md,30668,run_2026-11-08_1849.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,aceptada
-2026-11-08_1904,referee,ENCARGO_2026-11-08_f22-macros.md,26220,run_2026-11-08_1904.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,
-2026-11-08_1907,redaccion,ENCARGO_2026-11-08_f23-borrador-paper-a.md,31600,run_2026-11-08_1907.log,opus,0dec0c2f-5123-4147-a6dc-1cb2a6e561f0,high,
-2026-11-08_1908,referee,ENCARGO_2026-11-08_f22-macros.md,24612,run_2026-11-08_1908.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,
+2026-11-08_1904,referee,ENCARGO_2026-11-08_f22-macros.md,26220,run_2026-11-08_1904.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,aceptada
+2026-11-08_1907,redaccion,ENCARGO_2026-11-08_f23-borrador-paper-a.md,31600,run_2026-11-08_1907.log,opus,0dec0c2f-5123-4147-a6dc-1cb2a6e561f0,high,aceptada
+2026-11-08_1908,referee,ENCARGO_2026-11-08_f22-macros.md,24612,run_2026-11-08_1908.log,opus,d6790372-7f0e-43b2-9fc8-3426016c023d,medium,aceptada
+2026-11-08_1930,econometria,ENCARGO_2026-11-08_f25-macros-nombres.md,35140,run_2026-11-08_1930.log,sonnet,15487e61-8104-428d-8d37-9bfa230a9ab3,low,aceptada
+2026-11-08_1930,literatura,ENCARGO_2026-11-08_f26-citas-borrador.md,34596,run_2026-11-08_1930.log,sonnet,e63bf09f-5281-44a5-ae92-869b9be27590,medium,aceptada
+2026-11-11_1659,econometria,ENCARGO_2026-11-08_f25-macros-nombres.md,2760,run_2026-11-11_1659.log,sonnet,15487e61-8104-428d-8d37-9bfa230a9ab3,low,aceptada
+2026-11-11_1659,literatura,ENCARGO_2026-11-08_f26-citas-borrador.md,7980,run_2026-11-11_1659.log,sonnet,e63bf09f-5281-44a5-ae92-869b9be27590,medium,aceptada
