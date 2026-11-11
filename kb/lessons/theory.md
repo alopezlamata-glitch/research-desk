@@ -44,3 +44,14 @@ Validada por: Adrián López Lamata (2026-11-08)
 Régimen interior: $\Delta=\eta v_{pol}/(b+\eta v_0+\psi/N)$, sin cota superior (10,3 % con $A_P=2$ y 64,5 % con $A_P=0,2$ en TFG2); solo hay cota de nivel $p_f/(b+\psi/N)$. Con restricción activa,
 $\sigma_F$ eleva $I$ sin cambiar $v$ y el efecto sobre la pendiente $I_u$ tiene signo libre ($\partial I_u/\partial B\propto ag-p_f$). Distinguir **peso en $a$** ($\eta v/a$) de **subida de la pendiente** ($\text{share}/(1-\text{share})$).
 Verificado: `check_coordination.py`. **Regla:** una «cota» en un paper es una función de la calibración o un teorema; si es un valor numérico, lleva su calibración y se genera con código.
+
+## 2026-11-11 · p01 · F27: en una cadena de desigualdades, comprobar cada eslabón y su borde
+Estado: candidata
+Para la Observación tras el Corolario 1 (`I_u ≥ ω p_f/a > ω_min p_f/a > 0`), cada eslabón se escribió como un hueco con forma
+cerrada (`B g/(B+γ²a)`, `γ²p_f(κ_F−B)/(…)`, …). Así se ve qué supuesto usa cada uno y si es débil o estricto: el primero es
+igualdad en `g = 0`, y el segundo solo es estricto porque el interior excluye `B = κ_F`. Trampas: (1) `check_sign` es estricto y
+declara vacío un hueco idénticamente nulo, así que un `≥` se comprueba con `g > 0` en la rejilla más el borde `g = 0` como
+negativo; (2) con símbolos `positive=True`, `sp.solve(expr, g)` descarta `g = 0`, y hay que sustituir por un símbolo `real=True`;
+(3) para que SymPy decida un signo sin muestrear, se reparametriza la cota abierta (`B = κ_F/(1+s)`, `s > 0`).
+Verificado: `papers/p01-liquidity/theory/check_nesting.py::test_remark_chain_I_u_ge_w_pf_a_gt_w_min_pf_a_gt_0`.
+**Regla:** una cadena `≥ > >` se verifica eslabón a eslabón con su forma cerrada, su borde de igualdad y un negativo que viole la hipótesis.

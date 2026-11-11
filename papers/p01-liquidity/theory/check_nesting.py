@@ -138,6 +138,39 @@ def test_weight_is_bounded_below_by_w_min():
         sc.check_sign((W - w_min / 2).subs(B, B_REACH) * -1, "+", BOX_Z)
 
 
+def test_remark_chain_I_u_ge_w_pf_a_gt_w_min_pf_a_gt_0():
+    """Observación tras el Corolario 1 (main.tex:166-169): con g >= 0,
+    I_u >= w p_f/a > w_min p_f/a > 0. Supuestos del paper: p_f, gamma, kappa_F > 0, a > 0 (el coste
+    marginal "rises"), B = kappa_F Q(z) con Q en (0,1) (óptimo interior). Con q = 1/(1+s), s > 0,
+    B < kappa_F queda en los símbolos y SymPy decide los signos sin muestrear."""
+    w_min = gam**2 * a / (kap + gam**2 * a)
+    gap1, gap2 = SOL[I_u] - W * p_f / a, (W - w_min) * p_f / a
+    # Capa simbólica. 1.ª desigualdad: I_u - w p_f/a = (1-w) g = B g/(B+gamma^2 a), débil (= 0 si y solo si g = 0).
+    sc.check_identity(gap1, B * g / (B + gam**2 * a), BOX)
+    g_real = sp.Symbol("g_real", real=True)  # g es positive=True en el módulo: aquí hace falta admitir g = 0
+    assert sp.solve(gap1.subs(g, g_real), g_real) == [0]
+    # 2.ª: w - w_min = gamma^2 a (kappa_F - B)/((B+gamma^2 a)(kappa_F+gamma^2 a)), estricta porque B < kappa_F.
+    sc.check_identity(gap2, gam**2 * p_f * (kap - B) / ((B + gam**2 * a) * (kap + gam**2 * a)), {**BOX, kap: (0.2, 5)})
+    s = sp.Symbol("s", positive=True)
+    assert sp.factor(gap2.subs(B, kap / (1 + s))).is_positive
+    assert (w_min * p_f / a).is_positive  # 3.ª
+    # Capa numérica en la rejilla de alcanzabilidad (B = kappa_F q, q en (0,1)); g > 0 estricto en la 1.ª.
+    sc.check_sign(gap1.subs(B, B_REACH), "+", {**BOX_Z, g: (1e-6, 6)})
+    sc.check_sign(gap2.subs(B, B_REACH), "+", BOX_Z)
+    sc.check_sign(w_min * p_f / a, "+", BOX_Z)
+    # Bordes. g = 0: la 1.ª es igualdad, así que el ">" estricto no se sostiene (check vacío).
+    with pytest.raises(sc.ClaimFailed):
+        sc.check_sign(gap1.subs({B: B_REACH, g: 0}), "+", BOX_Z)
+    # B -> 0 (fuera del interior): I_u -> p_f/a y w -> 1; la cadena sigue en el límite.
+    assert sp.limit(gap1, B, 0, "+") == 0 and sp.limit(W, B, 0, "+") == 1
+    # B -> kappa_F (q -> 1, z -> -inf): w -> w_min; la 2.ª es estricta solo porque el interior excluye ese límite.
+    assert sp.simplify(W.subs(B, kap) - w_min) == 0
+    # Negativo: con g < 0 la 1.ª desigualdad falla (y I_u puede ser negativo).
+    with pytest.raises(sc.ClaimFailed):
+        sc.check_sign(gap1.subs(B, B_REACH), "+", {**BOX_Z, g: (-6, -1e-6)})
+    assert SOL[I_u].subs({p_f: 1, gam: 1, a: sp.Rational(171, 1000), B: 3, g: -2}) < 0
+
+
 def test_minimum_transmission_with_g0_at_tfg2_calibration():
     """Calibración TFG2 (l. 1690-1694): b=eta=0.1, psi/N=0.05, kappa_F=gamma=1, v=0.21 (A_P=2)
     => a=0.171, p_f=1. Con g=0, I_u >= w_min p_f/a = 0.146 * 5.848 = 0.854, no 0."""
