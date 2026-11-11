@@ -16,7 +16,7 @@ Nombres (LaTeX no admite dígitos en un nombre de macro). Cada cifra es `\<prefi
   `LB`, `LBP`, `PredF`, `PredDfA`, `PredDfB`, `PredP`.
 - Referencia: `\betaRef`, `\piZero`, `\piZeroSe`, `\sdEps`, `\betaRefSd` (efecto de 1 sd de ε), `\mdeEpsUnit` / `\mdeFfrUnit`
   (c = 1: pp de ȳ por pp de ε / de fed funds).
-- Ex ante, por ruido `Homo` / `Het`: `\Pw<Ruido><Campo>` con `H0Falla`, `Confirma`, `NoConc`, `PowH0`, `PowHone` (c = 1);
+- Ex ante, por ruido `Homo` / `Het`: `\Pw<Ruido><Campo>` con `HzeroFalla`, `Confirma`, `NoConc`, `PowHzero`, `PowHone` (c = 1);
   `\Mde<Ruido><Campo>` con `C`, `Eps`, `Ffr`, `RivalMax` (P(confirma) = 0,8); `\Size<Ruido>` (β = 0).
 - `\verdictoVs`: veredicto de `s1r_lp.decide` (V3s).
 """
@@ -80,7 +80,7 @@ def build() -> dict[str, str]:
     for r in f13:
         if len(r) == 11 and r[0] in NOISE and r[1] == "1" and r[2] == "1":  # §2: H1 cierta (m = 1), c = 1
             n = NOISE[r[0]]
-            m |= {f"Pw{n}H0Falla": r[5], f"Pw{n}Confirma": r[6], f"Pw{n}NoConc": r[8], f"Pw{n}PowH0": r[9], f"Pw{n}PowHone": r[10]}
+            m |= {f"Pw{n}HzeroFalla": r[5], f"Pw{n}Confirma": r[6], f"Pw{n}NoConc": r[8], f"Pw{n}PowHzero": r[9], f"Pw{n}PowHone": r[10]}
             if r[0] == "homo":  # el MDE por unidad de c no depende del ruido
                 m["mdeEpsUnit"], m["mdeFfrUnit"] = r[3], r[4]
         elif len(r) == 5 and r[0] in NOISE:  # §2b
@@ -90,6 +90,13 @@ def build() -> dict[str, str]:
     for r in md_rows("f9_power.md"):  # §3: aum, RR, V3s con c = 0 (β = 0)
         if len(r) == 11 and r[:6] == ["aum", "RR", r[2], "1", "0", "V3s"] and r[2] in NOISE:
             m[f"Size{NOISE[r[2]]}"] = r[7]
+    cov = [  # §1b: cobertura NW5+HC3 de `aum` con T completo (no T/2): mínimo y máximo de sus 6 filas
+        x
+        for r in md_rows("f9_power.md")
+        if len(r) == 8 and r[0] == "aum" and r[3].startswith("T = ")
+        for x in re.match(r"(\d\.\d+)–(\d\.\d+)", r[5]).groups()
+    ]
+    m["CovAumNwHcLo"], m["CovAumNwHcHi"] = min(cov), max(cov)
     return m
 
 

@@ -18,6 +18,17 @@ def parse(tex: str) -> dict[str, str]:
     return out
 
 
+def test_macro_names_are_latex_control_words():
+    text = (OUT / "macros.tex").read_text(encoding="utf-8")
+    declared = re.findall(r"^\\newcommand\{\\([^}]*)\}", text, flags=re.MULTILINE)
+    assert declared and all(re.fullmatch(r"[A-Za-z]+", n) for n in declared)
+
+
+def test_aum_coverage_range_matches_f9_report():
+    m = parse((OUT / "macros.tex").read_text(encoding="utf-8"))
+    assert (m["CovAumNwHcLo"], m["CovAumNwHcHi"]) == ("0.948", "0.990")  # F9_MC_REPORT.md:30
+
+
 def test_macros_file_is_reproducible():
     before = (OUT / "macros.tex").read_text(encoding="utf-8")
     mod.main()
@@ -47,6 +58,6 @@ def test_verdict_diagnostics_and_ex_ante_figures():
     assert (m["DiagFullN"], m["DiagFullLBP"], m["DiagNoVLBP"], m["DiagNoVPredDfB"]) == (diag["completa"][1], diag["completa"][9],
                                                                                     diag["sin Volcker"][9], "120")
     assert (m["betaRef"], m["piZero"], m["piZeroSe"]) == ("-1.820", "0.949", "0.248")
-    assert (m["PwHomoConfirma"], m["PwHetConfirma"], m["PwHomoPowH0"]) == ("0.037", "0.059", "0.176")
+    assert (m["PwHomoConfirma"], m["PwHetConfirma"], m["PwHomoPowHzero"]) == ("0.037", "0.059", "0.176")
     assert (m["MdeHomoC"], m["MdeHomoEps"], m["MdeHetFfr"], m["MdeHetRivalMax"]) == ("5.5", "10.01", "9.97", "0.033")
     assert (m["SizeHomo"], m["SizeHet"]) == ("0.004", "0.011")
