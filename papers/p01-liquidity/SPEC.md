@@ -1,9 +1,8 @@
 # p01-liquidity — SPEC
 
-Estado: **Diseño F; etapa 1 rediseñada por los autores (2026-11-07) para ganar potencia** (Romer-Romer, h = 4..12, tres
-variantes de Volcker; ver Desviaciones). Datos (F7) y citas (F8) hechos; **en curso: F9**, Monte Carlo de `s1r_*`
-(Econometría). Después, F10 (auditoría del Referee) y F11 (prerregistro nuevo, que aprueban los autores), **antes** de
-estimar con la inversión.
+Estado: **Borrador del paper A (teoría + medición acotada) cerrado y auditado (2026-11-11)**: `paper/main.tex`, informes del
+Referee F30 y F32 aplicados (F29–F33). Etapa 1 estimada (F16, H0 falla; H1 sin veredicto) y etapa 2 cerrada por los autores.
+Solo falta la lista de autores. Pendiente de Teoría, en un solo encargo: test que derive las KKT del objetivo y nombres de tests sin «tfg».
 
 ## Intuición de partida (de los autores)
 Hay una serie de factores que afectan a la liquidez, con **regímenes no lineales**: el mismo impulso
