@@ -23,7 +23,8 @@ __pycache__/
 *.synctex.gz
 *.bbl
 *.blg
-papers/*/paper/*.pdf   # se regenera con latexmk desde main.tex y output/macros.tex
+# El PDF se regenera con latexmk desde main.tex y output/macros.tex
+papers/*/paper/*.pdf
 *.bbl
 *.blg
 

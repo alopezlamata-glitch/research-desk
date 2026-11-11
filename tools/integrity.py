@@ -3,7 +3,8 @@
 Cada regla comprobable de CLAUDE.md es una función `check_<id>(root, files) -> list[Violation]`.
 El pre-commit de git, pytest y las desks llaman a estas mismas funciones (spec: specs/guardrails/SPEC.md).
 
-Uso: uv run python tools/integrity.py [--only id1,id2]   (sale con 1 si hay violaciones)
+Uso: uv run python tools/integrity.py [--only id1,id2] [--pre-commit]   (sale con 1 si hay violaciones)
+     --pre-commit: `gate` solo bloquea si el commit lleva un .tex de paper/ (ver defer_gate).
 """
 
 from __future__ import annotations
@@ -465,9 +466,30 @@ def run(root: Path = ROOT, only: set[str] | None = None) -> list[Violation]:
     return [v for name, fn in CHECKS.items() if not only or name in only for v in fn(root, files)]
 
 
+def staged_files(root: Path) -> list[str]:
+    r = _git(root, "diff", "--cached", "--name-only", "-z")
+    return [p for p in r.stdout.decode("utf-8").split("\0") if p] if r and r.returncode == 0 else []
+
+
+def defer_gate(violations: list[Violation], staged: list[str]) -> tuple[list[Violation], list[Violation]]:
+    """(bloquean, aplazadas). En el pre-commit, `gate` solo bloquea un commit que lleva un .tex de `paper/` de ese paper.
+
+    Sin esto, un cambio de `code/` u `output/` posterior al borrador no podría entrar nunca en git: caduca la aprobación,
+    y el informe nuevo tiene que citar un commit que ya contenga el cambio (2026-11-11). El texto sigue sin poder tocarse
+    hasta que haya informe vigente, y `pytest` sigue fallando mientras tanto.
+    """
+    touched = {f.split("/")[1] for f in _paper_tex(staged)}
+    deferred = [v for v in violations if v.check == "gate" and v.path.split("/")[1] not in touched]
+    return [v for v in violations if v not in deferred], deferred
+
+
 def main(argv: list[str]) -> int:
     only = set(argv[argv.index("--only") + 1].split(",")) if "--only" in argv else None
     violations = run(ROOT, only)
+    if "--pre-commit" in argv:
+        violations, deferred = defer_gate(violations, staged_files(ROOT))
+        for v in deferred:
+            print(f"AVISO (no bloquea este commit, que no toca paper/*.tex): {v}")
     for v in violations:
         print(v)
     print(f"integridad: {len(violations)} violaciones" if violations else "integridad: OK")

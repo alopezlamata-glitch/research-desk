@@ -261,6 +261,19 @@ def test_gate_approval_lapses_when_audited_science_changes_but_not_with_prose(re
     assert ig.check_gate(repo, [tex, ok, again]) == []  # una auditoría nueva del objeto cambiado la restablece
 
 
+def test_pre_commit_defers_gate_unless_the_commit_touches_that_papers_tex(repo):
+    tex = write(repo, "papers/p/paper/main.tex", "\\input{../output/macros.tex}\n")
+    gate = ig.check_gate(repo, [tex])
+    other = [ig.Violation("secrets", "papers/p/code/est.py", 1, "clave")]
+    write(repo, "papers/p/code/est.py", "beta = 2\n")
+    git(repo, "add", "papers/p/code/est.py")
+    assert ig.staged_files(repo) == ["papers/p/code/est.py"]
+    assert ig.defer_gate(gate + other, ig.staged_files(repo)) == (other, gate)  # el cambio científico puede commitearse
+    assert ig.defer_gate(gate, ["papers/q/paper/main.tex"]) == ([], gate)  # el .tex de otro paper no cuenta
+    git(repo, "add", tex)
+    assert ig.defer_gate(gate + other, ig.staged_files(repo)) == (gate + other, [])  # el texto, no
+
+
 def test_gate_ignores_the_spec_status_line_but_not_the_rest_of_the_spec(repo):
     spec = "# p — SPEC\n\nEstado: diseño F.\nSiguiente: F4.\n\n## Hipótesis\nH1: beta < 0.\n"
     write(repo, "papers/p/SPEC.md", spec)

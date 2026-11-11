@@ -32,7 +32,8 @@ def _commit(cwd: Path) -> str:
     try:
         out = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=cwd,
                              capture_output=True, text=True, check=True)
-        dirty = subprocess.run(["git", "status", "--porcelain"], cwd=cwd,
+        # Solo el paper y tools/: desks/RUNS.csv cambia en cada lanzamiento y no afecta al resultado.
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", ".", ":/tools"], cwd=cwd,
                                capture_output=True, text=True, check=True).stdout.strip()
         return out.stdout.strip() + ("-dirty" if dirty else "")
     except (subprocess.CalledProcessError, FileNotFoundError):

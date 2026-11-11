@@ -71,6 +71,12 @@ convierte en una comprobación automática; lo que no se pueda comprobar sigue s
   y sin cambios desde ese commit en `code/`, `data/`, `output/`, `theory/` ni `SPEC.md` del paper, salvo su párrafo `Estado:` (`git diff --name-only`
   contra el árbol de trabajo, 2026-11-08). Un cambio científico posterior exige una auditoría nueva; uno de redacción no.
 - El texto sin resultados (introducción, literatura) no necesita auditoría.
+- **En el pre-commit (`--pre-commit`, decisión de los autores, 2026-11-11):** `gate` solo bloquea un commit que lleva un
+  `.tex` de `paper/` de ese paper; si no, se imprime como aviso. Motivo: tras el borrador (F23), un cambio de `code/` u
+  `output/` caducaba la aprobación y no podía commitearse, y el informe nuevo necesita citar un commit que ya lo contenga.
+  Flujo: commit del cambio científico → el Referee audita ese commit → commit del informe → el texto vuelve a poder tocarse.
+  Coste aceptado: entre el primer commit y el informe, HEAD tiene un `.tex` que apunta a resultados sin aprobación vigente;
+  `integrity.py` sin la opción y `pytest` siguen fallando mientras tanto.
 
 ## Datos brutos verificables (`rawhash` y vintages, 2026-11-05)
 - `guard.js` solo intercepta Write/Edit; un script podía modificar `raw/` sin dejar rastro. `rawhash` compara cada

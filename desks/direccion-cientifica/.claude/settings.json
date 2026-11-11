@@ -4,6 +4,10 @@
       "../.."
     ]
   },
+  "enabledPlugins": {
+    "ponytail@ponytail": false,
+    "agent-skills@addy-agent-skills": false
+  },
   "hooks": {
     "PreToolUse": [
       {

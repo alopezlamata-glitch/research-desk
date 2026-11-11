@@ -151,6 +151,8 @@ fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2));
 // --- Configuración de cada desk: hereda el hook guard.js y puede trabajar en todo el repo
 const deskSettings = {
   permissions: { additionalDirectories: ['../..'] },
+  // Los plugins de usuario inyectan instrucciones ajenas a la desk (p. ej., "shortest diff") en cada sesión.
+  enabledPlugins: { 'ponytail@ponytail': false, 'agent-skills@addy-agent-skills': false },
   hooks: {
     PreToolUse: [{
       matcher: 'Edit|Write|NotebookEdit|MultiEdit|Read|Grep|Glob|Bash',

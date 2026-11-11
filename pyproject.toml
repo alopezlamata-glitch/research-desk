@@ -23,6 +23,8 @@ dev = ["pytest", "ruff"]
 testpaths = ["papers", "kb", "tools", "datalake", "evals"]
 pythonpath = ["tools"]
 python_files = ["test_*.py", "check_*.py"]
+# Las réplicas del Referee en audits/ son evidencia ligada al commit auditado, no tests vivos.
+addopts = "--ignore-glob=papers/*/audits/*"
 
 [tool.ruff]
 line-length = 100

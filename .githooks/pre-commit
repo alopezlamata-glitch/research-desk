@@ -1,4 +1,4 @@
 #!/bin/sh
 # Pre-commit de la Research Desk: nada que incumpla tools/integrity.py entra en el historial.
 # Se activa una vez por clon con: uv run python tools/desk.py setup
-exec uv run --quiet python tools/integrity.py
+exec uv run --quiet python tools/integrity.py --pre-commit
